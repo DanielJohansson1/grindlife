@@ -87,7 +87,14 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 .lock{display:inline-block;width:7px;height:7px;background:#8a6200;margin-right:4px;vertical-align:baseline}
 .prog{height:6px;background:var(--field);border:2px solid var(--fg)}
 .prog b{display:block;height:100%;background:var(--c)}
-.task{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:2px dashed var(--mid)}
+.task{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:2px dashed var(--mid);position:relative;transition:opacity .35s}
+.task.won{background:#cfe9a6;box-shadow:-8px 0 0 #cfe9a6,8px 0 0 #cfe9a6}
+.task.won .chk{background:#4caf50!important;color:#fff;opacity:1}
+.task.leaving{opacity:0}
+.gain{position:absolute;right:46px;top:50%;font-size:10px;color:#2f7a1f;text-shadow:1px 1px 0 #fff6dc;white-space:nowrap;pointer-events:none;animation:gain 1.6s ease-out forwards}
+@keyframes gain{0%{opacity:0;transform:translateY(-20%)}15%{opacity:1;transform:translateY(-60%)}75%{opacity:1;transform:translateY(-90%)}100%{opacity:0;transform:translateY(-140%)}}
+.noanim .gain{animation:none;transform:translateY(-50%)}
+@media (prefers-reduced-motion:reduce){.gain{animation:none;transform:translateY(-50%)}.task{transition:none}}
 .task:last-child{border:0}
 .task .n{flex:1;word-break:break-word}
 .task small{display:block;font-size:8px;color:var(--mid)}
@@ -345,7 +352,7 @@ return`<h1>SETTINGS<button onclick="go('home')">BACK</button></h1><div class="bo
 <button onclick="go('help')">HOW TO PLAY</button>
 <button onclick="reset()" style="background:#e8a090">${rc?'TAP AGAIN TO ERASE ALL':'RESET ALL DATA'}</button></div>
 <p style="color:var(--hd);font-size:8px">Reset erases all points, tasks and history on this device.</p>`}
-function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;
+function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;const p0={...S.pts};
 const before=Lv(t.stat),wasTrial=atTrial(t.stat);
 const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:1};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);S.pts[t.stat]+=t.pts;S.pts.DIS+=1;if(first){S.pts.DIS+=2;e.show=1}if(t.once)t.done=true;
 const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;let m='';
@@ -354,7 +361,19 @@ else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPE
 const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
 const nu=checkUnlocks();if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
-sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');if(m)toast(m);save();render();pop()}
+sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');if(m)toast(m);save();
+const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});flashDone(id,gains);pop()}
+let pend=null;
+function flashDone(id,gains){const b=document.querySelector(`button.chk[onclick="done(${id})"]`),row=b&&b.closest('.task');
+if(!row){render();return}
+if(pend){clearTimeout(pend.t);pend=null}
+row.classList.add('won');b.disabled=true;
+const g=document.createElement('span');g.className='gain';g.textContent=Object.keys(gains).map(k=>'+'+gains[k]+' '+k).join('  ');row.appendChild(g);
+const tmp=document.createElement('div');tmp.innerHTML=home();const nh=tmp.querySelector('.hero'),oh=document.querySelector('.hero');if(nh&&oh)oh.replaceWith(nh);
+const nw=tmp.querySelector('#wbtn'),ow=document.querySelector('#wbtn');if(nw&&ow)ow.replaceWith(nw);
+const slow=S.settings.anim&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+const ft=setTimeout(()=>row.classList.add('leaving'),slow?1300:700);
+pend={t:setTimeout(()=>{clearTimeout(ft);pend=null;render()},slow?1700:1000)}}
 function undo(){const e=S.log.pop();if(!e)return;const t=S.tasks.find(t=>t.id==e.id);
 S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.pts!=null?e.pts:(t?t.pts:0)));
 S.pts.DIS=Math.max(0,S.pts.DIS-(e.dis||0)-(e.show?2:0));
@@ -660,7 +679,7 @@ const bottom=open.filter(t=>(t.daily||t.id==2)&&fin(t));
 const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;render()" aria-expanded="${openTr}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">TRAINING<small${q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>${tn}x this week · tap to ${openTr?'close':'open'}</small></div><span class="chk trsum" style="background:${['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]}">${tn}</span></button>${openTr?trs.map(row).join(''):''}`:'';
 const tl=(top.map(row).join('')+own.map(row).join('')+trHead+bottom.map(row).join(''))||'<p class="empty">No open quests. Add one in TASKS.</p>';
 return`<h1>GRINDLIFE${COG}</h1><div class="box hero">${sprite()}<div class="stats">${stats}</div></div>
-<p>${Object.keys(S.fresh).length?'<button class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
+<p>${Object.keys(S.fresh).length?'<button id="wbtn" class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button id="wbtn" onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
 <p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>`}
 function tasks(){
 const list=S.tasks.map(t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`).join('')||'<p class="empty">Nothing here yet.</p>';
