@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grindlife</title>
+<meta name="theme-color" content="#6b4527">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Grindlife">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preload" href="fonts/press-start-2p.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Press Start 2P';src:url(fonts/press-start-2p.woff2) format('woff2');font-display:swap}
+:root{--bg:#6b4527;--panel:#f2d9a1;--field:#fff6dc;--fg:#3b2412;--mid:#6b4423;--hd:#f7e3b0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1a0e;--panel:#cfae6f;--field:#e8d3a0;--hd:#e8c98a}}
+:root[data-theme="dark"]{--bg:#2a1a0e;--panel:#cfae6f;--field:#e8d3a0;--hd:#e8c98a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg) repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.14) 46px 48px);color:var(--fg);font:10px/1.7 'Press Start 2P',ui-monospace,monospace;image-rendering:pixelated}
+main{max-width:480px;margin:0 auto;padding:14px 14px 90px}
+h1,h2{color:var(--hd);text-shadow:2px 2px 0 var(--fg)}
+h1{font-size:14px;margin:4px 0 12px}
+h2{font-size:10px;margin:18px 0 8px}
+.box{border:4px solid var(--fg);background:var(--panel);padding:10px;box-shadow:inset 0 0 0 3px #e4b86a,3px 3px 0 rgba(0,0,0,.35)}
+button,input,select{font:inherit;color:var(--fg);background:var(--field);border:3px solid var(--fg);padding:8px;border-radius:0}
+button{cursor:pointer;box-shadow:2px 2px 0 var(--fg)}
+button:active{transform:translate(2px,2px);box-shadow:none}
+button:disabled{opacity:.5;cursor:default}
+h1{display:flex;justify-content:space-between;align-items:center}
+.cog{background:transparent;border:0;box-shadow:none;padding:2px}
+.cog svg{width:30px;height:30px;fill:var(--hd);display:block}
+@keyframes bob{0%,49%{transform:translateY(0)}50%,100%{transform:translateY(-1px)}}
+.bob{animation:bob 1s infinite}
+.noanim .bob{animation:none}
+@media (prefers-reduced-motion:reduce){.bob{animation:none}}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:96px;padding:8px;border:3px solid var(--fg);background:var(--panel);box-shadow:inset 0 0 0 3px #e4b86a,2px 2px 0 var(--fg);text-align:center}
+.glow{background:#ffe27a;color:var(--fg);animation:glow .9s steps(2) infinite;box-shadow:2px 2px 0 var(--fg),0 0 0 4px #f0c030}
+@keyframes glow{0%{background:#ffe27a;box-shadow:2px 2px 0 var(--fg),0 0 0 4px #f0c030}50%{background:#fffbe0;box-shadow:2px 2px 0 var(--fg),0 0 0 4px #fff3a0}}
+.noanim .glow{animation:none}
+@media (prefers-reduced-motion:reduce){.glow{animation:none}}
+.tile{position:relative}
+.tw{position:relative;display:flex}
+.tw .tile{flex:1}
+.ib{position:absolute;top:7px;left:7px;width:26px;height:26px;padding:0;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:1px 1px 0 var(--fg);border-width:2px}
+.ovl{position:fixed;inset:0;background:rgba(30,18,8,.6);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
+.card{width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+.card .cpic{width:112px;height:112px;border:3px solid var(--fg);background:var(--field)}
+.card h3{margin:0;font-size:12px}
+.card small{font-size:8px;color:var(--mid)}
+.card p{margin:0}
+.card .lbl{margin-top:8px;font-size:8px;color:var(--mid)}
+.card button{margin-top:12px;width:100%}
+.spk{display:inline-block;width:4px;height:4px;background:#f0c030;box-shadow:4px 0 #f0c030,-4px 0 #f0c030,0 4px #f0c030,0 -4px #f0c030;margin:0 8px;animation:blink .8s steps(2) infinite}
+@keyframes blink{50%{opacity:.25}}
+.noanim .spk{animation:none}
+@media (prefers-reduced-motion:reduce){.spk{animation:none}}
+.tabs{display:flex;gap:8px;margin:14px 0 10px}
+.tabs button{flex:1;background:rgba(0,0,0,.25);color:var(--hd);border-color:var(--fg);box-shadow:none}
+.tabs button[aria-pressed="true"]{background:var(--field);color:var(--fg);box-shadow:inset 0 0 0 3px #e4b86a,2px 2px 0 var(--fg)}
+.tile svg.qth{background:var(--field)}
+.tile[aria-pressed="false"] svg.qth{opacity:.45}
+.tabs button{padding:8px 4px}
+.tile svg.thumb{width:72px;height:72px;border:2px solid var(--fg)}
+.tile svg{width:40px;height:40px}
+.tile small{font-size:7px;color:var(--mid)}
+.tile.locked{background:var(--bg);box-shadow:none;color:var(--hd);opacity:.7}
+.tile.locked b{font-size:20px}
+:focus-visible{outline:3px dashed var(--fg);outline-offset:2px}
+.hero{display:flex;gap:12px;align-items:center}
+svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
+.stats{flex:1;display:grid;gap:10px}
+.s-STR{--c:#c0392b}.s-INT{--c:#2f6fd0}.s-CHA{--c:#d9658f}.s-DIS{--c:#3f9b3f}
+.stat .row{display:flex;justify-content:space-between}
+.seg{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin:3px 0}
+.seg i{height:9px;border:2px solid var(--fg);background:var(--field)}
+.seg i.on{background:var(--c)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:15px;padding:0 2px;margin-left:5px;border:2px solid var(--fg);font-size:7px;font-weight:normal;vertical-align:middle;background:var(--field)}
+.tier1 .badge{background:#d58b4a}.tier2 .badge{background:#c9d1da}.tier3 .badge,.tier4 .badge{background:#e8bf4f}
+.tier4 .badge{box-shadow:0 0 0 2px #fff1a8}
+.tier1 .seg i{border-color:#a0612a}.tier2 .seg i{border-color:#8f9aa6}.tier3 .seg i,.tier4 .seg i{border-color:#b8860b}
+.trial{font-size:7px;line-height:1.5;color:#8a6200}
+.lock{display:inline-block;width:7px;height:7px;background:#8a6200;margin-right:4px;vertical-align:baseline}
+.prog{height:6px;background:var(--field);border:2px solid var(--fg)}
+.prog b{display:block;height:100%;background:var(--c)}
+.task{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:2px dashed var(--mid)}
+.task:last-child{border:0}
+.task .n{flex:1;word-break:break-word}
+.task small{display:block;font-size:8px;color:var(--mid)}
+.trhead{width:100%;display:flex;align-items:center;gap:10px;text-align:left;color:var(--fg);background:#e8c98a;border:3px solid var(--fg);box-shadow:2px 2px 0 var(--fg);padding:8px 10px;margin:8px 0}
+.task.trhead,.task.trhead:last-child{border:3px solid var(--fg)}
+.trhead .arw{width:14px;height:18px;flex:none;fill:var(--fg);transition:transform .15s}
+.trhead[aria-expanded="true"] .arw{transform:rotate(90deg)}
+@media (prefers-reduced-motion:reduce){.trhead .arw{transition:none}}
+.trsum{display:flex;align-items:center;justify-content:center;border:3px solid var(--fg);font-size:10px}
+.task.sub{padding-left:12px;border-left:4px solid var(--mid)}
+.chk{width:34px;height:34px;padding:0;flex:none;background:#8fcf6a}
+.x{padding:4px 7px;flex:none;box-shadow:none}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bg);border-top:4px solid var(--fg);box-shadow:inset 0 3px 0 #e4b86a;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;border:0;box-shadow:none;background:transparent;color:var(--hd);padding:14px 0}
+nav button[aria-current="true"]{background:var(--panel);color:var(--fg)}
+.add{display:grid;gap:8px}
+.sug{display:flex;flex-wrap:wrap;gap:8px}
+.sug button{font-size:8px;text-align:left}
+.empty{color:var(--mid)}
+#toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--fg);color:var(--hd);padding:8px 12px;display:none;z-index:9;max-width:92%}
+</style>
+</head>
+<body>
+<div id="toast" role="status"></div>
+<main id="app"></main>
+<nav><button id="t-home" onclick="go('home')">HOME</button><button id="t-tasks" onclick="go('tasks')">TASKS</button></nav>
+<script>
+const KEY='grindlife-v1';
+const NAMES={STR:'STRENGTH',INT:'INTELLECT',CHA:'CHARISMA',DIS:'DISCIPLINE'};
+const SUGG=[['Stretch 15 min','STR',2],['Walk 30 min','STR',3],['Read 20 pages','INT',3],['Learn something new','INT',4],['Call a friend','CHA',3],['Plan the week','DIS',3,1]];
+const COG=`<button class="cog" onclick="go('settings')" aria-label="Settings"><svg viewBox="0 0 9 9" shape-rendering="crispEdges"><rect x="2" y="2" width="5" height="5"/><rect x="4" y="0" width="1" height="2"/><rect x="4" y="7" width="1" height="2"/><rect x="0" y="4" width="2" height="1"/><rect x="7" y="4" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/><rect x="3" y="3" width="3" height="3" style="fill:var(--bg)"/></svg></button>`;
+const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true}];
+const TRAIN=[1,1001,1002,1003];
+let view='home',rc=0,wtab='gear',openTr=false,S=load();
+function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
+return{pts:{STR:0,INT:0,CHA:0,DIS:0},tasks:[],log:[],bonus:{},next:4}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+// each level costs more than the last: L -> L+1 needs 5+3L points
+function lvl(p){let l=0,c=5;while(p>=c){p-=c;l++;c=5+3*l}return{l,cur:p,need:c}}
+function wk(d){const x=new Date(d||Date.now());x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate()}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2600)}
+const TIERN=['NOVICE','ADEPT','EXPERT','MASTER','LEGEND'],ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+function tierOf(k){return (S.tier&&S.tier[k])||0}
+function Lv(k){return Math.min(lvl(S.pts[k]).l,10*(tierOf(k)+1))}
+function atTrial(k){return lvl(S.pts[k]).l>=10*(tierOf(k)+1)}
+function trialProg(k){const o=S.trialOpen&&S.trialOpen[k],from=Math.max(o?o.at:Date.now(),Date.now()-7*864e5),L=S.log.filter(e=>e.t>from),days=f=>new Set(L.filter(f).map(e=>day(e.t))).size;
+if(k==='STR')return[L.filter(e=>TRAIN.includes(e.id)).length,4,'TRAININGS'];
+if(k==='INT')return[days(e=>e.id==2),5,'READING DAYS'];
+if(k==='CHA')return[days(e=>e.id==1004),5,'COMPLIMENT DAYS'];
+return[days(()=>true),6,'ACTIVE DAYS']}
+function checkTrials(e){const up=[];S.tier=S.tier||{};S.trialOpen=S.trialOpen||{};
+Object.keys(NAMES).forEach(k=>{if(!atTrial(k)){delete S.trialOpen[k];return}
+const o=S.trialOpen[k];if(!o||o.tier!==tierOf(k)){S.trialOpen[k]={tier:tierOf(k),at:Date.now()};return}
+const [a,b]=trialProg(k);if(a>=b){up.push(k);if(e){e.trOpen=e.trOpen||{};e.trOpen[k]=o}S.tier[k]=tierOf(k)+1;delete S.trialOpen[k];if(atTrial(k))S.trialOpen[k]={tier:tierOf(k),at:Date.now()}}});
+return up}
+function day(d){const x=new Date(d||Date.now());return x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate()}
+function doneToday(t){return !!t.daily&&S.log.some(e=>e.id==t.id&&day(e.t)===day())}
+const ITEMS=[
+{id:'hat',slot:'head',name:'Wizard hat',how:'Reached Intellect level 6 with Discipline level 3',cond:()=>Lv('DIS')>=3&&Lv('INT')>=6,ic:'<rect x="3" y="6" width="10" height="2" fill="#6a44ad"/><rect x="5" y="3" width="6" height="3" fill="#6a44ad"/><rect x="7" y="1" width="3" height="2" fill="#6a44ad"/><rect x="5" y="5" width="6" height="1" fill="#e8bf4f"/>'},
+{id:'shirt',slot:'torso',name:'Red shirt',how:'Reached Strength level 6 with Discipline level 3',cond:()=>Lv('DIS')>=3&&Lv('STR')>=6,ic:'<rect x="4" y="3" width="8" height="9" fill="#c23b2c"/><rect x="2" y="3" width="2" height="4" fill="#c23b2c"/><rect x="12" y="3" width="2" height="4" fill="#c23b2c"/><rect x="4" y="7" width="8" height="1" fill="#ec8a6c"/><rect x="7" y="3" width="2" height="1" fill="#d99b7e"/>'},
+{id:'shirtless',slot:'torso',name:'Shirtless',how:'Reached Strength level 10',cond:()=>Lv('STR')>=10,ic:'<rect x="4" y="2" width="8" height="12" fill="#f3c4a2"/><rect x="1" y="2" width="3" height="7" fill="#f3c4a2"/><rect x="12" y="2" width="3" height="7" fill="#f3c4a2"/><rect x="5" y="5" width="2" height="1" fill="#d99b7e"/><rect x="9" y="5" width="2" height="1" fill="#d99b7e"/><rect x="7" y="6" width="1" height="8" fill="#d99b7e"/><rect x="5" y="8" width="6" height="1" fill="#d99b7e"/><rect x="5" y="11" width="6" height="1" fill="#d99b7e"/>'},
+{id:'sweat',slot:'head',name:'Sweatband',how:'Did 4 training sessions in one week',cond:()=>{const c={};S.log.forEach(e=>{if(TRAIN.includes(e.id)){const k=wk(e.t);c[k]=(c[k]||0)+1}});return Object.values(c).some(v=>v>=4)},ic:'<rect x="2" y="6" width="12" height="3" fill="#c23b2c"/><rect x="2" y="8" width="12" height="1" fill="#8c2a1f"/><rect x="13" y="9" width="2" height="3" fill="#c23b2c"/><rect x="4" y="6" width="3" height="1" fill="#ec8a6c"/>'},
+{id:'read',slot:'head',name:'Reading glasses',how:'Read 10 pages on 20 different days',cond:()=>new Set(S.log.filter(e=>e.id==2).map(e=>day(e.t))).size>=20,ic:'<rect x="1" y="5" width="6" height="5" fill="#d4a63a"/><rect x="2" y="6" width="4" height="3" fill="#cfe8f5"/><rect x="9" y="5" width="6" height="5" fill="#d4a63a"/><rect x="10" y="6" width="4" height="3" fill="#cfe8f5"/><rect x="7" y="6" width="2" height="1" fill="#d4a63a"/>'},
+{id:'sun',slot:'head',name:'Sunglasses',how:'Reached Charisma level 6',cond:()=>Lv('CHA')>=6,ic:'<rect x="1" y="5" width="6" height="5" fill="#1f1a27"/><rect x="9" y="5" width="6" height="5" fill="#1f1a27"/><rect x="7" y="6" width="2" height="1" fill="#1f1a27"/><rect x="2" y="6" width="2" height="1" fill="#6d6a8a"/><rect x="10" y="6" width="2" height="1" fill="#6d6a8a"/>'},
+{id:'flower',slot:'head',name:'Flower crown',how:'Complimented someone 10 times',cond:()=>S.log.filter(e=>e.id==1004).length>=10,ic:'<rect x="1" y="9" width="14" height="2" fill="#5c9e45"/><rect x="1" y="6" width="3" height="3" fill="#f08ca8"/><rect x="6" y="6" width="3" height="3" fill="#fffaf0"/><rect x="11" y="6" width="3" height="3" fill="#f08ca8"/><rect x="2" y="7" width="1" height="1" fill="#e8bf4f"/><rect x="7" y="7" width="1" height="1" fill="#e8bf4f"/><rect x="12" y="7" width="1" height="1" fill="#e8bf4f"/>'},
+{id:'crown',slot:'head',name:'Golden crown',how:'Got all four stats to level 5',cond:()=>['STR','INT','CHA','DIS'].every(k=>Lv(k)>=5),ic:'<rect x="2" y="8" width="12" height="4" fill="#e8bf4f"/><rect x="2" y="11" width="12" height="1" fill="#b8860b"/><rect x="2" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="3" width="2" height="5" fill="#e8bf4f"/><rect x="12" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="9" width="2" height="2" fill="#c23b2c"/>'}
+];
+const SLOTS=10;
+const PLACES=[
+{id:'meadow',name:'Meadow',how:'Where your journey started',cond:()=>true},
+{id:'cafe',name:'Café',how:'Reached Charisma level 3',cond:()=>Lv('CHA')>=3},
+{id:'tower',name:'Astronomy Tower',how:'Reached Intellect level 8',cond:()=>Lv('INT')>=8},
+{id:'gym',name:'The Gym',how:'Hit the gym 20 times',cond:()=>S.log.filter(e=>e.id==1).length>=20},
+{id:'dojo',name:'Dojo',how:'Reached Discipline level 13',cond:()=>Lv('DIS')>=13}];
+function checkUnlocks(){const n=[];ITEMS.forEach(i=>{if(!S.owned[i.id]&&i.cond()){S.owned[i.id]=Date.now();S.equip[i.id]=0;S.fresh[i.id]=1;n.push(i.id)}});
+PLACES.forEach(p=>{if(!S.owned[p.id]&&p.cond()){S.owned[p.id]=Date.now();if(p.id!=='meadow'){S.fresh[p.id]=1;n.push(p.id)}}});return n.concat(checkQuirks())}
+const QUIRKS=[
+{id:'blink',name:'Blink',how:'Had it from the very start',key:'blink',cond:()=>true,f:[['blink',160]]},
+{id:'wave',name:'Wave',how:'Completed 10 tasks',key:'wave1',cond:()=>S.log.length>=10,f:[['wave1',220],['wave2',220],['wave1',220],['wave2',220]]},
+{id:'thumb',name:'Thumbs up',how:'Earned your first weekly bonus',key:'thumb',cond:()=>Object.keys(S.bonus).length>=1,f:[['thumb',1000]]},
+{id:'jump',name:'Happy jump',how:'Completed 5 tasks in one day',key:'jump',cond:()=>{const c={};S.log.forEach(e=>{const k=day(e.t);c[k]=(c[k]||0)+1});return Object.values(c).some(v=>v>=5)},f:[['jump',220],['',150],['jump',220]]},
+{id:'wink',name:'Wink',how:'Reached Charisma level 5',key:'wink',cond:()=>Lv('CHA')>=5,f:[['wink',700]]},
+{id:'bulb',name:'Lightbulb',how:'Reached Intellect level 5',key:'bulb',cond:()=>Lv('INT')>=5,f:[['bulb',1200]]},
+{id:'breath',name:'Deep breath',how:'Reached Discipline level 6',key:'breath',cond:()=>Lv('DIS')>=6,f:[['breath',1200]]},
+{id:'stretch',name:'Stretch',how:'Did 3 different kinds of training in one week',key:'stretch',cond:()=>{const c={};S.log.forEach(e=>{if(TRAIN.includes(e.id)){const k=wk(e.t);(c[k]=c[k]||new Set()).add(e.id)}});return Object.values(c).some(v=>v.size>=3)},f:[['stretch',1200]]},
+{id:'flex',name:'Double biceps',how:'Reached Strength level 8',key:'flex',cond:()=>Lv('STR')>=8,f:[['flex',1400]]},
+{id:'shuffle',name:'Shuffle dance',how:'Reached Charisma level 8',key:'shuffleL',cond:()=>Lv('CHA')>=8,f:[['shuffleL',230],['shuffleR',230],['shuffleL',230],['shuffleR',230]]}];
+function checkQuirks(){const n=[];QUIRKS.forEach(q=>{const k='q_'+q.id;if(!S.owned[k]&&q.cond()){S.owned[k]=Date.now();if(q.id==='blink')S.qon.blink=1;else{S.qon[q.id]=0;S.fresh[k]=1;n.push(k)}}});return n}
+let playing=0;
+function playQuirk(q){if(playing)return;playing=1;let i=0;const show=p=>document.querySelectorAll('svg.sprite').forEach(e=>{e.outerHTML=sprite(p)});
+const step=()=>{if(i>=q.f.length){show('');playing=0;return}const [p,ms]=q.f[i++];show(p);setTimeout(step,ms)};step()}
+function quirkTap(id){const k='q_'+id,q=QUIRKS.find(x=>x.id===id);if(!S.owned[k])return;if(S.fresh[k]){delete S.fresh[k];S.qon[id]=1}else S.qon[id]=S.qon[id]?0:1;save();render();sfx('ok');if(S.qon[id]&&S.settings.anim)setTimeout(()=>playQuirk(q),150)}
+setInterval(()=>{if(!S||!S.settings.anim||document.hidden||playing)return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+const on=QUIRKS.filter(q=>S.owned['q_'+q.id]&&S.qon[q.id]);if(on.length&&document.querySelector('svg.sprite'))playQuirk(on[Math.floor(Math.random()*on.length)])},10000);
+function goPlace(id){if(!S.owned[id])return;delete S.fresh[id];S.place=id;save();render();sfx('ok');pop()}
+function placeBg(id) {
+  const W = 44, H = 44, G = Array.from({ length: H }, () => Array(W).fill('#000'));
+  const P = (x, y, c) => { if (x >= 0 && y >= 0 && x < W && y < H) G[y][x] = c; };
+  const R = (x, y, w, h, c) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) P(x + i, y + j, c); };
+  const line = (x0, y0, x1, y1, c, t = 1) => { const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)); for (let i = 0; i <= n; i++) { const x = Math.round(x0 + (x1 - x0) * i / n), y = Math.round(y0 + (y1 - y0) * i / n); R(x, y, t, t, c); } };
+
+  if (id === 'gym') {
+    R(0, 0, W, 30, '#9aa8b8');                         // painted block wall
+    for (let y = 2; y < 30; y += 4) R(0, y, W, 1, '#8796a8');
+    for (let y = 0; y < 30; y += 4) for (let x = (y / 4) % 2 ? 0 : 4; x < W; x += 8) R(x, y, 1, 4, '#8796a8');
+    R(0, 20, W, 3, '#d8b04a'); R(0, 22, W, 1, '#b08a2e');  // yellow stripe
+    R(0, 29, W, 1, '#4e3a2c');                         // skirting
+    R(0, 30, W, 14, '#c08850');                        // wooden floor
+    for (let y = 32; y < H; y += 3) R(0, y, W, 1, '#a06c3a');
+    for (let y = 30; y < H; y += 3) for (let x = (y % 2) * 5 + 3; x < W; x += 11) P(x, y + 1, '#a06c3a');
+    R(8, 38, 28, 6, '#3d4250'); R(8, 38, 28, 1, '#4e5464');   // rubber mat
+    // weight rack (left)
+    R(2, 10, 2, 20, '#3b3f4a'); R(10, 10, 2, 20, '#3b3f4a'); R(2, 10, 10, 1, '#55596a');
+    R(0, 14, 14, 1, '#b9bec9');                        // barbell
+    R(0, 11, 2, 7, '#2a2d36'); R(12, 11, 2, 7, '#2a2d36'); P(0, 11, '#4a4e5c'); P(12, 11, '#4a4e5c');
+    R(3, 24, 8, 1, '#55596a'); [3, 6, 9].forEach(x => { R(x, 22, 2, 2, '#c23b2c'); P(x, 22, '#e06a5a'); }); // plates on shelf
+    // mirror (right)
+    R(32, 15, 12, 14, '#5a5f6e'); R(33, 16, 11, 12, '#cfe3ef');
+    line(35, 26, 41, 18, '#eef7fc'); line(37, 27, 43, 19, '#eef7fc');
+    // dumbbells on the floor
+    [[36, 34], [36, 37]].forEach(([x, y]) => { R(x, y, 7, 1, '#9aa0ad'); R(x, y - 1, 2, 3, '#2a2d36'); R(x + 5, y - 1, 2, 3, '#2a2d36'); });
+    // water bottle
+    R(3, 33, 2, 4, '#4fb0e0'); P(3, 32, '#e8eef2'); P(4, 32, '#e8eef2'); P(3, 33, '#9fd8f2');
+  }
+
+  if (id === 'tower') {
+    R(0, 0, W, 31, '#5b5f7a');                         // stone wall
+    for (let y = 0; y < 31; y += 3) { R(0, y, W, 1, '#474a63'); for (let x = (y / 3) % 2 ? 2 : 6; x < W; x += 8) P(x, y + 1, '#474a63'), P(x, y + 2, '#474a63'); }
+    for (let i = 0; i < 18; i++) { const x = (i * 13 + 5) % W, y = (i * 7 + 2) % 30; P(x, y, '#6b7090'); }
+    // round window with night sky
+    const cx = 9, cy = 10, r = 7;
+    for (let y = cy - r - 1; y <= cy + r + 1; y++) for (let x = cx - r - 1; x <= cx + r + 1; x++) {
+      const d = Math.hypot(x - cx, y - cy);
+      if (d <= r) P(x, y, y < cy ? '#141a45' : '#1d2558'); else if (d <= r + 1.2) P(x, y, '#3a3d54');
+    }
+    [[6, 6], [11, 5], [13, 9], [5, 11], [9, 13], [12, 14], [7, 9]].forEach(([x, y]) => P(x, y, '#fff6b0'));
+    P(10, 8, '#ffffff');
+    R(10, 4, 3, 3, '#f4f1d0'); P(10, 4, '#1d2558'); P(11, 5, '#d8d3a8');   // moon
+    line(cx - r, cy, cx + r, cy, '#3a3d54'); line(cx, cy - r, cx, cy + r, '#3a3d54');
+    R(0, 30, W, 1, '#2e3044');
+    R(0, 31, W, 13, '#4a4e66');                        // stone floor
+    for (let y = 31; y < H; y += 4) R(0, y, W, 1, '#3d4057');
+    for (let y = 31; y < H; y += 4) for (let x = (y % 8 ? 0 : 5); x < W; x += 10) R(x, y, 1, 4, '#3d4057');
+    R(6, 36, 32, 8, '#6a3550'); R(7, 37, 30, 6, '#7d4060'); R(7, 37, 30, 1, '#9a5a78'); // rug
+    // telescope (right)
+    line(37, 40, 34, 26, '#6b4a2a'); line(37, 40, 40, 26, '#6b4a2a'); line(37, 40, 37, 26, '#5a3c22');
+    R(35, 25, 5, 2, '#8a6038');
+    line(33, 26, 43, 16, '#c9a227', 2); line(34, 26, 43, 17, '#8f6f12');
+    R(31, 26, 3, 3, '#c9a227'); P(31, 26, '#f0d672'); P(42, 15, '#f0d672'); P(43, 15, '#f0d672');
+    // book stacks (left)
+    [['#c23b2c', 0], ['#2f6fd0', 1], ['#3f9b3f', 2], ['#e8bf4f', 3]].forEach(([c, i]) => { R(1 + (i % 2), 39 - i * 2, 9, 2, c); P(2 + (i % 2), 39 - i * 2, '#fffaf0'); });
+    R(2, 30, 3, 2, '#e8dcc0'); P(3, 29, '#ffd36b'); P(3, 28, '#ff9f3b');   // candle
+  }
+
+  if (id === 'cafe') {
+    R(0, 0, W, 31, '#f0dab4');                         // striped wallpaper
+    for (let x = 0; x < W; x += 6) R(x, 0, 2, 31, '#e6caa0');
+    R(0, 22, W, 9, '#8a5a32'); R(0, 22, W, 1, '#a8703f'); for (let x = 3; x < W; x += 7) R(x, 23, 1, 8, '#744a28'); // wainscot
+    // string lights
+    for (let x = 0; x < W; x++) { const y = 3 + Math.round(2 * Math.sin((x / W) * Math.PI)); P(x, y, '#5a4030'); if (x % 4 === 2) { const c = ['#ffd36b', '#ff9f6b', '#9fe0ff', '#f08ca8'][(x / 4 | 0) % 4]; P(x, y + 1, c); P(x, y + 2, c); } }
+    // shelf with cups and a plant
+    R(1, 15, 12, 1, '#6b4423');
+    [2, 5].forEach(x => { R(x, 12, 2, 3, '#fffaf0'); P(x + 2, 13, '#fffaf0'); });
+    R(8, 12, 3, 3, '#c0703a'); R(8, 9, 3, 3, '#5c9e45'); P(7, 10, '#5c9e45'); P(11, 9, '#7fbf5e');
+    // window with warm outside
+    R(32, 13, 11, 8, '#6b4423'); R(33, 14, 9, 6, '#ffcf8a'); R(33, 14, 9, 2, '#ffb36b'); R(37, 14, 1, 6, '#6b4423');
+    R(0, 31, W, 13, '#e8d4b0');                        // checker floor
+    for (let y = 31; y < H; y += 3) for (let x = ((y - 31) / 3) % 2 ? 3 : 0; x < W; x += 6) R(x, y, 3, 3, '#9a7350');
+    // table and coffee
+    R(33, 30, 11, 2, '#8a5a32'); R(33, 30, 11, 1, '#a8703f'); R(38, 32, 2, 9, '#6b4423'); R(36, 40, 6, 1, '#4e3020');
+    R(35, 27, 3, 3, '#fffaf0'); R(35, 27, 3, 1, '#6b3f22'); P(38, 28, '#fffaf0'); P(36, 25, '#ffffff'); P(37, 24, '#ffffff');
+    R(40, 28, 3, 2, '#f0c27a'); P(40, 28, '#ffe0a0');   // pastry
+    // chair at left
+    R(2, 29, 2, 12, '#6b4423'); R(2, 34, 8, 2, '#8a5a32'); R(8, 36, 2, 5, '#6b4423');
+  }
+
+  if (id === 'dojo') {
+    R(0, 0, W, 4, '#4e3020'); R(0, 3, W, 1, '#3a2316');   // ceiling beam
+    R(0, 4, W, 26, '#f3ead2');                         // shoji screens
+    for (let x = 0; x < W; x += 7) R(x, 4, 1, 26, '#8a5a32');
+    for (let y = 9; y < 30; y += 6) R(0, y, W, 1, '#b08458');
+    for (let x = 0; x < W; x += 14) R(x, 4, 2, 26, '#6b4423');
+    // red paper lantern (left)
+    R(5, 4, 1, 2, '#3a2316'); R(3, 6, 5, 1, '#2a2020'); R(2, 7, 7, 6, '#d9452f'); R(3, 13, 5, 1, '#2a2020');
+    R(2, 9, 7, 1, '#b8321f'); R(2, 11, 7, 1, '#b8321f'); P(3, 8, '#f27a5a'); P(4, 8, '#f27a5a'); P(5, 14, '#e8bf4f');
+    // hanging scroll (right) with abstract brush strokes
+    R(36, 12, 7, 1, '#4e3020'); R(37, 13, 5, 14, '#efe6cf'); R(36, 27, 7, 1, '#4e3020');
+    line(39, 15, 40, 17, '#2a2222'); R(38, 18, 3, 1, '#2a2222'); line(39, 20, 38, 23, '#2a2222'); line(40, 21, 41, 24, '#2a2222'); P(39, 25, '#c23b2c');
+    R(0, 29, W, 2, '#6b4423'); R(0, 29, W, 1, '#8a5a32'); // wooden edge
+    R(0, 31, W, 13, '#cdbd7e');                        // tatami
+    for (let y = 31; y < H; y += 2) for (let x = (y % 4 ? 1 : 0); x < W; x += 2) P(x, y, '#c0b070');
+    R(0, 37, W, 1, '#3d4a2e'); [0, 22].forEach(x => R(x, 31, 1, 13, '#3d4a2e')); R(43, 31, 1, 13, '#3d4a2e');
+    // bonsai + training staff
+    R(2, 26, 4, 3, '#4e3020'); R(1, 22, 6, 4, '#3f7a35'); R(2, 21, 3, 1, '#5c9e45'); P(4, 25, '#5a3820');
+    line(30, 30, 33, 6, '#8a5a32'); line(31, 30, 34, 6, '#6b4423');
+  }
+
+  return G;
+}
+
+
+function gear(){const o={head:null,torso:null};ITEMS.forEach(i=>{if(S.owned&&S.owned[i.id]&&S.equip&&S.equip[i.id])o[i.slot]=i.id});return o}
+function wear(id){const it=ITEMS.find(i=>i.id==id);if(!it||!S.owned[id])return;let on;if(S.fresh[id]){delete S.fresh[id];on=1}else on=S.equip[id]?0:1;if(on)ITEMS.forEach(i=>{if(i.slot===it.slot)S.equip[i.id]=0});S.equip[id]=on;save();render();sfx('ok');pop()}
+let infoId=null;
+const ib=(k,n)=>`<button class="ib" onclick="infoId='${k}';render()" aria-label="How you got ${n}">i</button>`;
+function infoCard(){if(!infoId)return'';const [t,id]=infoId.split(':');
+const it=t==='g'?ITEMS.find(x=>x.id===id):t==='p'?PLACES.find(x=>x.id===id):QUIRKS.find(x=>x.id===id);if(!it)return'';
+const ts=S.owned[t==='q'?'q_'+id:id],date=ts>1?new Date(ts).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+let pic;if(t==='g')pic=`<svg class="cpic" viewBox="0 0 16 16" shape-rendering="crispEdges">${it.ic}</svg>`;
+else if(t==='p')pic=`<svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges">${runs(id==='meadow'?charLayers(0,0,0,{}).layers.bg:placeBg(id))}</svg>`;
+else{const d=charLayers(Lv('STR'),Lv('INT'),Lv('CHA'),gear(),it.key);pic=`<svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges"><g transform="translate(${d.dx} ${d.dy})">${runs(d.layers.body)}</g></svg>`}
+const kind=t==='g'?'GEAR':t==='p'?'PLACE':'QUIRK';
+return`<div class="ovl" onclick="if(event.target===this){infoId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="${it.name}">
+${pic}<small>${kind}</small><h3>${it.name}</h3><p class="lbl">HOW YOU GOT IT</p><p>${it.how}</p>${date?`<p class="lbl">UNLOCKED</p><p>${date}</p>`:''}
+<button onclick="infoId=null;render()">CLOSE</button></div></div>`}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&infoId){infoId=null;render()}});
+function wardrobe(){
+const tiles=Array.from({length:SLOTS},(_,k)=>{const i=ITEMS[k];
+if(i&&S.owned[i.id]){const on=S.equip[i.id],f=S.fresh[i.id];return`<div class="tw"><button class="tile" onclick="wear('${i.id}')" aria-pressed="${!!on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg viewBox="0 0 16 16" shape-rendering="crispEdges">${i.ic}</svg><span>${i.name}</span><small>${i.slot==='head'?'HEAD':'SHIRT'} · ${f?'NEW!':on?'WORN':'TAP TO WEAR'}</small></button>${ib('g:'+i.id,i.name)}</div>`}
+return`<div class="tile locked" aria-label="Locked item"><b>?</b></div>`}).join('');
+const pt=PLACES.map(p=>{if(!S.owned[p.id])return`<div class="tile locked" aria-label="Locked place"><b>?</b></div>`;
+const f=S.fresh[p.id],on=(S.place||'meadow')===p.id,bg=p.id==='meadow'?charLayers(0,0,0,{}).layers.bg:placeBg(p.id);
+return`<div class="tw"><button class="tile" onclick="goPlace('${p.id}')" aria-pressed="${on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg class="thumb" viewBox="0 0 44 44" shape-rendering="crispEdges">${runs(bg)}</svg><span>${p.name}</span><small>${f?'NEW!':on?'HERE NOW':'TAP TO GO'}</small></button>${ib('p:'+p.id,p.name)}</div>`}).join('');
+const fresh=ids=>ids.some(id=>S.fresh[id])?'<i class="spk"></i>':'';
+const L=[Lv('STR'),Lv('INT'),Lv('CHA')];
+const qt=QUIRKS.map(q=>{const k='q_'+q.id;if(!S.owned[k])return`<div class="tile locked" aria-label="Locked quirk"><b>?</b></div>`;
+const f=S.fresh[k],on=!!S.qon[q.id],d=charLayers(L[0],L[1],L[2],gear(),q.key);
+return`<div class="tw"><button class="tile" onclick="quirkTap('${q.id}')" aria-pressed="${on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg class="thumb qth" viewBox="0 0 44 44" shape-rendering="crispEdges"><g transform="translate(${d.dx} ${d.dy})">${runs(d.layers.body)}</g></svg><span>${q.name}</span><small>${f?'NEW! TAP TO TURN ON':on?'ON':'OFF'}</small></button>${ib('q:'+q.id,q.name)}</div>`}).join('');
+return`${infoCard()}<h1>WARDROBE<button onclick="go('home')">BACK</button></h1><div class="box hero" style="justify-content:center">${sprite()}</div>
+<div class="tabs"><button aria-pressed="${wtab==='gear'}" onclick="wtab='gear';render()">GEAR${fresh(ITEMS.map(i=>i.id))}</button><button aria-pressed="${wtab==='places'}" onclick="wtab='places';render()">PLACES${fresh(PLACES.map(p=>p.id))}</button><button aria-pressed="${wtab==='quirks'}" onclick="wtab='quirks';render()">QUIRKS${fresh(QUIRKS.map(q=>'q_'+q.id))}</button></div>
+<div class="grid">${wtab==='gear'?tiles:wtab==='places'?pt:qt}</div>`}
+
+let AC;
+function beep(f,d,t){if(!S.settings.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),a=AC.currentTime+(t||0);o.type='square';o.frequency.value=f;g.gain.value=.04;o.connect(g);g.connect(AC.destination);o.start(a);o.stop(a+d)}catch(e){}}
+function sfx(k){({ok:[[660,.07,0],[880,.09,.07]],lvl:[[523,.09,0],[659,.09,.09],[784,.14,.18]],gear:[[523,.09,0],[659,.09,.09],[784,.09,.18],[1047,.2,.27]],undo:[[330,.12,0]],tier:[[392,.1,0],[523,.1,.1],[659,.1,.2],[784,.1,.3],[1047,.12,.4],[784,.08,.52],[1047,.3,.6]]}[k]||[]).forEach(n=>beep(...n))}
+function pop(){if(!S.settings.anim)return;const e=document.querySelector('.sprite');if(e)e.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:250})}
+function tog(k){S.settings[k]=!S.settings[k];save();render();if(k==='sound')sfx('ok')}
+function reset(){if(!rc){rc=1;render();setTimeout(()=>{rc=0;if(view==='settings')render()},4000);return}
+try{localStorage.removeItem(KEY)}catch(e){}S=load();ensure();rc=0;view='home';render();toast('Fresh start')}
+function help(){return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</button></h1><div class="box">
+<p>QUESTS: Tap the check on a quest to finish it. Each quest gives points to one stat: Strength, Intellect, Charisma or Discipline.</p>
+<p>Repeatable quests can be done any time. Daily quests come back every day. One-time quests only give points once. Made a mistake? UNDO LAST takes back your latest check.</p>
+<p>LEVELS: Points fill up a level. Reaching level 1 takes ${lvl(0).need} points, and each level after that needs 3 more than the one before, so it gets harder as you go. Stats never go down.</p>
+<p>WEEKLY BONUS: Finish 4 quests for the same stat in one week (Monday to Sunday) to get +10 points in that stat and +15 Discipline.</p>
+<p>DISCIPLINE: Every quest you finish gives +1 Discipline. Any day you finish at least one quest gives +2 more. Missing a day never costs you anything.</p>
+<p>TIERS AND TRIALS: Every 10 levels a stat reaches a trial, shown under its bar. Only what you do after the trial opens counts. Complete the challenge within 7 days to reach the next tier: I Novice, II Adept, III Expert, IV Master, V Legend. You can't fail: if 7 days pass, the oldest days just drop off the count. While a trial is open, your level pauses but your points keep adding up. Pass the trial and they all count at once, so you may jump several levels.</p>
+<p>SECRETS: Keep growing your character and you will unlock new gear, places and quirks.</p>
+</div>`}
+function settings(){const o=k=>S.settings[k]?'ON':'OFF';
+return`<h1>SETTINGS<button onclick="go('home')">BACK</button></h1><div class="box add">
+<button onclick="tog('sound')">SOUND: ${o('sound')}</button>
+<button onclick="tog('anim')">ANIMATIONS: ${o('anim')}</button>
+<button onclick="go('help')">HOW TO PLAY</button>
+<button onclick="reset()" style="background:#e8a090">${rc?'TAP AGAIN TO ERASE ALL':'RESET ALL DATA'}</button></div>
+<p style="color:var(--hd);font-size:8px">Reset erases all points, tasks and history on this device.</p>`}
+function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;
+const before=Lv(t.stat),wasTrial=atTrial(t.stat);
+const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:1};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);S.pts[t.stat]+=t.pts;S.pts.DIS+=1;if(first){S.pts.DIS+=2;e.show=1}if(t.once)t.done=true;
+const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;let m='';
+if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;S.pts[t.stat]+=10;S.pts.DIS+=15;m='Weekly bonus! Discipline up'}
+else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPEN!':NAMES[t.stat]+' LEVEL UP!';
+const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
+const nu=checkUnlocks();if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
+if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
+sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');if(m)toast(m);save();render();pop()}
+function undo(){const e=S.log.pop();if(!e)return;const t=S.tasks.find(t=>t.id==e.id);
+S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.pts!=null?e.pts:(t?t.pts:0)));
+S.pts.DIS=Math.max(0,S.pts.DIS-(e.dis||0)-(e.show?2:0));
+if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-10);S.pts.DIS=Math.max(0,S.pts.DIS-15);delete S.bonus[e.bk]}
+if(e.tr)e.tr.forEach(k=>{S.tier[k]=Math.max(0,tierOf(k)-1);if(e.trOpen&&e.trOpen[k])S.trialOpen[k]=e.trOpen[k]});
+if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
+function addTask(name,stat,pts,once){name=(name||'').trim();if(!name)return toast('Give the task a name');
+S.tasks.push({id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2});save();render()}
+function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
+function go(v){view=v;infoId=null;render()}
+// Grindlife character generator: returns pixel layers for given stat levels.
+function charLayers(str, int, cha, gear, pose) {
+  pose = pose || '';
+  const W = 44, H = 44, FB = 40, CX = 22; // FB = feet bottom row, CX = centre (between CX-1 and CX)
+  const tier = l => l >= 6 ? 2 : l >= 3 ? 1 : 0;
+  const sT = tier(str), iT = tier(int), cT = tier(cha);
+  const C = {
+    o: '#3b2416',                                      // outline (dark warm brown)
+    s: '#f3c4a2', S: '#d99b7e', K: '#ffe0c9', b: '#ef9b8f', // skin
+    h: '#a2703c', H: '#704426', L: '#d2a467',          // hair
+    e: '#2a2230', g: '#ffffff', m: '#a5433b', t: '#fffaf2', // eyes / mouth
+    w: '#f7f4ee', W: '#cbc5ba',                        // white tee
+    R: '#c23b2c', Q: '#8c2a1f', r: '#ec8a6c',          // red shirt (gear)
+    p: '#4a5774', q: '#323b55',                        // pants
+    f: '#7a4c2a', F: '#4e2f1a',                        // shoes
+    v: '#6a44ad', V: '#47297a', y: '#e8bf4f', Y: '#fff1a8', // wizard hat
+    n: '#fffaf0', N: '#e2d9c5', k: '#e5607e',          // bubble
+    G: '#d4a63a', E: '#1f1a27', D: '#6d6a8a', P: '#f08ca8', Z: '#5c9e45', u: '#b8860b', B: '#7cc4f0' // accessories
+  };
+  const grid = () => Array.from({ length: H }, () => Array(W).fill(null));
+  const body = grid(), bub = grid();
+  const put = (G, x, y, c) => { if (x >= 0 && y >= 0 && x < W && y < H) G[y][x] = c; };
+  const rect = (G, x, y, w, h, c) => { for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(G, x + i, y + j, c); };
+  const outline = G => {
+    const add = [];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (!G[y][x]) {
+      if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const r = G[y + dy]; return r && r[x + dx] && r[x + dx] !== 'o'; })) add.push([x, y]);
+    }
+    add.forEach(([x, y]) => G[y][x] = 'o');
+  };
+
+  const head = gear && gear.head, torso = gear && gear.torso, naked = torso === 'shirtless', shirt = torso === 'shirt';
+  const sb = shirt ? 'R' : 'w', ss = shirt ? 'Q' : 'W';
+
+  // ---- dimensions by tier
+  const TW = [10, 12, 14][sT];      // torso width
+  const AW = [2, 3, 4][sT];         // arm width
+  const LW = [4, 5, 6][sT];         // leg block half-width
+  const HW = [14, 16, 18][iT];      // head width
+  const HH = [12, 13, 14][iT];      // head height
+  const tL = CX - TW / 2, tR = CX + TW / 2 - 1;
+  const shirtTop = FB - 13, pantsTop = FB - 7, shoeTop = FB - 1;
+  const headBot = shirtTop - 1, top = headBot - HH + 1, hL = CX - HW / 2, hR = CX + HW / 2 - 1;
+
+  // ---- legs / pants
+  rect(body, CX - LW, pantsTop, LW * 2, 6, 'p');
+  for (let y = pantsTop + 3; y < pantsTop + 6; y++) { body[y][CX - 1] = null; body[y][CX] = null; }
+  for (let y = pantsTop; y < pantsTop + 6; y++) { put(body, CX + LW - 1, y, 'q'); if (y >= pantsTop + 3) put(body, CX - 2, y, 'q'); }
+  rect(body, CX - LW, pantsTop, LW * 2, 1, 'q'); // waistband shadow
+  // shoes
+  rect(body, CX - LW - 1, shoeTop, LW, 2, 'f'); rect(body, CX + 1, shoeTop, LW, 2, 'f');
+  rect(body, CX - LW - 1, shoeTop + 1, LW, 1, 'F'); rect(body, CX + 1, shoeTop + 1, LW, 1, 'F');
+
+  // ---- torso
+  if (naked) {
+    rect(body, tL, shirtTop, TW, 7, 's');
+    rect(body, tR, shirtTop, 1, 7, 'S');
+    rect(body, CX - LW, pantsTop + 1, LW * 2, 1, 'q');                 // waistband sits lower
+    rect(body, tL + 1, shirtTop + 1, TW / 2 - 2, 1, 'S');              // pecs
+    rect(body, CX + 1, shirtTop + 1, TW / 2 - 2, 1, 'S');
+    put(body, tL + 2, shirtTop, 'K'); put(body, CX + 1, shirtTop, 'K');
+    for (let y = shirtTop + 2; y < shirtTop + 7; y++) put(body, CX - 1, y, 'S'); // midline
+    [shirtTop + 3, shirtTop + 5].forEach(y => rect(body, CX - 3, y, 6, 1, 'S')); // six-pack lines
+    [shirtTop + 2, shirtTop + 4, shirtTop + 6].forEach(y => { put(body, CX - 3, y, 'K'); put(body, CX, y, 'K'); });
+  } else {
+  rect(body, tL, shirtTop, TW, 6, sb);
+  rect(body, tR - 1, shirtTop, 2, 6, ss);
+  rect(body, tL, shirtTop + 5, TW, 1, ss);
+  if (shirt) rect(body, tL, shirtTop + 3, TW - 2, 1, 'r');
+  // neckline
+  rect(body, CX - 2, shirtTop, 4, 1, 'S'); rect(body, CX - 1, shirtTop + 1, 2, 1, 'S');
+  }
+
+  // ---- arms: sleeves hug torso, skin part leaves a 1px gap that becomes outline
+  const arm = (side) => {
+    const sx = side < 0 ? tL - AW - 1 : tR + 2;           // skin arm x
+    const slx = side < 0 ? tL - AW - 1 : tR + 1;          // sleeve x
+    rect(body, slx, shirtTop, AW + 1, 2, sb);
+    rect(body, slx, shirtTop + 1, AW + 1, 1, ss);
+    rect(body, sx, shirtTop + 2, AW, 4, 's');
+    rect(body, side < 0 ? sx : sx + AW - 1, shirtTop + 2, 1, 4, 'S');
+    rect(body, sx, shirtTop + 5, AW, 1, 'S'); // hand shading
+  };
+  const nArm = (side) => {
+    const sx = side < 0 ? tL - AW - 1 : tR + 2;
+    rect(body, sx, shirtTop, AW, 6, 's');
+    put(body, side < 0 ? tL - 1 : tR + 1, shirtTop, 's');              // shoulder joint
+    const bx = side < 0 ? sx - 1 : sx + AW;                             // bicep bulge
+    rect(body, bx, shirtTop + 1, 1, 2, 's'); put(body, bx, shirtTop + 1, 'K');
+    rect(body, side < 0 ? sx + AW - 1 : sx, shirtTop + 2, 1, 4, 'S');
+    rect(body, sx, shirtTop + 5, AW, 1, 'S');
+  };
+  const thick = (x0, y0, x1, y1, w, c) => { const n = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)) || 1; for (let i = 0; i <= n; i++) rect(body, Math.round(x0 + (x1 - x0) * i / n), Math.round(y0 + (y1 - y0) * i / n), w, 1, c); };
+  const sleeve = side => { if (naked) { put(body, side < 0 ? tL - 1 : tR + 1, shirtTop, 's'); return; }
+    const slx = side < 0 ? tL - AW - 1 : tR + 1; rect(body, slx, shirtTop, AW + 1, 2, sb); rect(body, slx, shirtTop + 1, AW + 1, 1, ss); };
+  const raised = (side, kind) => {
+    const sx = side < 0 ? tL - AW - 1 : tR + 2;
+    sleeve(side);
+    if (kind === 'up' || kind === 'wave1' || kind === 'wave2') {      // arm reaching up beside the head
+      const ex = (side < 0 ? hL - AW - 1 : hR + 2) + (kind === 'wave2' ? side : 0), ey2 = top + 2;
+      thick(sx, shirtTop - 1, ex, ey2, AW, 's');
+      rect(body, ex, ey2 - 1, AW, 2, 'S'); put(body, side < 0 ? ex + AW - 1 : ex, ey2 - 2, 's');
+    } else if (kind === 'flex') {                                      // double biceps
+      const ox = side < 0 ? sx - 3 : sx + 1, fx = side < 0 ? sx - 3 : sx + AW + 1;
+      rect(body, ox, shirtTop, AW + 3, 2, 's'); rect(body, ox + 1, shirtTop - 1, AW + 1, 1, 's'); put(body, ox + 2, shirtTop - 1, 'K');
+      rect(body, fx, shirtTop - 5, AW, 5, 's'); rect(body, fx, shirtTop - 6, AW, 2, 'S');
+      rect(body, ox, shirtTop + 1, AW + 3, 1, 'S');
+    } else if (kind === 'thumb') {                                     // thumbs up in front of the chest
+      const fx = sx + 1;                                               // forearm up beside the shoulder
+      rect(body, sx, shirtTop + 2, AW + 1, 2, 's'); rect(body, fx, shirtTop - 1, AW, 4, 's'); rect(body, fx + AW - 1, shirtTop - 1, 1, 4, 'S');
+      rect(body, fx - 1, shirtTop - 4, AW + 2, 3, 's'); rect(body, fx - 1, shirtTop - 2, AW + 2, 1, 'S');   // fist
+      rect(body, fx - 1, shirtTop - 7, 2, 3, 's'); put(body, fx, shirtTop - 7, 'K');                         // thumb
+    }
+  };
+  const armPose = { wave1: [null, 'wave1'], wave2: [null, 'wave2'], stretch: ['up', 'up'], flex: ['flex', 'flex'], thumb: [null, 'thumb'], shuffleL: ['up', null], shuffleR: [null, 'up'] }[pose] || [null, null];
+  [-1, 1].forEach((side, i) => { const k = armPose[i]; if (k) raised(side, k); else (naked ? nArm : arm)(side); });
+
+  // ---- head
+  for (let r = 0; r < HH; r++) {
+    const ind = r === 0 ? 3 : r === 1 ? 1 : r === HH - 1 ? 3 : r === HH - 2 ? 1 : 0;
+    rect(body, hL + ind, top + r, HW - ind * 2, 1, 's');
+    put(body, hR - ind, top + r, 'S');
+  }
+  rect(body, hL + 3, headBot, HW - 6, 1, 'S');
+  // ears
+  const hairRows = Math.round(HH * 0.42);
+  const ey = top + hairRows + 1;
+  [hL - 1, hR + 1].forEach(x => { put(body, x, ey, 's'); put(body, x, ey + 1, 'S'); });
+
+  // ---- hair: short faded sides, longer top swept up and to the right
+  for (let r = 0; r < hairRows; r++) {
+    const ind = r === 0 ? 3 : r === 1 ? 1 : 0;
+    rect(body, hL + ind, top + r, HW - ind * 2, 1, 'h');
+  }
+  // jagged hairline: a few strands dip onto the forehead, more on the left
+  const dips = [0, 1, 2, 4, 5, 8];
+  dips.forEach(d => { if (hL + d < hR - 2) put(body, hL + d, top + hairRows, d < 3 ? 'H' : 'h'); });
+  put(body, hL, top + hairRows + 1, 'H');
+  put(body, hR, top + hairRows, 'H'); put(body, hR, top + hairRows + 1, 'H');
+  // quiff: volume above the head sweeping right
+  const qw = Math.round(HW * 0.75), qx = CX - Math.round(HW * 0.4);
+  rect(body, qx, top - 1, qw, 1, 'h');
+  rect(body, qx + 2, top - 2, qw - 3, 1, 'h');
+  rect(body, qx + 4, top - 3, Math.max(2, qw - 7), 1, 'h');
+  put(body, qx + qw - 2, top - 3, 'h'); put(body, qx + qw - 1, top - 2, 'h');
+  // strands: diagonal dark lines leaning right (swept look)
+  for (let k = 0; k < 6; k++) {
+    const sx = hL + 2 + k * 3;
+    for (let j = 0; j < 3; j++) {
+      const x = sx + j, y = top + hairRows - 1 - j;
+      if (body[y] && body[y][x] === 'h' && x < hR - 1) body[y][x] = 'H';
+    }
+  }
+  // light along the top-left curve
+  const hl = [[qx + 1, top - 1], [qx + 2, top - 1], [qx + 3, top - 2], [qx + 4, top - 2], [qx + 5, top - 3], [qx + 6, top - 3], [hL + 2, top + 1], [hL + 1, top + 2], [hL + 3, top], [CX - 1, top], [CX, top - 1], [CX + 2, top]];
+  hl.forEach(([x, y]) => { if (body[y] && body[y][x] === 'h') body[y][x] = 'L'; });
+  // shadow down the right side
+  for (let r = -1; r < hairRows; r++) {
+    const y = top + r;
+    for (let x = W - 1; x >= 0; x--) if (body[y][x] === 'h' || body[y][x] === 'L') { body[y][x] = 'H'; break; }
+  }
+  // faded sides: darker short hair just above the ears
+  [hL, hR].forEach(x => { put(body, x, ey - 1, 'H'); });
+
+  // ---- face
+  const ex1 = CX - Math.round(HW * 0.3) - 1, ex2 = CX + Math.round(HW * 0.3) - 1;
+  [ex1, ex2].forEach(x => { put(body, x, ey, 'e'); put(body, x + 1, ey, 'g'); put(body, x, ey + 1, 'e'); put(body, x + 1, ey + 1, 'e'); });
+  put(body, ex1 - 1, ey + 2, 'b'); put(body, ex1, ey + 2, 'b');
+  put(body, ex2 + 1, ey + 2, 'b'); put(body, ex2 + 2, ey + 2, 'b');
+  const my = ey + 3;
+  put(body, CX - 2, my, 'm'); put(body, CX - 1, my, 't'); put(body, CX, my, 't'); put(body, CX + 1, my, 'm');
+  put(body, CX - 1, my + 1, 'm'); put(body, CX, my + 1, 'm');
+  put(body, hL + 2, ey - 1, 'K'); put(body, hL + 3, ey - 1, 'K'); // cheek light
+  const shut = x => { put(body, x, ey, 's'); put(body, x + 1, ey, 's'); put(body, x, ey + 1, 'e'); put(body, x + 1, ey + 1, 'e'); };
+  if (pose === 'blink' || pose === 'breath') { shut(ex1); shut(ex2); }
+  if (pose === 'wink') shut(ex2);
+  if (pose === 'breath') { [CX - 2, CX - 1, CX, CX + 1].forEach(x => put(body, x, my, 's')); put(body, CX - 1, my + 1, 's'); put(body, CX, my + 1, 's'); put(body, CX - 1, my, 'm'); put(body, CX, my, 'm'); }
+  if (pose === 'flex' || pose === 'jump') { put(body, CX - 2, my + 1, 'm'); put(body, CX + 1, my + 1, 'm'); }
+
+  // ---- wizard hat (gear)
+  if (head === 'hat') {
+    for (let y = top - 3; y < top + 1; y++) for (let x = hL - 2; x <= hR + 2; x++) if (body[y] && body[y][x] && 'hHL'.includes(body[y][x])) body[y][x] = null;
+    const brimY = top + 1;
+    rect(body, hL - 2, brimY, HW + 4, 1, 'v'); rect(body, hR, brimY, 3, 1, 'V');
+    let w = HW - 2, x = hL + 1;
+    const cone = Math.min(10, top - 1);
+    for (let i = 0; i < cone; i++) {
+      const y = brimY - 1 - i;
+      rect(body, x, y, w, 1, 'v'); put(body, x + w - 1, y, 'V');
+      if (i === 0) { rect(body, x, y, w, 1, 'y'); put(body, x + 1, y, 'Y'); }
+      if (i % 2 === 1) { x += 1; w -= 2; } else if (i > cone - 4) { x += 1; } // lean right near the tip
+      if (w < 2) w = 2;
+    }
+    put(body, hL + Math.round(HW * 0.45), brimY - 4, 'Y');
+  }
+  if (head === 'sweat') {
+    const y = top + hairRows - 1;
+    rect(body, hL, y, HW, 2, 'R'); rect(body, hL, y + 1, HW, 1, 'Q');
+    put(body, hL + 2, y, 'r'); put(body, hL + 3, y, 'r');
+    put(body, hR + 1, y, 'R'); put(body, hR + 2, y + 1, 'R'); put(body, hR + 2, y + 2, 'Q');
+  }
+  if (head === 'read' || head === 'sun') {
+    const c = head === 'read' ? 'G' : 'E';
+    [ex1, ex2].forEach(x => {
+      if (head === 'sun') { rect(body, x - 1, ey - 1, 4, 3, 'E'); put(body, x - 1, ey - 1, 'D'); }
+      else { for (let i = 0; i < 4; i++) { put(body, x - 1 + i, ey - 1, 'G'); put(body, x - 1 + i, ey + 2, 'G'); }
+             [ey, ey + 1].forEach(y => { put(body, x - 1, y, 'G'); put(body, x + 2, y, 'G'); }); }
+    });
+    for (let x = ex1 + 3; x < ex2 - 1; x++) put(body, x, ey, c);
+    put(body, ex1 - 2, ey, c); put(body, ex2 + 3, ey, c);
+  }
+  if (head === 'flower') {
+    const y = top + 1;
+    rect(body, hL + 1, y, HW - 2, 1, 'Z');
+    for (let x = hL + 1, i = 0; x < hR - 1; x += 3, i++) { const c = i % 2 ? 'n' : 'P'; put(body, x, y - 1, c); put(body, x + 1, y - 1, c); put(body, x, y, c); put(body, x + 1, y, 'y'); }
+  }
+  if (head === 'crown') {
+    for (let y = top - 3; y < top; y++) for (let x = hL - 2; x <= hR + 2; x++) if (body[y] && body[y][x] && 'hHL'.includes(body[y][x])) body[y][x] = null;
+    rect(body, hL + 1, top - 1, HW - 2, 2, 'y'); rect(body, hL + 1, top, HW - 2, 1, 'u');
+    [hL + 1, CX - 1, hR - 2].forEach(px => { rect(body, px, top - 3, 2, 2, 'y'); put(body, px, top - 3, 'Y'); });
+    put(body, CX - 1, top - 1, 'R'); put(body, CX, top - 1, 'R'); put(body, hL + 2, top - 1, 'Y');
+  }
+
+  if (pose === 'wink') { put(body, ex2 + 3, ey - 2, 'Y'); put(body, ex2 + 4, ey - 3, 'y'); put(body, ex2 + 4, ey - 1, 'y'); put(body, ex2 + 5, ey - 2, 'y'); }
+  if (pose === 'flex') { put(body, hR + 2, top + 3, 'B'); put(body, hR + 2, top + 4, 'B'); put(body, hR + 3, top + 4, 'B'); }
+  if (pose === 'bulb') {
+    const bx = CX - 1, by = Math.max(0, top - 13);
+    rect(body, bx - 1, by + 1, 4, 3, 'Y'); rect(body, bx, by, 2, 1, 'Y'); put(body, bx, by + 1, 'n'); rect(body, bx, by + 4, 2, 2, 'N');
+    [[bx - 3, by + 2], [bx + 4, by + 2], [bx - 2, by - 1], [bx + 3, by - 1]].forEach(([x, y]) => put(body, x, y, 'y'));
+  }
+
+  outline(body);
+
+  // ---- speech bubble (charisma)
+  const bw = [9, 11, 13][cT], bh = [7, 8, 9][cT], bx = W - 1 - bw, by = 2;
+  rect(bub, bx + 1, by, bw - 2, bh, 'n'); rect(bub, bx, by + 1, bw, bh - 2, 'n');
+  rect(bub, bx + 1, by + bh - 1, bw - 2, 1, 'N');
+  put(bub, bx + 1, by + bh, 'n'); put(bub, bx, by + bh + 1, 'n'); // tail
+  const mx = bx + Math.floor(bw / 2), myy = by + Math.floor(bh / 2) - 1;
+  if (cT === 0) { [-2, 0, 2].forEach(d => put(bub, mx + d, myy + 1, 'H')); }
+  else {
+    const heart = ['.k.k.', 'kkkkk', '.kkk.', '..k..'];
+    heart.forEach((row, j) => [...row].forEach((c, i) => c === 'k' && put(bub, mx - 2 + i, myy - 1 + j, 'k')));
+    put(bub, mx - 1, myy, 'n');
+    if (cT === 2) { put(bub, bx + 2, by + 2, 'y'); put(bub, bx + bw - 3, by + bh - 3, 'y'); }
+  }
+  outline(bub);
+
+  // ---- background (sky, hills, grass) and ground shadow
+  const bg = grid();
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    let c = y < 14 ? '#8fcaf0' : y < 26 ? '#a9d8f5' : '#c3e5f7';
+    const hill = 27 + Math.round(2 * Math.sin(x / 5));
+    if (y >= hill) c = '#7fbf5e';
+    if (y >= 30 + Math.round(Math.sin(x / 3 + 1))) c = '#5c9e45';
+    if (y >= 33) c = '#6cb34f';
+    if (y >= 33 && (x * 7 + y * 3) % 11 === 0) c = '#579a3e';
+    if (y >= 34 && (x * 5 + y * 9) % 17 === 0) c = '#8cd068';
+    bg[y][x] = c;
+  }
+  [[4, 6], [5, 6], [6, 6], [5, 5], [6, 5], [7, 6], [36, 12], [37, 12], [38, 12], [37, 11]].forEach(([x, y]) => bg[y][x] = '#ffffff');
+  [[3, 37], [40, 35], [7, 42], [35, 41]].forEach(([x, y]) => { bg[y][x] = '#f4e46a'; });
+  [[13, 36], [31, 38]].forEach(([x, y]) => { bg[y][x] = '#f29bb0'; });
+  const sh = grid();
+  const sw = LW * 2 + 6;
+  rect(sh, CX - sw / 2, FB + 1, sw, 1, 'z'); rect(sh, CX - sw / 2 + 2, FB + 2, sw - 4, 1, 'z');
+
+  const col = G => G.map(r => r.map(k => k ? (k[0] === '#' ? k : k === 'z' ? 'rgba(30,60,20,.35)' : C[k]) : null));
+  const off = { jump: [0, -3], shuffleL: [-2, 0], shuffleR: [2, 0], breath: [0, -1] }[pose] || [0, 0];
+  return { W, H, dx: off[0], dy: off[1], layers: { bg: col(bg), shadow: col(sh), body: col(body), bubble: col(bub) } };
+}
+
+
+function runs(G){let o='';G.forEach((row,y)=>{let x=0;while(x<row.length){const c=row[x];if(!c){x++;continue}let e=x;while(e+1<row.length&&row[e+1]===c)e++;o+=`<rect x="${x}" y="${y}" width="${e-x+1}" height="1" fill="${c}"/>`;x=e+1}});return o}
+function sprite(pose){
+const g=gear(),d=charLayers(Lv('STR'),Lv('INT'),Lv('CHA'),g,pose);
+if(S.place&&S.place!=='meadow'&&S.owned[S.place])d.layers.bg=placeBg(S.place);
+return`<svg class="sprite" viewBox="0 0 ${d.W} ${d.H}" shape-rendering="crispEdges" role="img" aria-label="Your character">${runs(d.layers.bg)}${runs(d.layers.shadow)}<g transform="translate(${d.dx||0} ${d.dy||0})"><g class="${pose?'':'bob'}">${runs(d.layers.body)}</g></g>${runs(d.layers.bubble)}</svg>`}
+function home(){
+const stats=Object.keys(NAMES).map(k=>{const raw=lvl(S.pts[k]),T=tierOf(k),L=Lv(k),f=L-10*T,tr=atTrial(k),pr=trialProg(k);
+return`<div class="stat s-${k} tier${Math.min(T,4)}"><div class="row"><span>${NAMES[k].slice(0,3)}<b class="badge">${ROMAN[Math.min(T,9)]}</b></span><span>LV${L}</span></div>
+<div class="seg">${Array.from({length:10},(_,i)=>`<i class="${i<f?'on':''}"></i>`).join('')}</div>
+${tr?`<div class="trial"><span class="lock"></span>TRIAL ${Math.min(pr[0],pr[1])}/${pr[1]} ${pr[2]}</div>`:`<div class="prog"><b style="width:${Math.round(raw.cur/raw.need*100)}%"></b></div>`}</div>`}).join('');
+const w=wk(),tn=S.log.filter(e=>TRAIN.includes(e.id)&&wk(e.t)===w).length,q=tn>=4?3:tn>=3?2:tn>=1?1:0;
+const readToday=S.log.some(e=>e.id==2&&day(e.t)===day()),fin=t=>doneToday(t)||(t.id==2&&readToday);
+const row=t=>{const n=S.log.filter(e=>e.id==t.id&&wk(e.t)===w).length,dn=doneToday(t),f=fin(t),tr=TRAIN.includes(t.id);
+return`<div class="task${tr?' sub':''}" style="${f?'opacity:.55':''}"><div class="n">${esc(t.name)}<small${tr&&q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>+${t.pts} ${t.stat} · ${t.once?'one-time':t.daily?(dn?'daily · done today':'daily'):(t.id==2&&f?'goal done · extra counts':n+'x this week')}</small></div><button class="chk" ${tr?'style="background:'+['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]+'"':''} ${dn?'disabled':''} onclick="done(${t.id})" aria-label="Complete ${esc(t.name)}">✔</button></div>`};
+const open=S.tasks.filter(t=>!t.done),isTr=t=>TRAIN.includes(t.id);
+const top=open.filter(t=>(t.daily||t.id==2)&&!fin(t));const rk=t=>t.id==2?1:t.perm?0:2;top.sort((a,b)=>rk(a)-rk(b));
+const own=open.filter(t=>!t.perm&&!t.daily);
+const trs=open.filter(isTr);
+const bottom=open.filter(t=>(t.daily||t.id==2)&&fin(t));
+const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;render()" aria-expanded="${openTr}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">TRAINING<small${q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>${tn}x this week · tap to ${openTr?'close':'open'}</small></div><span class="chk trsum" style="background:${['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]}">${tn}</span></button>${openTr?trs.map(row).join(''):''}`:'';
+const tl=(top.map(row).join('')+own.map(row).join('')+trHead+bottom.map(row).join(''))||'<p class="empty">No open quests. Add one in TASKS.</p>';
+return`<h1>GRINDLIFE${COG}</h1><div class="box hero">${sprite()}<div class="stats">${stats}</div></div>
+<p>${Object.keys(S.fresh).length?'<button class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
+<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>`}
+function tasks(){
+const list=S.tasks.map(t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`).join('')||'<p class="empty">Nothing here yet.</p>';
+return`<h1>TASKS${COG}</h1><div class="box add">
+<input id="nm" placeholder="New task" maxlength="40" aria-label="Task name">
+<select id="st" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}">${NAMES[k]}</option>`).join('')}</select>
+<select id="rp" aria-label="Task type"><option value="0">REPEATABLE</option><option value="1">ONE-TIME</option><option value="2">DAILY</option></select>
+<input id="pt" type="number" min="1" max="20" value="3" aria-label="Points">
+<button onclick="addTask(nm.value,st.value,pt.value,+rp.value)">ADD TASK</button></div>
+<h2>YOUR TASKS</h2><div class="box">${list}</div>
+<h2>IDEAS</h2><div class="sug">${SUGG.map((s,i)=>`<button onclick="addTask('${s[0]}','${s[1]}',${s[2]},${s[3]||0})">${s[0]}</button>`).join('')}</div>`}
+function render(){
+document.getElementById('app').innerHTML=view==='home'?home():view==='tasks'?tasks():view==='help'?help():view==='wardrobe'?wardrobe():settings();
+document.body.classList.toggle('noanim',!S.settings.anim);
+['home','tasks'].forEach(v=>document.getElementById('t-'+v).setAttribute('aria-current',v===view))}
+ensure();render();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+</script>
+</body>
+</html>
