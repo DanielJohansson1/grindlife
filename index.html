@@ -44,6 +44,11 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .noanim .glow{animation:none}
 @media (prefers-reduced-motion:reduce){.glow{animation:none}}
 .tile{position:relative}
+.spr{position:relative;flex:none;line-height:0}
+.say{position:absolute;top:2px;left:58px;width:max-content;max-width:150px;background:#fffaf0;color:var(--fg);border:3px solid var(--fg);padding:6px 8px;font-size:8px;line-height:1.5;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:3;box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.say.show{opacity:1;transform:none}
+.say::after{content:'';position:absolute;left:10px;bottom:-9px;width:6px;height:6px;background:#fffaf0;border:3px solid var(--fg);border-top:0;border-left:0;transform:skewY(45deg)}
+@media (prefers-reduced-motion:reduce){.say{transition:none}}
 .tw{position:relative;display:flex}
 .tw .tile{flex:1}
 .ib{position:absolute;top:7px;left:7px;width:26px;height:26px;padding:0;font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:1px 1px 0 var(--fg);border-width:2px}
@@ -126,7 +131,7 @@ const KEY='grindlife-v1';
 const NAMES={STR:'STRENGTH',INT:'INTELLECT',CHA:'CHARISMA',DIS:'DISCIPLINE'};
 const SUGG=[['Stretch 15 min','STR',2],['Walk 30 min','STR',3],['Read 20 pages','INT',3],['Learn something new','INT',4],['Call a friend','CHA',3],['Plan the week','DIS',3,1]];
 const COG=`<button class="cog" onclick="go('settings')" aria-label="Settings"><svg viewBox="0 0 9 9" shape-rendering="crispEdges"><rect x="2" y="2" width="5" height="5"/><rect x="4" y="0" width="1" height="2"/><rect x="4" y="7" width="1" height="2"/><rect x="0" y="4" width="2" height="1"/><rect x="7" y="4" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/><rect x="3" y="3" width="3" height="3" style="fill:var(--bg)"/></svg></button>`;
-const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true}];
+const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true},{id:1005,name:'Food prep',stat:'DIS',pts:8,weekly:true}];
 const TRAIN=[1,1001,1002,1003];
 let view='home',rc=0,wtab='gear',openTr=false,S=load();
 function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
@@ -153,7 +158,7 @@ const o=S.trialOpen[k];if(!o||o.tier!==tierOf(k)){S.trialOpen[k]={tier:tierOf(k)
 const [a,b]=trialProg(k);if(a>=b){up.push(k);if(e){e.trOpen=e.trOpen||{};e.trOpen[k]=o}S.tier[k]=tierOf(k)+1;delete S.trialOpen[k];if(atTrial(k))S.trialOpen[k]={tier:tierOf(k),at:Date.now()}}});
 return up}
 function day(d){const x=new Date(d||Date.now());return x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate()}
-function doneToday(t){return !!t.daily&&S.log.some(e=>e.id==t.id&&day(e.t)===day())}
+function doneToday(t){return (!!t.daily&&S.log.some(e=>e.id==t.id&&day(e.t)===day()))||(!!t.weekly&&S.log.some(e=>e.id==t.id&&wk(e.t)===wk()))}
 const ITEMS=[
 {id:'hat',slot:'head',name:'Wizard hat',how:'Reached Intellect level 6 with Discipline level 3',cond:()=>Lv('DIS')>=3&&Lv('INT')>=6,ic:'<rect x="3" y="6" width="10" height="2" fill="#6a44ad"/><rect x="5" y="3" width="6" height="3" fill="#6a44ad"/><rect x="7" y="1" width="3" height="2" fill="#6a44ad"/><rect x="5" y="5" width="6" height="1" fill="#e8bf4f"/>'},
 {id:'shirt',slot:'torso',name:'Red shirt',how:'Reached Strength level 6 with Discipline level 3',cond:()=>Lv('DIS')>=3&&Lv('STR')>=6,ic:'<rect x="4" y="3" width="8" height="9" fill="#c23b2c"/><rect x="2" y="3" width="2" height="4" fill="#c23b2c"/><rect x="12" y="3" width="2" height="4" fill="#c23b2c"/><rect x="4" y="7" width="8" height="1" fill="#ec8a6c"/><rect x="7" y="3" width="2" height="1" fill="#d99b7e"/>'},
@@ -191,6 +196,18 @@ const step=()=>{if(i>=q.f.length){show('');playing=0;return}const [p,ms]=q.f[i++
 function quirkTap(id){const k='q_'+id,q=QUIRKS.find(x=>x.id===id);if(!S.owned[k])return;if(S.fresh[k]){delete S.fresh[k];S.qon[id]=1}else S.qon[id]=S.qon[id]?0:1;save();render();sfx('ok');if(S.qon[id]&&S.settings.anim)setTimeout(()=>playQuirk(q),150)}
 setInterval(()=>{if(!S||!S.settings.anim||document.hidden||playing)return;if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
 const on=QUIRKS.filter(q=>S.owned['q_'+q.id]&&S.qon[q.id]);if(on.length&&document.querySelector('svg.sprite'))playQuirk(on[Math.floor(Math.random()*on.length)])},10000);
+function sayLines(){const h=new Date().getHours(),w=wk(),L=[],P=[];
+['Spike harder!','Monsterblock!','Leg day?','One more chapter','Running is cheaper than therapy',"Let's grind",'Small steps, big gains','You showed up. That counts.'].forEach(x=>L.push(x));
+if(h>=5&&h<11)L.push('Good morning!','New day, new XP');
+if(h>=22||h<4)L.push('Late night grind?','Sleep is a stat too');
+const today=S.log.filter(e=>day(e.t)===day()).length;if(h>=17&&today)P.push('Nice work today');
+const tn=S.log.filter(e=>TRAIN.includes(e.id)&&wk(e.t)===w).length;if(tn>=2)P.push(tn+' trainings this week!');
+Object.keys(NAMES).forEach(k=>{if(atTrial(k)){const [a,b]=trialProg(k);P.push(k+' trial: '+Math.min(a,b)+'/'+b)}else{const r=lvl(S.pts[k]);if(r.cur/r.need>=.75)P.push(k+' almost level '+(Lv(k)+1)+'!')}});
+if(S.log.some(e=>e.id==1005&&wk(e.t)===w))P.push('Food prep done!');
+return Math.random()<(P.length?.5:0)?P[Math.floor(Math.random()*P.length)]:L[Math.floor(Math.random()*L.length)]}
+function speak(){const el=document.getElementById('say');if(!el||!S.settings.anim||document.hidden)return;
+el.textContent=sayLines();el.classList.add('show');setTimeout(()=>{const e=document.getElementById('say');if(e)e.classList.remove('show')},4000)}
+setTimeout(speak,6000);setInterval(speak,30000);
 function goPlace(id){if(!S.owned[id])return;delete S.fresh[id];S.place=id;save();render();sfx('ok');pop()}
 function placeBg(id) {
   const W = 44, H = 44, G = Array.from({ length: H }, () => Array(W).fill('#000'));
@@ -338,7 +355,7 @@ function reset(){if(!rc){rc=1;render();setTimeout(()=>{rc=0;if(view==='settings'
 try{localStorage.removeItem(KEY)}catch(e){}S=load();ensure();rc=0;view='home';render();toast('Fresh start')}
 function help(){return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</button></h1><div class="box">
 <p>QUESTS: Tap the check on a quest to finish it. Each quest gives points to one stat: Strength, Intellect, Charisma or Discipline.</p>
-<p>Repeatable quests can be done any time. Daily quests come back every day. One-time quests only give points once. Made a mistake? UNDO LAST takes back your latest check.</p>
+<p>Repeatable quests can be done any time. Daily quests come back every day. Weekly quests come back every Monday. One-time quests only give points once. Made a mistake? UNDO LAST takes back your latest check.</p>
 <p>LEVELS: Points fill up a level. Reaching level 1 takes ${lvl(0).need} points, and each level after that needs 3 more than the one before, so it gets harder as you go. Stats never go down.</p>
 <p>WEEKLY BONUS: Finish 4 quests for the same stat in one week (Monday to Sunday) to get +10 points in that stat and +15 Discipline.</p>
 <p>DISCIPLINE: Every quest you finish gives +1 Discipline. Any day you finish at least one quest gives +2 more. Missing a day never costs you anything.</p>
@@ -381,7 +398,7 @@ if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-10);S.pts.DIS=Math.max(0,S.pts.D
 if(e.tr)e.tr.forEach(k=>{S.tier[k]=Math.max(0,tierOf(k)-1);if(e.trOpen&&e.trOpen[k])S.trialOpen[k]=e.trOpen[k]});
 if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
 function addTask(name,stat,pts,once){name=(name||'').trim();if(!name)return toast('Give the task a name');
-S.tasks.push({id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2});save();render()}
+S.tasks.push({id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2,weekly:once==3});save();render()}
 function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
 function go(v){view=v;infoId=null;render()}
 // Grindlife character generator: returns pixel layers for given stat levels.
@@ -670,23 +687,23 @@ ${tr?`<div class="trial"><span class="lock"></span>TRIAL ${Math.min(pr[0],pr[1])
 const w=wk(),tn=S.log.filter(e=>TRAIN.includes(e.id)&&wk(e.t)===w).length,q=tn>=4?3:tn>=3?2:tn>=1?1:0;
 const readToday=S.log.some(e=>e.id==2&&day(e.t)===day()),fin=t=>doneToday(t)||(t.id==2&&readToday);
 const row=t=>{const n=S.log.filter(e=>e.id==t.id&&wk(e.t)===w).length,dn=doneToday(t),f=fin(t),tr=TRAIN.includes(t.id);
-return`<div class="task${tr?' sub':''}" style="${f?'opacity:.55':''}"><div class="n">${esc(t.name)}<small${tr&&q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>+${t.pts} ${t.stat} · ${t.once?'one-time':t.daily?(dn?'daily · done today':'daily'):(t.id==2&&f?'goal done · extra counts':n+'x this week')}</small></div><button class="chk" ${tr?'style="background:'+['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]+'"':''} ${dn?'disabled':''} onclick="done(${t.id})" aria-label="Complete ${esc(t.name)}">✔</button></div>`};
+return`<div class="task${tr?' sub':''}" style="${f?'opacity:.55':''}"><div class="n">${esc(t.name)}<small${tr&&q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>+${t.pts} ${t.stat} · ${t.once?'one-time':t.weekly?(dn?'weekly · done this week':'weekly'):t.daily?(dn?'daily · done today':'daily'):(t.id==2&&f?'goal done · extra counts':n+'x this week')}</small></div><button class="chk" ${tr?'style="background:'+['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]+'"':''} ${dn?'disabled':''} onclick="done(${t.id})" aria-label="Complete ${esc(t.name)}">✔</button></div>`};
 const open=S.tasks.filter(t=>!t.done),isTr=t=>TRAIN.includes(t.id);
-const top=open.filter(t=>(t.daily||t.id==2)&&!fin(t));const rk=t=>t.id==2?1:t.perm?0:2;top.sort((a,b)=>rk(a)-rk(b));
-const own=open.filter(t=>!t.perm&&!t.daily);
+const top=open.filter(t=>(t.daily||t.weekly||t.id==2)&&!fin(t));const rk=t=>t.id==2?2:t.perm?(t.weekly?1:0):3;top.sort((a,b)=>rk(a)-rk(b));
+const own=open.filter(t=>!t.perm&&!t.daily&&!t.weekly);
 const trs=open.filter(isTr);
-const bottom=open.filter(t=>(t.daily||t.id==2)&&fin(t));
+const bottom=open.filter(t=>(t.daily||t.weekly||t.id==2)&&fin(t));
 const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;render()" aria-expanded="${openTr}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">TRAINING<small${q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>${tn}x this week · tap to ${openTr?'close':'open'}</small></div><span class="chk trsum" style="background:${['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]}">${tn}</span></button>${openTr?trs.map(row).join(''):''}`:'';
 const tl=(top.map(row).join('')+own.map(row).join('')+trHead+bottom.map(row).join(''))||'<p class="empty">No open quests. Add one in TASKS.</p>';
-return`<h1>GRINDLIFE${COG}</h1><div class="box hero">${sprite()}<div class="stats">${stats}</div></div>
+return`<h1>GRINDLIFE${COG}</h1><div class="box hero"><div class="spr">${sprite()}<div id="say" class="say" aria-live="polite"></div></div><div class="stats">${stats}</div></div>
 <p>${Object.keys(S.fresh).length?'<button id="wbtn" class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button id="wbtn" onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
 <p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>`}
 function tasks(){
-const list=S.tasks.map(t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`).join('')||'<p class="empty">Nothing here yet.</p>';
+const list=S.tasks.map(t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`).join('')||'<p class="empty">Nothing here yet.</p>';
 return`<h1>TASKS${COG}</h1><div class="box add">
 <input id="nm" placeholder="New task" maxlength="40" aria-label="Task name">
 <select id="st" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}">${NAMES[k]}</option>`).join('')}</select>
-<select id="rp" aria-label="Task type"><option value="0">REPEATABLE</option><option value="1">ONE-TIME</option><option value="2">DAILY</option></select>
+<select id="rp" aria-label="Task type"><option value="0">REPEATABLE</option><option value="1">ONE-TIME</option><option value="2">DAILY</option><option value="3">WEEKLY</option></select>
 <input id="pt" type="number" min="1" max="20" value="3" aria-label="Points">
 <button onclick="addTask(nm.value,st.value,pt.value,+rp.value)">ADD TASK</button></div>
 <h2>YOUR TASKS</h2><div class="box">${list}</div>
