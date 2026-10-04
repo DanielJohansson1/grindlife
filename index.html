@@ -167,7 +167,8 @@ const ITEMS=[
 {id:'read',slot:'head',name:'Reading glasses',how:'Read 10 pages on 20 different days',cond:()=>new Set(S.log.filter(e=>e.id==2).map(e=>day(e.t))).size>=20,ic:'<rect x="1" y="5" width="6" height="5" fill="#d4a63a"/><rect x="2" y="6" width="4" height="3" fill="#cfe8f5"/><rect x="9" y="5" width="6" height="5" fill="#d4a63a"/><rect x="10" y="6" width="4" height="3" fill="#cfe8f5"/><rect x="7" y="6" width="2" height="1" fill="#d4a63a"/>'},
 {id:'sun',slot:'head',name:'Sunglasses',how:'Reached Charisma level 6',cond:()=>Lv('CHA')>=6,ic:'<rect x="1" y="5" width="6" height="5" fill="#1f1a27"/><rect x="9" y="5" width="6" height="5" fill="#1f1a27"/><rect x="7" y="6" width="2" height="1" fill="#1f1a27"/><rect x="2" y="6" width="2" height="1" fill="#6d6a8a"/><rect x="10" y="6" width="2" height="1" fill="#6d6a8a"/>'},
 {id:'flower',slot:'head',name:'Flower crown',how:'Complimented someone 10 times',cond:()=>S.log.filter(e=>e.id==1004).length>=10,ic:'<rect x="1" y="9" width="14" height="2" fill="#5c9e45"/><rect x="1" y="6" width="3" height="3" fill="#f08ca8"/><rect x="6" y="6" width="3" height="3" fill="#fffaf0"/><rect x="11" y="6" width="3" height="3" fill="#f08ca8"/><rect x="2" y="7" width="1" height="1" fill="#e8bf4f"/><rect x="7" y="7" width="1" height="1" fill="#e8bf4f"/><rect x="12" y="7" width="1" height="1" fill="#e8bf4f"/>'},
-{id:'crown',slot:'head',name:'Golden crown',how:'Got all four stats to level 5',cond:()=>['STR','INT','CHA','DIS'].every(k=>Lv(k)>=5),ic:'<rect x="2" y="8" width="12" height="4" fill="#e8bf4f"/><rect x="2" y="11" width="12" height="1" fill="#b8860b"/><rect x="2" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="3" width="2" height="5" fill="#e8bf4f"/><rect x="12" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="9" width="2" height="2" fill="#c23b2c"/>'}
+{id:'crown',slot:'head',name:'Golden crown',how:'Got all four stats to level 5',cond:()=>['STR','INT','CHA','DIS'].every(k=>Lv(k)>=5),ic:'<rect x="2" y="8" width="12" height="4" fill="#e8bf4f"/><rect x="2" y="11" width="12" height="1" fill="#b8860b"/><rect x="2" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="3" width="2" height="5" fill="#e8bf4f"/><rect x="12" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="9" width="2" height="2" fill="#c23b2c"/>'},
+{id:'spirit',slot:'pet',name:'Spirit',how:'Reached Discipline level 3',cond:()=>Lv('DIS')>=3,ic:'<rect x="2" y="5" width="2" height="6" fill="#b0742c"/><rect x="12" y="5" width="2" height="6" fill="#b0742c"/><rect x="4" y="3" width="8" height="10" fill="#e0a64e"/><rect x="5" y="2" width="6" height="1" fill="#e0a64e"/><rect x="5" y="7" width="1" height="1" fill="#2a1a12"/><rect x="10" y="7" width="1" height="1" fill="#2a1a12"/><rect x="6" y="9" width="4" height="3" fill="#f7dca0"/><rect x="7" y="9" width="2" height="1" fill="#2a1a12"/><rect x="7" y="12" width="2" height="2" fill="#e5607e"/><rect x="5" y="13" width="6" height="1" fill="#c23b2c"/>'}
 ];
 const SLOTS=10;
 const PLACES=[
@@ -198,6 +199,7 @@ setInterval(()=>{if(!S||!S.settings.anim||document.hidden||playing)return;if(win
 const on=QUIRKS.filter(q=>S.owned['q_'+q.id]&&S.qon[q.id]);if(on.length&&document.querySelector('svg.sprite'))playQuirk(on[Math.floor(Math.random()*on.length)])},10000);
 function sayLines(){const h=new Date().getHours(),w=wk(),L=[],P=[];
 ['Spike harder!','Monsterblock!','Leg day?','One more chapter','Running is cheaper than therapy',"Let's grind",'Small steps, big gains','You showed up. That counts.'].forEach(x=>L.push(x));
+if(gear().pet)L.push("Who's a good boy?",'Walk with Spirit?','Spirit wants a run','Spirit is proud of you');
 if(h>=5&&h<11)L.push('Good morning!','New day, new XP');
 if(h>=22||h<4)L.push('Late night grind?','Sleep is a stat too');
 const today=S.log.filter(e=>day(e.t)===day()).length;if(h>=17&&today)P.push('Nice work today');
@@ -315,7 +317,7 @@ function placeBg(id) {
 }
 
 
-function gear(){const o={head:null,torso:null};ITEMS.forEach(i=>{if(S.owned&&S.owned[i.id]&&S.equip&&S.equip[i.id])o[i.slot]=i.id});return o}
+function gear(){const o={head:null,torso:null,pet:0};ITEMS.forEach(i=>{if(S.owned&&S.owned[i.id]&&S.equip&&S.equip[i.id])o[i.slot]=i.id});if(o.pet)o.pet=Math.min(3,tierOf('DIS')+1);return o}
 function wear(id){const it=ITEMS.find(i=>i.id==id);if(!it||!S.owned[id])return;let on;if(S.fresh[id]){delete S.fresh[id];on=1}else on=S.equip[id]?0:1;if(on)ITEMS.forEach(i=>{if(i.slot===it.slot)S.equip[i.id]=0});S.equip[id]=on;save();render();sfx('ok');pop()}
 let infoId=null;
 const ib=(k,n)=>`<button class="ib" onclick="infoId='${k}';render()" aria-label="How you got ${n}">i</button>`;
@@ -325,14 +327,14 @@ const ts=S.owned[t==='q'?'q_'+id:id],date=ts>1?new Date(ts).toLocaleDateString('
 let pic;if(t==='g')pic=`<svg class="cpic" viewBox="0 0 16 16" shape-rendering="crispEdges">${it.ic}</svg>`;
 else if(t==='p')pic=`<svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges">${runs(id==='meadow'?charLayers(0,0,0,{}).layers.bg:placeBg(id))}</svg>`;
 else{const d=charLayers(Lv('STR'),Lv('INT'),Lv('CHA'),gear(),it.key);pic=`<svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges"><g transform="translate(${d.dx} ${d.dy})">${runs(d.layers.body)}</g></svg>`}
-const kind=t==='g'?'GEAR':t==='p'?'PLACE':'QUIRK';
+const kind=t==='g'?(it.slot==='pet'?'PET':'GEAR'):t==='p'?'PLACE':'QUIRK';
 return`<div class="ovl" onclick="if(event.target===this){infoId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="${it.name}">
 ${pic}<small>${kind}</small><h3>${it.name}</h3><p class="lbl">HOW YOU GOT IT</p><p>${it.how}</p>${date?`<p class="lbl">UNLOCKED</p><p>${date}</p>`:''}
 <button onclick="infoId=null;render()">CLOSE</button></div></div>`}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&infoId){infoId=null;render()}});
 function wardrobe(){
 const tiles=Array.from({length:SLOTS},(_,k)=>{const i=ITEMS[k];
-if(i&&S.owned[i.id]){const on=S.equip[i.id],f=S.fresh[i.id];return`<div class="tw"><button class="tile" onclick="wear('${i.id}')" aria-pressed="${!!on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg viewBox="0 0 16 16" shape-rendering="crispEdges">${i.ic}</svg><span>${i.name}</span><small>${i.slot==='head'?'HEAD':'SHIRT'} · ${f?'NEW!':on?'WORN':'TAP TO WEAR'}</small></button>${ib('g:'+i.id,i.name)}</div>`}
+if(i&&S.owned[i.id]){const on=S.equip[i.id],f=S.fresh[i.id];return`<div class="tw"><button class="tile" onclick="wear('${i.id}')" aria-pressed="${!!on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg viewBox="0 0 16 16" shape-rendering="crispEdges">${i.ic}</svg><span>${i.name}</span><small>${i.slot==='head'?'HEAD':i.slot==='pet'?'PET':'SHIRT'} · ${f?'NEW!':i.slot==='pet'?(on?'WITH YOU':'AT HOME'):(on?'WORN':'TAP TO WEAR')}</small></button>${ib('g:'+i.id,i.name)}</div>`}
 return`<div class="tile locked" aria-label="Locked item"><b>?</b></div>`}).join('');
 const pt=PLACES.map(p=>{if(!S.owned[p.id])return`<div class="tile locked" aria-label="Locked place"><b>?</b></div>`;
 const f=S.fresh[p.id],on=(S.place||'meadow')===p.id,bg=p.id==='meadow'?charLayers(0,0,0,{}).layers.bg:placeBg(p.id);
@@ -376,7 +378,7 @@ const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;l
 if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;S.pts[t.stat]+=10;S.pts.DIS+=15;m='Weekly bonus! Discipline up'}
 else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPEN!':NAMES[t.stat]+' LEVEL UP!';
 const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
-const nu=checkUnlocks();if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
+const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YOU!';else if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
 sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');if(m)toast(m);save();
 const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});flashDone(id,gains);pop()}
@@ -402,9 +404,55 @@ S.tasks.push({id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:on
 function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
 function go(v){view=v;infoId=null;render()}
 // Grindlife character generator: returns pixel layers for given stat levels.
+// Golden retriever pet: three growth stages, drawn facing the character (left).
+// A fur, a shade, l light cream, x dark (eye/nose), T tongue, c collar, j tag
+var PET_MAPS = {
+  1: [ // puppy
+    "..AAAAA..",
+    ".aAAAAAa.",
+    "aaxAAAxaa",
+    "aaAlllAaa",
+    ".aAlxlAa.",
+    "..AcjcA..",
+    "..AllAAa.",
+    "..AlAlA..",
+    "..ll.ll..",
+  ],
+  2: [ // young dog
+    "...AAAAA...",
+    "..AAAAAAA..",
+    ".aAAAAAAAa.",
+    "aaAxAAAxAaa",
+    "aaAAlllAAaa",
+    ".aAllxllAa.",
+    "...AlTlA...",
+    "...AcjcA...",
+    "..AAllAAAa.",
+    "..AlAAAlAa.",
+    "..ll...ll..",
+  ],
+  3: [ // grown golden retriever
+    "...AAAAAA...",
+    "..AAAAAAAA..",
+    ".aAAAAAAAAa.",
+    "aaAAAAAAAAaa",
+    "aaAxAAAAxAaa",
+    "aaAAAllAAAaa",
+    "aaAAlxxlAAaa",
+    ".a.AllTlA.a.",
+    "...AAcjcA...",
+    "..AAAllAAAa.",
+    "..AAAllAAAAa",
+    "..AlAAAAlAa.",
+    "..ll....ll..",
+  ],
+};
+var PET_COLORS = { A: '#e0a64e', a: '#b0742c', l: '#f7dca0', x: '#2a1a12', T: '#e5607e', c: '#c23b2c', j: '#e8bf4f' };
+
+
 function charLayers(str, int, cha, gear, pose) {
   pose = pose || '';
-  const W = 44, H = 44, FB = 40, CX = 22; // FB = feet bottom row, CX = centre (between CX-1 and CX)
+  const W = 44, H = 44, FB = 40, CX = (gear && gear.pet) ? 19 : 22; // FB = feet bottom row, CX = centre (between CX-1 and CX)
   const tier = l => l >= 6 ? 2 : l >= 3 ? 1 : 0;
   const sT = tier(str), iT = tier(int), cT = tier(cha);
   const C = {
@@ -632,6 +680,11 @@ function charLayers(str, int, cha, gear, pose) {
     [[bx - 3, by + 2], [bx + 4, by + 2], [bx - 2, by - 1], [bx + 3, by - 1]].forEach(([x, y]) => put(body, x, y, 'y'));
   }
 
+  const petStage = gear && gear.pet;
+  if (petStage && PET_MAPS[petStage]) {               // golden retriever sits to the right, behind the character
+    const m = PET_MAPS[petStage], pw = m[0].length, px = 43 - pw, py = FB - m.length + 1;
+    m.forEach((row, j) => [...row].forEach((ch, i) => { if (ch !== '.' && !body[py + j][px + i]) body[py + j][px + i] = '#p' + ch; }));
+  }
   outline(body);
 
   // ---- speech bubble (charisma)
@@ -668,7 +721,7 @@ function charLayers(str, int, cha, gear, pose) {
   const sw = LW * 2 + 6;
   rect(sh, CX - sw / 2, FB + 1, sw, 1, 'z'); rect(sh, CX - sw / 2 + 2, FB + 2, sw - 4, 1, 'z');
 
-  const col = G => G.map(r => r.map(k => k ? (k[0] === '#' ? k : k === 'z' ? 'rgba(30,60,20,.35)' : C[k]) : null));
+  const col = G => G.map(r => r.map(k => k ? (k.startsWith('#p') ? PET_COLORS[k[2]] : k[0] === '#' ? k : k === 'z' ? 'rgba(30,60,20,.35)' : C[k]) : null));
   const off = { jump: [0, -3], shuffleL: [-2, 0], shuffleR: [2, 0], breath: [0, -1] }[pose] || [0, 0];
   return { W, H, dx: off[0], dy: off[1], layers: { bg: col(bg), shadow: col(sh), body: col(body), bubble: col(bub) } };
 }
