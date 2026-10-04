@@ -44,6 +44,24 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .noanim .glow{animation:none}
 @media (prefers-reduced-motion:reduce){.glow{animation:none}}
 .tile{position:relative}
+.boss{position:relative;width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:8px;background:var(--panel);border:4px solid var(--fg);box-shadow:inset 0 0 0 3px #e4b86a,3px 3px 0 rgba(0,0,0,.35)}
+.boss .bspr{width:56px;height:56px;flex:none;background:var(--field);border:2px solid var(--fg)}
+.boss .bi{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
+.boss .bi b{font-weight:normal;font-size:9px}
+.boss small{font-size:7px;color:var(--mid);line-height:1.5}
+.hpbar{display:block;height:10px;border:2px solid var(--fg);background:#5a2a22}
+.hpbar i{display:block;height:100%;background:#e05a47;box-shadow:inset 0 2px 0 #ff8a7a;transition:width .4s}
+.hpbar.big{width:100%;height:12px}
+.hpn{font-size:9px;flex:none}
+.boss.beaten .bspr{filter:grayscale(1);opacity:.6}
+.boss.beaten .hpn{color:#2f7a1f}
+.boss.hurt .bspr{animation:shake .4s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.dmg{position:absolute;left:30px;top:6px;color:#c23b2c;font-size:11px;text-shadow:1px 1px 0 #fff6dc;animation:gain 1.4s ease-out forwards;pointer-events:none}
+.card .bbig{width:128px;height:128px}
+.card .gone{filter:grayscale(1);opacity:.6}
+.noanim .boss.hurt .bspr{animation:none}
+@media (prefers-reduced-motion:reduce){.boss.hurt .bspr{animation:none}.dmg{animation:none}}
 .spr{position:relative;flex:none;line-height:0}
 .say{position:absolute;top:2px;left:58px;width:max-content;max-width:150px;background:#fffaf0;color:var(--fg);border:3px solid var(--fg);padding:6px 8px;font-size:8px;line-height:1.5;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:3;box-shadow:2px 2px 0 rgba(0,0,0,.3)}
 .say.show{opacity:1;transform:none}
@@ -206,10 +224,35 @@ const today=S.log.filter(e=>day(e.t)===day()).length;if(h>=17&&today)P.push('Nic
 const tn=S.log.filter(e=>TRAIN.includes(e.id)&&wk(e.t)===w).length;if(tn>=2)P.push(tn+' trainings this week!');
 Object.keys(NAMES).forEach(k=>{if(atTrial(k)){const [a,b]=trialProg(k);P.push(k+' trial: '+Math.min(a,b)+'/'+b)}else{const r=lvl(S.pts[k]);if(r.cur/r.need>=.75)P.push(k+' almost level '+(Lv(k)+1)+'!')}});
 if(S.log.some(e=>e.id==1005&&wk(e.t)===w))P.push('Food prep done!');
+{const bs=boss();if(bs.won)P.push('Boss defeated!');else if(bs.dealt>0)P.push(bs.b.name+': '+bs.left+' HP left!')}
 return Math.random()<(P.length?.5:0)?P[Math.floor(Math.random()*P.length)]:L[Math.floor(Math.random()*L.length)]}
 function speak(){const el=document.getElementById('say');if(!el||!S.settings.anim||document.hidden)return;
 el.textContent=sayLines();el.classList.add('show');setTimeout(()=>{const e=document.getElementById('say');if(e)e.classList.remove('show')},4000)}
 setTimeout(speak,6000);setInterval(speak,30000);
+var BOSS_SPR={"restday":{"p":["#2a1a14","#5a4a8c","#5d8fd5","#284f8a","#3d6fb5","#6f5ea6","#bfb2ea","#cfc6b4","#ffffff","#f4f0e6","#9d8cd0","#8473b8","#3a1a2a","#e5607e","#ece6ff","#b3a6dc","#cdbfa6","#d7cdf2","#f3efe6","#e56b5a","#8c2a1f","#c94a3a"],"r":["..............aaaaaaaaaa........","....bbb.....aacccccccccdaa......",".....b.....acceeeeeeeeeecdaa....","....bbb..aaceeeeeeeeeeeeeedda...","........afceeeeeeeeeeeeeedada...",".bbbb..agfceeeeeeeeeeeeeda.aa...","...b...afceeeeeeeeeeeeeda..ada..","..b....afceeeeeeeeeeeeeda..aha..",".bbbb...addddddddddddddda.aijha.","........agggggggggggggfa..ahjha.","........agkkkkkkkkkkkkfa...aha..",".......afkkkkkkkkkkkkkkfa...a...","........agkaaakkkkkaaafa........","........afklllkkkkklllfa........",".........agkkkkkkkkkkfa....a....",".....a..agkkkkkmmmkkkkfa..afa...","....afaagkkkkkkmnmkkkkkfaagkfa..","...agkggkkkkkffffffkkkfffgkkkfa.","..agkkkkkkkffooooopfffiiqgkkkfa.","..agkkkkkkfoorrrrrropissqfkkkfa.","..agkkkkkkforrrrrrrpissssqfkfqa.","..agkkkkkforrrrrrrrpisssssqfiqa.","..agkkkkkforrrrrrrrpqssssssisqa.","..afkkkkkforrrrrrrrrpqssssssqa..","...afkfkkfprrrrrrrrrrpqqqqqqa...","....afafkkforrrrrrrrpgggfaaa....",".....a.afkfpprrrrrrppgkfa.......","........affffppppppffffa........",".......atttttugggftttttua.......",".......atvvvvufffftvvvvua.......",".......auuuuuuaaaauuuuuua.......","........aaaaaa....aaaaaa........"]},"social":{"p":["#2a1a14","#f0b3d6","#a8588a","#d98bb8","#faf8dc","#c9c48c","#ece8bd","#7cc4f0","#4fa3d8","#73bf69","#2f6b2c","#ffffff","#4a9447","#f0a0a8","#3d7a3a","#82c47a","#5fa35a","#a8703f","#5e3a1e","#8a5a32"],"r":["................................","..............aaaa..............","..........aa.abbbca.aa..........",".........abcabddddcabca.........","........abddbddddddbddca........",".......abddddccccccddddca.......",".......abddcceeeeefccddca.......","......abddceeggggggefbdhca......",".....abdcccffffgggggfcdhica.....","....acdcjjjjjjkfggllgfbdddca....",".....acjmmmmmmmkeglagfbddca.....",".....acjmmmmmkmkeggggfbddca.....","......ajmmkmkmmkeggfnncdca......",".....ackmmmkmmmkegfjjjkcdca.....",".....acckkkkkkkegaammmmkcca.....","......accopocffffkmmmmmmka......",".......accoqocpppokmmmmka.......","........aacpqpqqqqokkkka........","..........aoqqqqqqqpooa.........","...........apqqqqqqoaa..........","...........apqqqqqqoa...........","...........apqqqqqqoa...........","...........apqqqqqqoa...........","...........apqqqqqqoa...........","...........apqqqqqqoa...........","...........aooqqqqooa...........","...........arspooorsa...........","..........artsorsostsa..........",".........artsaarsaastsa.........","........artsa.arsa.astsa........",".......artsa..arsa..astsa.......",".......assa...assa...assa......."]},"doom":{"p":["#2a1a14","#52704a","#9cbc8a","#7a9a6a","#ff4b4b","#ffd0d0","#3d4f3a","#555a7e","#24273b","#e8e4d0","#3b3f5c","#a8d8e0","#3a3e4c","#141620","#7fd7ff","#d6f6ff"],"r":["................................","................................","................................","................................",".........................a......","...........aaaaa.......aaba.....","..a......aaccccbaa....acba......",".aba....accdddddcba.aacdba......","..abaa.acdddddddddbaccdba.......","...abbacdddddddddddcddba........","....abcdddddddddddddddba........",".....abdddefdddefdddbba.........","......acddggdddggddbaba.........","......acdddddddddddbaa..........","......abdddddddddddbhia.........",".......abddajajaddbhkkia........","........acddddddbbhkkkkiaa......","........aldlblblhlkkkkiccba.....","........acdbihhhkkkkkkicdba.....","........acddbhkkkkkkkicddba.....","........abddbiiiiiiiicdddba.....","........aicdbmmmmmmnicddbia.....","........aicdbmooooonicdbhia.....","........aibdbmoppooncddbhia.....",".........aiccmopoooncddbia......","..........abbmooooonbbbia.......","...........ainnnnnnnhhia........","...........aaiiiihiiiiaa........","..........acccbaaiaacccba.......",".........abddddbaaabddddba......","..........abbbba...abbbba.......","...........aaaa.....aaaa........"]},"takeaway":{"p":["#2a1a14","#94622f","#fde9b0","#c99a3a","#f3d27a","#bfb293","#fbf7ec","#e8e0cb","#ffffff","#cbbfa5","#f2c08e","#b0703f","#f4efe2","#e0a46e","#e05a47","#86251b","#c23b2c","#8a5a32","#462a14"],"r":["..........a...........a.........",".........aba.........aba........","..........aba.......aba.........","..........aba.......aba.........","...........aba.....aba..........","...........aba.....aba..........","..........aaabaaaaabaa..........",".........accdbdddddbcda.........","........aceddfbggfbddeda........",".......adddgghghhhggfddda.......","........affffffffffffffa........",".......aijddcddddddcddjja.......","....aaaajdjjdiiiiijdijdjaaaa....","...akklaijdaimmmmmmijaijakkla...","..aknnnlimimaammmmmaaimjknnnla..",".aknnnnljmmmaimmmmmiammjknnnnla.",".aknnnnnlimmmmmmmmmmmmjknnnnnla.",".aknnnnnlimmmaaaaaaammjknnnnnla.",".aknnnnnlimmmaimimiammjknnnnnla.",".aknnnnnljjjjjjjjjjjjjjknnnnnla.",".alnnnnnloooooooooooooplnnnnnla.","..aknnnlappppppppppppppalnnnla..","..aknnlaaiiiiiiiiiiiiiqaaknnla..",".aknnnnlaimmmmmmmmmmmmqaknnnnla.",".aknnnnlaimmmmmmmmmmmmpaknnnnla.",".alnnnnlaimmmmmmmmmmmmjalnnnnla.","..allllaajjjjjjjjjjjjjjaalllla..","...aaaa..aarrrsaaarrrsa..aaaa...","..........assssa.assssa.........",".........aooooopaooooopa........",".........appppppappppppa........","..........aaaaaa.aaaaaa........."]},"captain":{"p":["#2a1a14","#ffffff","#cbbfa5","#f4efe2","#e8bf4f","#c99a3a","#34507a","#132036","#0e0e12","#34343e","#3a3e4c","#141620","#f8d27c","#c4842a","#7fd7ff","#f0b54a","#22252f","#f08ca0","#fff0c8","#d6aa62","#e05a47","#86251b","#f8d89a","#c23b2c","#5aaee0","#246a9a","#3a8fc9"],"r":["................................","................................","............aaaaaaaa............","..........aabbbbbbbcaa..........",".........abbddddddddbca.........","........abdddddeedddddca........",".......acddddddfeddddddca.......","........acccccccccccccca........",".......agggggggggggggggha.......",".......ahhhhhhhhhhhhhhhha.......","........aijjjjjjjjjjjjia..aaaa..",".........aiiiiiiiiiiiia..akkkla.",".........aammmmmmmmmnaa..akoola.","........ammppppppppppmna.akoola.",".......amppnnnpppppnnnpnankoola.","...aaaamppppaapppppaapppmnkqqla.","..abmmmppppppppppppppppppnlllla.","..bmpppppprppnnnnaappprpppmmmna.",".annnpppppppnaaaastnpppppppppna.","auuuvmpppppnswwwwwwtnpppppppna..","vuxxvmppppnswwwwwwwwtnppppnnna..","vuxxvmpppnswwwwwwwwwwtmppnaaa...","vuxxvnnppnswwwwwwwwwwtnppna.....","avvvvaamntwwwwwwwwwwwwtmna......",".aaaa.ampnswwwwwwwwwwtmpna......","......anpntwwwwwwwwwwtmpna......",".......anpntwwwwwwwwtmpna.......","........annntwwwwwwtmnna........",".........aannttttttnnaa.........","........ayyyyyznnyyyyyza........","........azAAAAzaazAAAAza........",".........azzzza..azzzza........."]},"excuse":{"p":["#2a1a14","#ff8a7a","#a33427","#e05a47","#525b67","#c6cfd8","#69747f","#9aa5b1","#d2f4ff","#3a9fd0","#7fd7ff","#ffffff","#a3adb8","#7d8794","#e8e4d0","#c9bfa6","#6f7884","#3e4550","#f6f1e4","#5b6470","#9a9384","#7cd67c","#4f5560","#23272d","#3a3f48"],"r":["..............abca..............",".............abddca.............",".............acddca.............","..............acca..............","...............aea..............","........aaaaaaaaeaaaaaaa........",".......afffffffffffgggfga.......","......affhgggghhhhgiijgfga......","......afhgiiijfhhgikkkjgga......","......afhgilkjghgikklkkjga......","......afgjkkakjfgikkkkkjga......","......afhgikkjfhgjkkkakjgaa.....",".....aefhgjjjjfhhgjkkkjfgmea....","....amefhhffffhhhhgjjjfhgmnea...","....amefhhhhohohohofofhhgmnea...","...amnefhhhaaaaaaaaaaahhgmnea...","...amnefhhgggglllpgggghhgmnnea..","..amnnefhgqqqrlsspqqqrfhgennnea.","..amnnefhgqttrluupqttrfhgaeeeea.",".aeneeafhgqtdrlsspqvtrfhgaabbca.","awxewxafhgqttrluupqttrfhgabdddca","awxewxafhgrrrrlssprrrrfhgacdddca","axxaxxagfhfffgluupfffggfgaaccca.",".aa.aa.agggggglsspgggllpa..aaa..","........ammmealsspaeelspa.......","........amnnealssslllsspa.......","........aeeeealsusususpa........",".......awwwwwxpppppppppxa.......",".......awyyyyxaaaawwwwwxa.......",".......axxxxxxa..axxxxxxa.......","........aaaaaa....aaaaaa........","................................"]}};
+const own=id=>!CORE.some(c=>c.id==id);
+const BOSSES=[
+{id:'restday',name:'Restday Everyday',hp:4,rw:{STR:15},hurt:'trainings',long:'Every training session hits it for 1.',dmg:e=>TRAIN.includes(e.id)?1:0},
+{id:'social',name:'The Wallflower',hp:5,rw:{CHA:15},hurt:'compliments',long:'Every compliment hits it for 1.',dmg:e=>e.id==1004?1:0},
+{id:'doom',name:'The Doomscroller',hp:8,rw:{INT:15},hurt:'reading and Duolingo',long:'Reading 10 pages or doing Duolingo hits it for 1.',dmg:e=>(e.id==2||e.id==1000)?1:0},
+{id:'takeaway',name:'Takeaway Titan',hp:6,rw:{DIS:15},hurt:'food prep and your own tasks',long:'Food prep hits it for 3. Every task you made yourself hits it for 1.',dmg:e=>e.id==1005?3:own(e.id)?1:0},
+{id:'captain',name:'Captain Tomorrow',hp:20,rw:{STR:10,INT:10,CHA:10,DIS:10},hurt:'every task, double before noon',long:'Every task hits him for 1. Tasks done before noon hit for 2.',dmg:e=>new Date(e.t).getHours()<12?2:1},
+{id:'excuse',name:'The Excuse Machine',hp:10,rw:{DIS:15},hurt:'every task, double for your own',long:'Every task hits it for 1. Tasks you made yourself hit for 2.',dmg:e=>own(e.id)?2:1}];
+function weekNo(d){const x=new Date(d||Date.now());x.setHours(12,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return Math.round(x.getTime()/6048e5)}
+function boss(){const b=BOSSES[((weekNo()%BOSSES.length)+BOSSES.length)%BOSSES.length],w=wk();
+const dealt=S.log.filter(e=>wk(e.t)===w).reduce((a,e)=>a+b.dmg(e),0);return{b,w,dealt,left:Math.max(0,b.hp-dealt),won:!!(S.bossWon&&S.bossWon[w])}}
+function bossSvg(id,cls){const d=BOSS_SPR[id];return`<svg class="${cls}" viewBox="0 0 32 32" shape-rendering="crispEdges" aria-hidden="true">${runs(d.r.map(r=>[...r].map(ch=>ch==='.'?null:d.p['abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.indexOf(ch)])))}</svg>`}
+const rwText=rw=>Object.keys(rw).length===4?'+'+rw.STR+' to all stats':Object.keys(rw).map(k=>'+'+rw[k]+' '+NAMES[k][0]+NAMES[k].slice(1).toLowerCase()).join(', ');
+function bossStrip(){const {b,left,won}=boss(),dl=7-((new Date().getDay()+6)%7);
+return`<button class="boss${won?' beaten':''}" onclick="bossOpen=1;render()" aria-label="This week's boss: ${b.name}">${bossSvg(b.id,'bspr')}<span class="bi"><b>${b.name}</b><span class="hpbar"><i style="width:${Math.round(left/b.hp*100)}%"></i></span><small>${won?'DEFEATED · '+rwText(b.rw):'Hurt by '+b.hurt+' · '+(dl===1?'last day':dl+' days left')}</small></span><span class="hpn">${won?'✔':left+'/'+b.hp}</span></button>`}
+let bossOpen=0;
+function bossCard(){if(!bossOpen)return'';const {b,left,won}=boss(),n=Object.keys(S.bossWon||{}).length;
+return`<div class="ovl" onclick="if(event.target===this){bossOpen=0;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="${b.name}">
+${bossSvg(b.id,'cpic bbig'+(won?' gone':''))}<small>THIS WEEK'S BOSS</small><h3>${b.name}</h3>
+<span class="hpbar big"><i style="width:${Math.round(left/b.hp*100)}%"></i></span><p>${won?'Defeated!':left+' / '+b.hp+' HP'}</p>
+<p class="lbl">WHAT HURTS IT</p><p>${b.long}</p><p class="lbl">REWARD</p><p>${rwText(b.rw)}</p>
+<p class="lbl">BOSSES BEATEN</p><p>${n}</p><p class="lbl">${won?'A new boss arrives on Monday.':'Not beaten by Sunday night? It just leaves.'}</p>
+<button onclick="bossOpen=0;render()">CLOSE</button></div></div>`}
 function goPlace(id){if(!S.owned[id])return;delete S.fresh[id];S.place=id;save();render();sfx('ok');pop()}
 function placeBg(id) {
   const W = 44, H = 44, G = Array.from({ length: H }, () => Array(W).fill('#000'));
@@ -331,7 +374,7 @@ const kind=t==='g'?(it.slot==='pet'?'PET':'GEAR'):t==='p'?'PLACE':'QUIRK';
 return`<div class="ovl" onclick="if(event.target===this){infoId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="${it.name}">
 ${pic}<small>${kind}</small><h3>${it.name}</h3><p class="lbl">HOW YOU GOT IT</p><p>${it.how}</p>${date?`<p class="lbl">UNLOCKED</p><p>${date}</p>`:''}
 <button onclick="infoId=null;render()">CLOSE</button></div></div>`}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&infoId){infoId=null;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(infoId||bossOpen)){infoId=null;bossOpen=0;render()}});
 function wardrobe(){
 const tiles=Array.from({length:SLOTS},(_,k)=>{const i=ITEMS[k];
 if(i&&S.owned[i.id]){const on=S.equip[i.id],f=S.fresh[i.id];return`<div class="tw"><button class="tile" onclick="wear('${i.id}')" aria-pressed="${!!on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg viewBox="0 0 16 16" shape-rendering="crispEdges">${i.ic}</svg><span>${i.name}</span><small>${i.slot==='head'?'HEAD':i.slot==='pet'?'PET':'SHIRT'} · ${f?'NEW!':i.slot==='pet'?(on?'WITH YOU':'AT HOME'):(on?'WORN':'TAP TO WEAR')}</small></button>${ib('g:'+i.id,i.name)}</div>`}
@@ -359,6 +402,7 @@ function help(){return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</but
 <p>QUESTS: Tap the check on a quest to finish it. Each quest gives points to one stat: Strength, Intellect, Charisma or Discipline.</p>
 <p>Repeatable quests can be done any time. Daily quests come back every day. Weekly quests come back every Monday. One-time quests only give points once. Made a mistake? UNDO LAST takes back your latest check.</p>
 <p>LEVELS: Points fill up a level. Reaching level 1 takes ${lvl(0).need} points, and each level after that needs 3 more than the one before, so it gets harder as you go. Stats never go down.</p>
+<p>WEEKLY BOSS: A new boss shows up every Monday under your quests. Tasks that match it deal damage. Beat it before Sunday night for a reward. If you don't, it just leaves.</p>
 <p>WEEKLY BONUS: Finish 4 quests for the same stat in one week (Monday to Sunday) to get +10 points in that stat and +15 Discipline.</p>
 <p>DISCIPLINE: Every quest you finish gives +1 Discipline. Any day you finish at least one quest gives +2 more. Missing a day never costs you anything.</p>
 <p>TIERS AND TRIALS: Every 10 levels a stat reaches a trial, shown under its bar. Only what you do after the trial opens counts. Complete the challenge within 7 days to reach the next tier: I Novice, II Adept, III Expert, IV Master, V Legend. You can't fail: if 7 days pass, the oldest days just drop off the count. While a trial is open, your level pauses but your points keep adding up. Pass the trial and they all count at once, so you may jump several levels.</p>
@@ -380,16 +424,19 @@ else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPE
 const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
 const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YOU!';else if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
-sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');if(m)toast(m);save();
-const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});flashDone(id,gains);pop()}
+sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');const bs=boss(),hit=bs.won?0:bs.b.dmg(e);
+if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;Object.keys(bs.b.rw).forEach(k=>S.pts[k]+=bs.b.rw[k]);m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';sfx('tier')}
+if(m)toast(m);save();
+const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});flashDone(id,gains,hit);pop()}
 let pend=null;
-function flashDone(id,gains){const b=document.querySelector(`button.chk[onclick="done(${id})"]`),row=b&&b.closest('.task');
+function flashDone(id,gains,hit){const b=document.querySelector(`button.chk[onclick="done(${id})"]`),row=b&&b.closest('.task');
 if(!row){render();return}
 if(pend){clearTimeout(pend.t);pend=null}
 row.classList.add('won');b.disabled=true;
-const g=document.createElement('span');g.className='gain';g.textContent=Object.keys(gains).map(k=>'+'+gains[k]+' '+k).join('  ');row.appendChild(g);
+const g=document.createElement('span');g.className='gain';g.textContent=Object.keys(gains).map(k=>'+'+gains[k]+' '+k).join('  ')+(hit?'  HIT -'+hit:'');row.appendChild(g);
 const tmp=document.createElement('div');tmp.innerHTML=home();const nh=tmp.querySelector('.hero'),oh=document.querySelector('.hero');if(nh&&oh)oh.replaceWith(nh);
 const nw=tmp.querySelector('#wbtn'),ow=document.querySelector('#wbtn');if(nw&&ow)ow.replaceWith(nw);
+const nb=tmp.querySelector('.boss'),ob=document.querySelector('.boss');if(nb&&ob){ob.replaceWith(nb);if(hit){nb.classList.add('hurt');const d=document.createElement('span');d.className='dmg';d.textContent='-'+hit;nb.appendChild(d)}}
 const slow=S.settings.anim&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
 const ft=setTimeout(()=>row.classList.add('leaving'),slow?1300:700);
 pend={t:setTimeout(()=>{clearTimeout(ft);pend=null;render()},slow?1700:1000)}}
@@ -397,12 +444,13 @@ function undo(){const e=S.log.pop();if(!e)return;const t=S.tasks.find(t=>t.id==e
 S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.pts!=null?e.pts:(t?t.pts:0)));
 S.pts.DIS=Math.max(0,S.pts.DIS-(e.dis||0)-(e.show?2:0));
 if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-10);S.pts.DIS=Math.max(0,S.pts.DIS-15);delete S.bonus[e.bk]}
+if(e.bossWin){const b=BOSSES.find(x=>x.id===S.bossWon[e.bossWin]);if(b)Object.keys(b.rw).forEach(k=>S.pts[k]=Math.max(0,S.pts[k]-b.rw[k]));delete S.bossWon[e.bossWin]}
 if(e.tr)e.tr.forEach(k=>{S.tier[k]=Math.max(0,tierOf(k)-1);if(e.trOpen&&e.trOpen[k])S.trialOpen[k]=e.trOpen[k]});
 if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
 function addTask(name,stat,pts,once){name=(name||'').trim();if(!name)return toast('Give the task a name');
 S.tasks.push({id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2,weekly:once==3});save();render()}
 function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
-function go(v){view=v;infoId=null;render()}
+function go(v){view=v;infoId=null;bossOpen=0;render()}
 // Grindlife character generator: returns pixel layers for given stat levels.
 // Golden retriever pet: three growth stages, drawn facing the character (left).
 // A fur, a shade, l light cream, x dark (eye/nose), T tongue, c collar, j tag
@@ -750,7 +798,8 @@ const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;ren
 const tl=(top.map(row).join('')+own.map(row).join('')+trHead+bottom.map(row).join(''))||'<p class="empty">No open quests. Add one in TASKS.</p>';
 return`<h1>GRINDLIFE${COG}</h1><div class="box hero"><div class="spr">${sprite()}<div id="say" class="say" aria-live="polite"></div></div><div class="stats">${stats}</div></div>
 <p>${Object.keys(S.fresh).length?'<button id="wbtn" class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button id="wbtn" onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
-<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>`}
+<h2>WEEKLY BOSS</h2>${bossStrip()}
+<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>${bossCard()}`}
 function tasks(){
 const list=S.tasks.map(t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`).join('')||'<p class="empty">Nothing here yet.</p>';
 return`<h1>TASKS${COG}</h1><div class="box add">
