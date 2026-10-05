@@ -58,6 +58,11 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .boss.hurt .bspr{animation:shake .4s}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 .dmg{position:absolute;left:30px;top:6px;color:#c23b2c;font-size:11px;text-shadow:1px 1px 0 #fff6dc;animation:gain 1.4s ease-out forwards;pointer-events:none}
+.shelf{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;width:100%;padding:6px;background:#8a5a32;border:3px solid var(--fg);box-shadow:inset 0 -4px 0 #6b4423}
+.tro{display:flex;flex-direction:column;align-items:center;gap:2px}
+.tro .tsp{width:36px;height:36px}
+.tro small{font-size:7px;color:#fff1c4}
+.tro.none .tsp{filter:brightness(0) opacity(.35)}
 .card .bbig{width:128px;height:128px}
 .card .gone{filter:grayscale(1);opacity:.6}
 .noanim .boss.hurt .bspr{animation:none}
@@ -149,7 +154,7 @@ const KEY='grindlife-v1';
 const NAMES={STR:'STRENGTH',INT:'INTELLECT',CHA:'CHARISMA',DIS:'DISCIPLINE'};
 const SUGG=[['Stretch 15 min','STR',2],['Walk 30 min','STR',3],['Read 20 pages','INT',3],['Learn something new','INT',4],['Call a friend','CHA',3],['Plan the week','DIS',3,1]];
 const COG=`<button class="cog" onclick="go('settings')" aria-label="Settings"><svg viewBox="0 0 9 9" shape-rendering="crispEdges"><rect x="2" y="2" width="5" height="5"/><rect x="4" y="0" width="1" height="2"/><rect x="4" y="7" width="1" height="2"/><rect x="0" y="4" width="2" height="1"/><rect x="7" y="4" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/><rect x="3" y="3" width="3" height="3" style="fill:var(--bg)"/></svg></button>`;
-const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true},{id:1005,name:'Food prep',stat:'DIS',pts:8,weekly:true}];
+const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true},{id:1005,name:'Food prep',stat:'DIS',pts:5,weekly:true}];
 const TRAIN=[1,1001,1002,1003];
 let view='home',rc=0,wtab='gear',openTr=false,S=load();
 function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
@@ -186,15 +191,23 @@ const ITEMS=[
 {id:'sun',slot:'head',name:'Sunglasses',how:'Reached Charisma level 6',cond:()=>Lv('CHA')>=6,ic:'<rect x="1" y="5" width="6" height="5" fill="#1f1a27"/><rect x="9" y="5" width="6" height="5" fill="#1f1a27"/><rect x="7" y="6" width="2" height="1" fill="#1f1a27"/><rect x="2" y="6" width="2" height="1" fill="#6d6a8a"/><rect x="10" y="6" width="2" height="1" fill="#6d6a8a"/>'},
 {id:'flower',slot:'head',name:'Flower crown',how:'Complimented someone 10 times',cond:()=>S.log.filter(e=>e.id==1004).length>=10,ic:'<rect x="1" y="9" width="14" height="2" fill="#5c9e45"/><rect x="1" y="6" width="3" height="3" fill="#f08ca8"/><rect x="6" y="6" width="3" height="3" fill="#fffaf0"/><rect x="11" y="6" width="3" height="3" fill="#f08ca8"/><rect x="2" y="7" width="1" height="1" fill="#e8bf4f"/><rect x="7" y="7" width="1" height="1" fill="#e8bf4f"/><rect x="12" y="7" width="1" height="1" fill="#e8bf4f"/>'},
 {id:'crown',slot:'head',name:'Golden crown',how:'Got all four stats to level 5',cond:()=>['STR','INT','CHA','DIS'].every(k=>Lv(k)>=5),ic:'<rect x="2" y="8" width="12" height="4" fill="#e8bf4f"/><rect x="2" y="11" width="12" height="1" fill="#b8860b"/><rect x="2" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="3" width="2" height="5" fill="#e8bf4f"/><rect x="12" y="4" width="2" height="4" fill="#e8bf4f"/><rect x="7" y="9" width="2" height="2" fill="#c23b2c"/>'},
-{id:'spirit',slot:'pet',name:'Spirit',how:'Reached Discipline level 3',cond:()=>Lv('DIS')>=3,ic:'<rect x="2" y="5" width="2" height="6" fill="#b0742c"/><rect x="12" y="5" width="2" height="6" fill="#b0742c"/><rect x="4" y="3" width="8" height="10" fill="#e0a64e"/><rect x="5" y="2" width="6" height="1" fill="#e0a64e"/><rect x="5" y="7" width="1" height="1" fill="#2a1a12"/><rect x="10" y="7" width="1" height="1" fill="#2a1a12"/><rect x="6" y="9" width="4" height="3" fill="#f7dca0"/><rect x="7" y="9" width="2" height="1" fill="#2a1a12"/><rect x="7" y="12" width="2" height="2" fill="#e5607e"/><rect x="5" y="13" width="6" height="1" fill="#c23b2c"/>'}
+{id:'spirit',slot:'pet',name:'Spirit',how:'Reached Discipline level 3',cond:()=>Lv('DIS')>=3,ic:'<rect x="2" y="5" width="2" height="6" fill="#b0742c"/><rect x="12" y="5" width="2" height="6" fill="#b0742c"/><rect x="4" y="3" width="8" height="10" fill="#e0a64e"/><rect x="5" y="2" width="6" height="1" fill="#e0a64e"/><rect x="5" y="7" width="1" height="1" fill="#2a1a12"/><rect x="10" y="7" width="1" height="1" fill="#2a1a12"/><rect x="6" y="9" width="4" height="3" fill="#f7dca0"/><rect x="7" y="9" width="2" height="1" fill="#2a1a12"/><rect x="7" y="12" width="2" height="2" fill="#e5607e"/><rect x="5" y="13" width="6" height="1" fill="#c23b2c"/>'},
+{id:'nightcap',slot:'head',name:'Nightcap',how:'Dropped by Restday Everyday',cond:()=>beat('restday'),ic:'<rect x="2" y="10" width="11" height="3" fill="#fffaf0"/><rect x="3" y="7" width="9" height="3" fill="#3d6fb5"/><rect x="5" y="5" width="7" height="2" fill="#3d6fb5"/><rect x="9" y="3" width="4" height="2" fill="#3d6fb5"/><rect x="12" y="4" width="2" height="2" fill="#284f8a"/><rect x="13" y="6" width="2" height="2" fill="#fffaf0"/>'},
+{id:'bloom',slot:'head',name:'Wallflower bloom',how:'Dropped by The Wallflower',cond:()=>beat('social'),ic:'<rect x="5" y="3" width="6" height="6" fill="#f08ca8"/><rect x="7" y="1" width="2" height="10" fill="#f08ca8"/><rect x="3" y="5" width="10" height="2" fill="#f08ca8"/><rect x="7" y="5" width="2" height="2" fill="#e8bf4f"/><rect x="4" y="11" width="3" height="2" fill="#5c9e45"/><rect x="2" y="13" width="3" height="2" fill="#5c9e45"/>'},
+{id:'hoodie',slot:'torso',name:'Doom hoodie',how:'Dropped by The Doomscroller',cond:()=>beat('doom'),ic:'<rect x="4" y="3" width="8" height="10" fill="#3b3f5c"/><rect x="2" y="4" width="2" height="6" fill="#3b3f5c"/><rect x="12" y="4" width="2" height="6" fill="#3b3f5c"/><rect x="5" y="3" width="6" height="2" fill="#272a40"/><rect x="6" y="5" width="1" height="3" fill="#fffaf0"/><rect x="9" y="5" width="1" height="3" fill="#fffaf0"/><rect x="5" y="9" width="6" height="2" fill="#272a40"/>'},
+{id:'chef',slot:'head',name:'Chef hat',how:'Dropped by Takeaway Titan',cond:()=>beat('takeaway'),ic:'<rect x="2" y="3" width="12" height="5" fill="#fffaf0"/><rect x="3" y="2" width="10" height="1" fill="#fffaf0"/><rect x="4" y="8" width="8" height="5" fill="#fffaf0"/><rect x="4" y="11" width="8" height="2" fill="#e2d9c5"/><rect x="12" y="4" width="2" height="3" fill="#e2d9c5"/>'},
+{id:'captainhat',slot:'head',name:'Captain hat',how:'Dropped by Captain Tomorrow',cond:()=>beat('captain'),ic:'<rect x="2" y="4" width="12" height="4" fill="#fffaf0"/><rect x="3" y="3" width="10" height="1" fill="#fffaf0"/><rect x="1" y="8" width="14" height="2" fill="#23395b"/><rect x="3" y="10" width="10" height="2" fill="#1e1e24"/><rect x="7" y="5" width="2" height="2" fill="#e8bf4f"/>'},
+{id:'antenna',slot:'head',name:'Robot antenna',how:'Dropped by The Excuse Machine',cond:()=>beat('excuse'),ic:'<rect x="2" y="11" width="12" height="2" fill="#9aa5b1"/><rect x="7" y="4" width="2" height="7" fill="#9aa5b1"/><rect x="6" y="1" width="4" height="3" fill="#c23b2c"/><rect x="6" y="1" width="1" height="1" fill="#ec8a6c"/>'}
 ];
-const SLOTS=10;
+const SLOTS=16;
+function beat(id){return Object.values(S.bossWon||{}).includes(id)}
 const PLACES=[
 {id:'meadow',name:'Meadow',how:'Where your journey started',cond:()=>true},
 {id:'cafe',name:'Café',how:'Reached Charisma level 3',cond:()=>Lv('CHA')>=3},
 {id:'tower',name:'Astronomy Tower',how:'Reached Intellect level 8',cond:()=>Lv('INT')>=8},
 {id:'gym',name:'The Gym',how:'Hit the gym 20 times',cond:()=>S.log.filter(e=>e.id==1).length>=20},
-{id:'dojo',name:'Dojo',how:'Reached Discipline level 13',cond:()=>Lv('DIS')>=13}];
+{id:'dojo',name:'Dojo',how:'Reached Discipline level 13',cond:()=>Lv('DIS')>=13},
+{id:'arena',name:'Boss Arena',how:'Beat all six weekly bosses',cond:()=>['restday','social','doom','takeaway','captain','excuse'].every(beat)}];
 function checkUnlocks(){const n=[];ITEMS.forEach(i=>{if(!S.owned[i.id]&&i.cond()){S.owned[i.id]=Date.now();S.equip[i.id]=0;S.fresh[i.id]=1;n.push(i.id)}});
 PLACES.forEach(p=>{if(!S.owned[p.id]&&p.cond()){S.owned[p.id]=Date.now();if(p.id!=='meadow'){S.fresh[p.id]=1;n.push(p.id)}}});return n.concat(checkQuirks())}
 const QUIRKS=[
@@ -251,7 +264,7 @@ return`<div class="ovl" onclick="if(event.target===this){bossOpen=0;render()}"><
 ${bossSvg(b.id,'cpic bbig'+(won?' gone':''))}<small>THIS WEEK'S BOSS</small><h3>${b.name}</h3>
 <span class="hpbar big"><i style="width:${Math.round(left/b.hp*100)}%"></i></span><p>${won?'Defeated!':left+' / '+b.hp+' HP'}</p>
 <p class="lbl">WHAT HURTS IT</p><p>${b.long}</p><p class="lbl">REWARD</p><p>${rwText(b.rw)}</p>
-<p class="lbl">BOSSES BEATEN</p><p>${n}</p><p class="lbl">${won?'A new boss arrives on Monday.':'Not beaten by Sunday night? It just leaves.'}</p>
+<p class="lbl">TROPHY SHELF</p><div class="shelf">${BOSSES.map(x=>{const c=Object.values(S.bossWon||{}).filter(v=>v===x.id).length;return`<span class="tro${c?'':' none'}" title="${c?x.name:'Not beaten yet'}">${bossSvg(x.id,'tsp')}<small>${c?'×'+c:'?'}</small></span>`}).join('')}</div><p class="lbl">BOSSES BEATEN: ${n}</p>${won?'<p class="lbl">A new boss arrives on Monday.</p>':''}
 <button onclick="bossOpen=0;render()">CLOSE</button></div></div>`}
 function goPlace(id){if(!S.owned[id])return;delete S.fresh[id];S.place=id;save();render();sfx('ok');pop()}
 function placeBg(id) {
@@ -356,6 +369,23 @@ function placeBg(id) {
     line(30, 30, 33, 6, '#8a5a32'); line(31, 30, 34, 6, '#6b4423');
   }
 
+  if (id === 'arena') {
+    for (let y = 0; y < 18; y++) R(0, y, W, 1, y < 6 ? '#f2a65a' : y < 12 ? '#f7c27a' : '#fbd99a');   // dusk sky
+    R(30, 3, 4, 4, '#fff1c4'); R(31, 2, 2, 6, '#fff1c4'); R(29, 4, 6, 2, '#fff1c4');                   // low sun
+    R(0, 10, W, 20, '#9a8a78');                                                                         // colosseum wall
+    for (let y = 10; y < 30; y += 4) R(0, y, W, 1, '#7e705f');
+    for (let y = 10; y < 30; y += 4) for (let x = (y / 4) % 2 ? 0 : 4; x < W; x += 8) R(x, y, 1, 4, '#7e705f');
+    for (let x = 1; x < W; x += 9) { R(x, 13, 6, 7, '#4a3f35'); R(x + 1, 12, 4, 1, '#4a3f35'); R(x, 13, 1, 7, '#3a312a'); }    // arches
+    for (let x = 1; x < W; x += 9) { R(x, 22, 6, 5, '#4a3f35'); R(x + 1, 21, 4, 1, '#4a3f35'); }
+    R(0, 10, W, 1, '#b5a490'); R(0, 9, W, 1, '#6b5e50');
+    [[4, '#c23b2c'], [22, '#2f6fd0'], [39, '#3f9b3f']].forEach(([x, c]) => { R(x, 4, 1, 6, '#4e3020'); R(x + 1, 4, 3, 5, c); R(x + 1, 9, 1, 1, c); R(x + 3, 9, 1, 1, c); R(x + 2, 6, 1, 1, '#e8bf4f'); });  // banners
+    [[9, 17], [33, 17]].forEach(([x, y]) => { R(x, y, 2, 4, '#4e3020'); R(x, y - 2, 2, 2, '#ff9f3b'); R(x, y - 3, 1, 1, '#ffd36b'); R(x + 1, y - 1, 1, 1, '#ffd36b'); });  // torches
+    R(0, 30, W, 14, '#e2c48a');                                                                         // sand floor
+    for (let i = 0; i < 40; i++) { const x = (i * 17 + 3) % W, y = 31 + (i * 7) % 13; P(x, y, i % 3 ? '#cfae72' : '#f0d8a6'); }
+    R(0, 30, W, 1, '#b8955c');
+    R(2, 38, 3, 1, '#b8955c'); R(36, 41, 4, 1, '#b8955c');
+  }
+
   return G;
 }
 
@@ -403,8 +433,8 @@ function help(){return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</but
 <p>Repeatable quests can be done any time. Daily quests come back every day. Weekly quests come back every Monday. One-time quests only give points once. Made a mistake? UNDO LAST takes back your latest check.</p>
 <p>LEVELS: Points fill up a level. Reaching level 1 takes ${lvl(0).need} points, and each level after that needs 3 more than the one before, so it gets harder as you go. Stats never go down.</p>
 <p>WEEKLY BOSS: A new boss shows up every Monday under your quests. Tasks that match it deal damage. Beat it before Sunday night for a reward. If you don't, it just leaves.</p>
-<p>WEEKLY BONUS: Finish 4 quests for the same stat in one week (Monday to Sunday) to get +10 points in that stat and +15 Discipline.</p>
-<p>DISCIPLINE: Every quest you finish gives +1 Discipline. Any day you finish at least one quest gives +2 more. Missing a day never costs you anything.</p>
+<p>WEEKLY BONUS: Finish 4 quests for the same stat in one week (Monday to Sunday) to get +10 points in that stat and +5 Discipline.</p>
+<p>DISCIPLINE: Any day you finish at least one quest gives +2 Discipline. Missing a day never costs you anything.</p>
 <p>TIERS AND TRIALS: Every 10 levels a stat reaches a trial, shown under its bar. Only what you do after the trial opens counts. Complete the challenge within 7 days to reach the next tier: I Novice, II Adept, III Expert, IV Master, V Legend. You can't fail: if 7 days pass, the oldest days just drop off the count. While a trial is open, your level pauses but your points keep adding up. Pass the trial and they all count at once, so you may jump several levels.</p>
 <p>SECRETS: Keep growing your character and you will unlock new gear, places and quirks.</p>
 </div>`}
@@ -417,15 +447,15 @@ return`<h1>SETTINGS<button onclick="go('home')">BACK</button></h1><div class="bo
 <p style="color:var(--hd);font-size:8px">Reset erases all points, tasks and history on this device.</p>`}
 function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;const p0={...S.pts};
 const before=Lv(t.stat),wasTrial=atTrial(t.stat);
-const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:1};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);S.pts[t.stat]+=t.pts;S.pts.DIS+=1;if(first){S.pts.DIS+=2;e.show=1}if(t.once)t.done=true;
+const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:0};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);S.pts[t.stat]+=t.pts;if(first){S.pts.DIS+=2;e.show=1}if(t.once)t.done=true;
 const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;let m='';
-if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;S.pts[t.stat]+=10;S.pts.DIS+=15;m='Weekly bonus! Discipline up'}
+if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;S.pts[t.stat]+=10;S.pts.DIS+=5;e.bd=5;m='Weekly bonus! Discipline up'}
 else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPEN!':NAMES[t.stat]+' LEVEL UP!';
 const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
 const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YOU!';else if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
 sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');const bs=boss(),hit=bs.won?0:bs.b.dmg(e);
-if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;Object.keys(bs.b.rw).forEach(k=>S.pts[k]+=bs.b.rw[k]);m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';sfx('tier')}
+if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;Object.keys(bs.b.rw).forEach(k=>S.pts[k]+=bs.b.rw[k]);m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';const loot=checkUnlocks();if(loot.length)m+=' LOOT DROPPED!';sfx('tier')}
 if(m)toast(m);save();
 const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});flashDone(id,gains,hit);pop()}
 let pend=null;
@@ -443,7 +473,7 @@ pend={t:setTimeout(()=>{clearTimeout(ft);pend=null;render()},slow?1700:1000)}}
 function undo(){const e=S.log.pop();if(!e)return;const t=S.tasks.find(t=>t.id==e.id);
 S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.pts!=null?e.pts:(t?t.pts:0)));
 S.pts.DIS=Math.max(0,S.pts.DIS-(e.dis||0)-(e.show?2:0));
-if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-10);S.pts.DIS=Math.max(0,S.pts.DIS-15);delete S.bonus[e.bk]}
+if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-10);S.pts.DIS=Math.max(0,S.pts.DIS-(e.bd!=null?e.bd:15));delete S.bonus[e.bk]}
 if(e.bossWin){const b=BOSSES.find(x=>x.id===S.bossWon[e.bossWin]);if(b)Object.keys(b.rw).forEach(k=>S.pts[k]=Math.max(0,S.pts[k]-b.rw[k]));delete S.bossWon[e.bossWin]}
 if(e.tr)e.tr.forEach(k=>{S.tier[k]=Math.max(0,tierOf(k)-1);if(e.trOpen&&e.trOpen[k])S.trialOpen[k]=e.trOpen[k]});
 if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
@@ -514,7 +544,8 @@ function charLayers(str, int, cha, gear, pose) {
     f: '#7a4c2a', F: '#4e2f1a',                        // shoes
     v: '#6a44ad', V: '#47297a', y: '#e8bf4f', Y: '#fff1a8', // wizard hat
     n: '#fffaf0', N: '#e2d9c5', k: '#e5607e',          // bubble
-    G: '#d4a63a', E: '#1f1a27', D: '#6d6a8a', P: '#f08ca8', Z: '#5c9e45', u: '#b8860b', B: '#7cc4f0' // accessories
+    G: '#d4a63a', E: '#1f1a27', D: '#6d6a8a', P: '#f08ca8', Z: '#5c9e45', u: '#b8860b', B: '#7cc4f0', // accessories
+    X: '#3b3f5c', U: '#272a40', M: '#23395b', O: '#1e1e24', J: '#9aa5b1', I: '#3d6fb5', A: '#284f8a' // boss loot
   };
   const grid = () => Array.from({ length: H }, () => Array(W).fill(null));
   const body = grid(), bub = grid();
@@ -529,7 +560,8 @@ function charLayers(str, int, cha, gear, pose) {
   };
 
   const head = gear && gear.head, torso = gear && gear.torso, naked = torso === 'shirtless', shirt = torso === 'shirt';
-  const sb = shirt ? 'R' : 'w', ss = shirt ? 'Q' : 'W';
+  const hood = torso === 'hoodie';
+  const sb = shirt ? 'R' : hood ? 'X' : 'w', ss = shirt ? 'Q' : hood ? 'U' : 'W';
 
   // ---- dimensions by tier
   const TW = [10, 12, 14][sT];      // torso width
@@ -566,6 +598,7 @@ function charLayers(str, int, cha, gear, pose) {
   rect(body, tR - 1, shirtTop, 2, 6, ss);
   rect(body, tL, shirtTop + 5, TW, 1, ss);
   if (shirt) rect(body, tL, shirtTop + 3, TW - 2, 1, 'r');
+  if (hood) { rect(body, CX - 4, shirtTop, 8, 1, 'U'); put(body, CX - 2, shirtTop + 1, 'n'); put(body, CX - 2, shirtTop + 2, 'n'); put(body, CX + 1, shirtTop + 1, 'n'); put(body, CX + 1, shirtTop + 2, 'n'); rect(body, CX - 3, shirtTop + 4, 6, 1, 'U'); }
   // neckline
   rect(body, CX - 2, shirtTop, 4, 1, 'S'); rect(body, CX - 1, shirtTop + 1, 2, 1, 'S');
   }
@@ -712,6 +745,41 @@ function charLayers(str, int, cha, gear, pose) {
     const y = top + 1;
     rect(body, hL + 1, y, HW - 2, 1, 'Z');
     for (let x = hL + 1, i = 0; x < hR - 1; x += 3, i++) { const c = i % 2 ? 'n' : 'P'; put(body, x, y - 1, c); put(body, x + 1, y - 1, c); put(body, x, y, c); put(body, x + 1, y, 'y'); }
+  }
+  const clearTop = (to) => { for (let y = top - 4; y < to; y++) for (let x = hL - 2; x <= hR + 2; x++) if (body[y] && body[y][x] && 'hHL'.includes(body[y][x])) body[y][x] = null; };
+  if (head === 'nightcap') {                      // Restday Everyday loot
+    clearTop(top + 1);
+    rect(body, hL, top + 1, HW, 2, 'n'); rect(body, hL, top + 2, HW, 1, 'N');
+    const rows = [[hL + 1, hR - 1], [hL + 2, hR], [hL + 3, hR + 1], [hL + 5, hR + 2], [hR - 2, hR + 3]];
+    rows.forEach(([a, b], k) => { rect(body, a, top - k, b - a + 1, 1, 'I'); put(body, b, top - k, 'A'); });
+    put(body, hR + 4, top - 3, 'I'); put(body, hR + 4, top - 2, 'A'); put(body, hR + 5, top - 1, 'A');
+    rect(body, hR + 4, top, 3, 2, 'n'); put(body, hR + 6, top + 1, 'N');
+    put(body, hL + 3, top - 1, 'n'); put(body, hL + 6, top - 2, 'n');
+  }
+  if (head === 'bloom') {                         // The Wallflower loot: flower behind the ear
+    const fx = hR - 2, fy = top + 2;
+    rect(body, fx - 1, fy - 1, 3, 3, 'P'); [[0, -2], [-2, 0], [2, 0], [0, 2]].forEach(([dx, dy]) => put(body, fx + dx, fy + dy, 'P'));
+    put(body, fx, fy, 'y'); put(body, fx + 1, fy + 1, 'k');
+    put(body, fx - 2, fy + 2, 'Z'); put(body, fx - 3, fy + 3, 'Z'); put(body, fx - 2, fy + 3, 'Z');
+  }
+  if (head === 'chef') {                          // Takeaway Titan loot
+    clearTop(top + 1);
+    rect(body, hL + 1, top, HW - 2, 2, 'n'); rect(body, hL + 1, top + 1, HW - 2, 1, 'N');
+    rect(body, hL, top - 1, HW, 1, 'n'); rect(body, hL - 1, top - 4, HW + 2, 3, 'n'); rect(body, hL + 1, top - 5, HW - 2, 1, 'n');
+    for (let y = top - 5; y < top; y++) put(body, hR + (y > top - 5 && y < top - 1 ? 1 : 0), y, 'N');
+    put(body, CX - 3, top - 2, 'N'); put(body, CX + 2, top - 3, 'N');
+  }
+  if (head === 'captainhat') {                    // Captain Tomorrow loot
+    clearTop(top + 1);
+    rect(body, hL, top - 3, HW, 3, 'n'); rect(body, hL + 1, top - 4, HW - 2, 1, 'n'); rect(body, hR - 1, top - 4, 2, 4, 'N');
+    rect(body, hL - 1, top, HW + 2, 1, 'M');
+    rect(body, hL, top + 1, HW, 1, 'O'); rect(body, hL + 2, top + 2, HW - 4, 1, 'O');
+    put(body, CX - 1, top - 2, 'y'); put(body, CX, top - 2, 'y'); put(body, CX - 1, top - 1, 'u'); put(body, CX, top - 1, 'u');
+  }
+  if (head === 'antenna') {                       // The Excuse Machine loot
+    rect(body, hL, top + 1, HW, 1, 'J'); put(body, hL, top + 2, 'J'); put(body, hR, top + 2, 'J');
+    for (let y = top - 6; y <= top; y++) put(body, CX - 1, y, 'J');
+    rect(body, CX - 2, top - 8, 3, 2, 'R'); put(body, CX - 2, top - 8, 'r');
   }
   if (head === 'crown') {
     for (let y = top - 3; y < top; y++) for (let x = hL - 2; x <= hR + 2; x++) if (body[y] && body[y][x] && 'hHL'.includes(body[y][x])) body[y][x] = null;
