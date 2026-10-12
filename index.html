@@ -167,7 +167,7 @@ const SUGG=[['Stretch 15 min','STR',2],['Walk 30 min','STR',3],['Read 20 pages',
 const COG=`<button class="cog" onclick="go('settings')" aria-label="Settings"><svg viewBox="0 0 9 9" shape-rendering="crispEdges"><rect x="2" y="2" width="5" height="5"/><rect x="4" y="0" width="1" height="2"/><rect x="4" y="7" width="1" height="2"/><rect x="0" y="4" width="2" height="1"/><rect x="7" y="4" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/><rect x="3" y="3" width="3" height="3" style="fill:var(--bg)"/></svg></button>`;
 const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true},{id:1005,name:'Food prep',stat:'DIS',pts:5,weekly:true}];
 const TRAIN=[1,1001,1002,1003];
-let view='home',rc=0,wtab='gear',openTr=false,S=load();
+let view='home',rc=0,wtab='gear',openTr=false,openCore=false,S=load();
 function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
 return{pts:{STR:0,INT:0,CHA:0,DIS:0},tasks:[],log:[],bonus:{},next:4}}
@@ -896,7 +896,10 @@ return`<h1>GRINDLIFE${COG}</h1><div class="box hero"><div class="spr">${sprite()
 <h2>WEEKLY BOSS</h2>${bossStrip()}
 <p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>${bossCard()}${suggCard()}`}
 function tasks(){
-const list=S.tasks.map(t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`).join('')||'<p class="empty">Nothing here yet.</p>';
+const trow=t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="x" onclick="del(${t.id})" aria-label="Delete ${esc(t.name)}">X</button>`}</div>`;
+const mine=S.tasks.filter(t=>!t.perm&&!t.done),core=S.tasks.filter(t=>t.perm);
+const coreHead=`<button class="task trhead" onclick="openCore=!openCore;render()" aria-expanded="${openCore}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">CORE TASKS<small>always there · tap to ${openCore?'close':'open'}</small></div><span class="chk trsum" style="background:#d9c9a3">${core.length}</span></button>${openCore?core.map(t=>trow(t).replace('class="task"','class="task sub"')).join(''):''}`;
+const list=(mine.map(trow).join('')||'<p class="empty">No tasks of your own yet.</p>')+coreHead;
 return`<h1>TASKS${COG}</h1><div class="box add">
 <input id="nm" placeholder="New task" maxlength="40" aria-label="Task name">
 <select id="st" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}">${NAMES[k]}</option>`).join('')}</select>
