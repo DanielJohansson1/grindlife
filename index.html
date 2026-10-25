@@ -151,6 +151,22 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 .qb{flex:none;width:36px;height:36px;padding:3px;box-shadow:1px 1px 0 var(--fg);border-width:2px;display:flex;align-items:center;justify-content:center}.qb svg{width:26px;height:26px}
 .edt{flex:none;border:2px solid var(--fg);padding:3px 5px;font-size:8px;color:var(--fg)}
 .card .danger{color:#a8263f}
+.fxc{position:fixed;inset:0;pointer-events:none;z-index:60;image-rendering:pixelated}
+.fxflash{position:fixed;pointer-events:none;z-index:55;background:#fff;animation:fxf .45s steps(3) forwards}
+@keyframes fxf{from{opacity:.9}to{opacity:0}}
+.fxgold{position:fixed;inset:0;pointer-events:none;z-index:55;background:#fff1a8;animation:fxf .6s steps(4) forwards}
+.fxban{position:fixed;left:50%;top:120px;transform:translateX(-50%);z-index:58;pointer-events:none;background:var(--fg);color:var(--hd);border:4px solid #f0c030;box-shadow:0 0 0 3px var(--fg),4px 4px 0 rgba(0,0,0,.4);padding:10px 16px;text-align:center;font-size:16px;letter-spacing:1px;text-shadow:2px 2px 0 #000;white-space:nowrap;animation:fxin .3s steps(4)}
+.fxban small{display:block;font-size:10px;margin-top:6px;color:#fff1a8;text-shadow:none}
+.fxban.out{animation:fxout .4s steps(4) forwards}
+@keyframes fxin{from{transform:translate(-50%,-30px) scale(.6);opacity:0}to{transform:translateX(-50%);opacity:1}}
+@keyframes fxout{to{transform:translate(-50%,-20px);opacity:0}}
+.stat.pulse .seg i.on,.stat.pulse .prog b{animation:fxpulse .25s steps(2) 4}
+@keyframes fxpulse{50%{filter:brightness(1.6)}}
+.fxtier{z-index:50}.fxtier .card{border-color:#b8860b;box-shadow:inset 0 0 0 3px #f0c030,0 0 0 3px #f0c030,3px 3px 0 rgba(0,0,0,.35);animation:bdrop .4s steps(5)}
+.fxtier .tpk{font-size:14px;color:#b8860b}.fxtier h3{line-height:1.8}
+
+.bkconf{border:3px dashed var(--fg);padding:10px;display:grid;gap:6px;text-align:center}.bkconf p{margin:0}.bkconf .ghost{background:transparent;box-shadow:none}.bklast{font-size:9px;color:var(--mid);text-align:center}
+.bkst{display:grid;grid-template-columns:1fr 1fr;gap:6px}.bkst span{display:flex;align-items:center;gap:6px;border:2px solid var(--fg);background:var(--field);padding:5px 6px}.bkst b{width:9px;height:9px;flex:none;background:var(--c);border:2px solid var(--fg)}.bkst i{font-style:normal;margin-left:auto}
 .ovl.warn{background:rgba(25,0,0,.85);flex-direction:column;cursor:pointer}
 .warnbar{width:100%;max-width:330px;background:#b3261e;color:#fff1e8;border:4px solid #3b0d0a;box-shadow:0 0 0 3px #ff6b5a;padding:16px 10px;text-align:center;font-size:13px;line-height:2;animation:wflash .5s steps(2) infinite,shake .35s steps(4) 4}
 .warn .tap{color:#ffd6cf;margin-top:18px;font-size:10px;animation:wflash2 1.2s steps(2) infinite}
@@ -562,10 +578,28 @@ function settings(){const o=k=>S.settings[k]?'ON':'OFF';
 return`<h1>SETTINGS<button onclick="go('home')">BACK</button></h1><div class="box add">
 <button class="sqt${S.settings.sound?' on':''}" role="switch" aria-checked="${!!S.settings.sound}" onclick="tog('sound')"><span>SOUND</span><i class="sw"><b></b></i></button>
 <button class="sqt${S.settings.anim?' on':''}" role="switch" aria-checked="${!!S.settings.anim}" onclick="tog('anim')"><span>ANIMATIONS</span><i class="sw"><b></b></i></button>
-<button onclick="go('help')">HOW TO PLAY</button>
+<button onclick="go('help')">HOW TO PLAY</button></div>
+<h2>BACKUP</h2><div class="box add">
+<button onclick="saveBackup()">SAVE BACKUP</button>
+<button onclick="document.getElementById('bkfile').click()">LOAD BACKUP</button>
+<input type="file" id="bkfile" accept=".json,application/json" style="display:none" onchange="readBackup(this)">
+${loadPend?`<div class="bkconf"><p>Backup from ${new Date(loadPend.at).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'})}</p><div class="bkst">${Object.keys(NAMES).map(k=>`<span class="s-${k}"><b></b>${SHORT[k]}<i>LV${Math.min(lvl(loadPend.data.pts[k]||0).l,10*(((loadPend.data.tier||{})[k]||0)+1))}</i></span>`).join('')}</div>
+<button onclick="applyBackup()" style="background:#e8a090">TAP TO REPLACE YOUR PROGRESS</button><button class="ghost" onclick="loadPend=null;render()">CANCEL</button></div>`:''}
+<small class="bklast">${S.lastBackup?'Last backup: '+ago(S.lastBackup):'No backup saved yet'}</small></div>
+<h2>DANGER ZONE</h2><div class="box add">
 <button onclick="reset()" style="background:#e8a090">${rc?'TAP AGAIN TO ERASE ALL':'RESET ALL DATA'}</button></div>
 <p style="color:var(--hd);font-size:9px">Reset erases all points, tasks and history on this device.</p>`}
-function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;const p0={...S.pts};
+// ---- backup: a file saved to the phone's Downloads, loaded back with the file picker
+let loadPend=null;
+function ago(t){const d=Math.floor((new Date().setHours(0,0,0,0)-new Date(t).setHours(0,0,0,0))/864e5);return d<=0?'today':d===1?'yesterday':d+' days ago'}
+function saveBackup(){S.lastBackup=Date.now();save();const d=new Date(),name='grindlife-backup-'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.json';
+const blob=new Blob([JSON.stringify({app:'grindlife',v:1,at:Date.now(),data:S})],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);render();toast('Backup saved to Downloads')}
+function readBackup(inp){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;const r=new FileReader();
+r.onload=()=>{try{const o=JSON.parse(r.result),d=o&&o.data;if(!o||o.app!=='grindlife'||!d||!d.pts||!Array.isArray(d.tasks)||!Array.isArray(d.log))throw 0;loadPend={at:o.at||Date.now(),data:d};render()}catch(e){toast('That is not a Grindlife backup')}};
+r.onerror=()=>toast('Could not read that file');r.readAsText(f)}
+function applyBackup(){if(!loadPend)return;S=loadPend.data;loadPend=null;ensure();save();render();toast('Backup loaded!');sfx('lvl')}
+function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;const p0={...S.pts},lv0={};Object.keys(NAMES).forEach(k=>lv0[k]=Lv(k));
 const before=Lv(t.stat),wasTrial=atTrial(t.stat);
 const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:0};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);e.pts=gain(t.stat,t.pts);if(first){e.show=1;e.sh=gain('DIS',2)}if(t.once)t.done=true;
 const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;let m='';
@@ -576,8 +610,29 @@ const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YO
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
 sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');const bs=boss(),hit=bs.won?0:bs.b.dmg(e);
 if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;e.brw={};Object.keys(bs.b.rw).forEach(k=>e.brw[k]=gain(k,bs.b.rw[k]));m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';const loot=checkUnlocks();if(loot.length)m+=' LOOT DROPPED!';sfx('tier')}
-if(m)toast(m);save();
-const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});if(!gains[t.stat]&&atTrial(t.stat))gains[t.stat]='T';flashDone(id,gains,hit);pop()}
+const ups=Object.keys(NAMES).filter(k=>Lv(k)>lv0[k]&&!tu.includes(k)),quiet=fxOn()&&(tu.length?m.includes('→'):ups.length&&/^[A-Z]+ LEVEL UP!$/.test(m));
+if(m&&!quiet)toast(m);save();
+const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});if(!gains[t.stat]&&atTrial(t.stat))gains[t.stat]='T';flashDone(id,gains,hit);pop();celebrate(ups,tu)}
+// ---- celebrations: confetti + banner on level up, a big tap-to-close card when a trial is passed
+function fxOn(){return S.settings.anim&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)}
+const STATC={STR:['#c0392b','#e8735e'],INT:['#2f6fd0','#7fb3ff'],CHA:['#d9658f','#ffb3c9'],DIS:['#3f9b3f','#8fcf6a']},GOLD=['#f0c030','#fff1a8','#e8bf4f','#ffffff'];
+function confetti(colors,n,ox,oy,spread){const c=document.createElement('canvas');c.className='fxc';const W=c.width=innerWidth,H=c.height=innerHeight;document.body.appendChild(c);const g=c.getContext('2d');
+const P=Array.from({length:n},()=>({x:ox,y:oy,vx:(Math.random()-.5)*spread,vy:-Math.random()*spread*.9-2,s:3+Math.floor(Math.random()*3)*2,c:colors[Math.floor(Math.random()*colors.length)],r:Math.random()<.5}));
+let f=0;(function tick(){g.clearRect(0,0,W,H);P.forEach(p=>{p.vy+=.35;p.vx*=.98;p.x+=p.vx;p.y+=p.vy;g.fillStyle=p.c;const w=p.r&&f%8<4?p.s/2:p.s;g.fillRect(Math.round(p.x),Math.round(p.y),w,p.s)});
+if(++f<95)requestAnimationFrame(tick);else c.remove()})()}
+function celebrate(ups,tiers){if(!fxOn()||(!ups.length&&!tiers.length))return;const sp=document.querySelector('.spr'),r=sp?sp.getBoundingClientRect():{left:innerWidth/2,top:150,width:0,height:0},cx=r.left+r.width/2,cy=r.top+r.height/2;
+if(tiers.length){const fl=document.createElement('div');fl.className='fxgold';document.body.appendChild(fl);setTimeout(()=>fl.remove(),700);
+confetti(GOLD,140,innerWidth/2,innerHeight*.45,16);setTimeout(()=>confetti(GOLD,80,innerWidth/2,innerHeight*.35,12),450);tierCard(tiers);return}
+const fl=document.createElement('div');fl.className='fxflash';Object.assign(fl.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});document.body.appendChild(fl);setTimeout(()=>fl.remove(),500);
+confetti(ups.flatMap(k=>STATC[k]).concat('#fff1a8'),70,cx,cy,11);
+const bn=document.createElement('div');bn.className='fxban';bn.innerHTML='LEVEL UP!<small>'+ups.map(k=>SHORT[k]+' LV '+Lv(k)).join(' · ')+'</small>';document.body.appendChild(bn);
+const hb=document.querySelector('.hero');if(hb){const hr=hb.getBoundingClientRect();bn.style.top=Math.max(8,hr.top+hr.height/2-30)+'px'}setTimeout(()=>bn.classList.add('out'),1300);setTimeout(()=>bn.remove(),1700);
+ups.forEach(k=>{const el=document.querySelector('.stat.s-'+k);if(el){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse')}})}
+function tierCard(tiers){const k=tiers[0],d=charLayers(Lv('STR'),Lv('INT'),Lv('CHA'),gear(),''),o=document.createElement('div');o.className='ovl fxtier';
+o.innerHTML=`<div class="box card s-${k}" role="dialog" aria-modal="true" aria-label="Trial passed"><small class="tpk">TRIAL PASSED!</small><h3>${tiers.map(x=>NAMES[x]+' → TIER '+ROMAN[Math.min(tierOf(x),9)]).join('<br>')}</h3>
+<svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges">${runs(d.layers.bg)}${runs(d.layers.shadow)}<g transform="translate(${d.dx} ${d.dy})">${runs(d.layers.body)}</g>${runs(d.layers.bubble)}</svg>
+<p>Your ${tiers.length>1?'stats start':'stat starts'} growing again.</p><button>AWESOME!</button></div>`;
+const close=()=>o.remove();o.querySelector('button').onclick=close;o.onclick=e=>{if(e.target===o)close()};document.body.appendChild(o);o.querySelector('button').focus()}
 let pend=null;
 function flashDone(id,gains,hit){const b=document.querySelector(`button.chk[onclick="done(${id})"]`),row=b&&b.closest('.task');
 if(!row){render();return}
@@ -600,7 +655,7 @@ if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
 function addTask(name,stat,pts,once,side){name=(name||'').trim();if(!name)return toast('Give the task a name');if(once==4){side=true;once=1}
 const t={id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2,weekly:once==3};if(side)t.side=true;S.tasks.push(t);save();render()}
 function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
-function go(v){if(bossIntro){bossIntro=0;bossThemeStop()}view=v;infoId=null;bossOpen=0;editId=null;delArm=0;ideaDraft=null;trialK=null;render()}
+function go(v){if(bossIntro){bossIntro=0;bossThemeStop()}loadPend=null;view=v;infoId=null;bossOpen=0;editId=null;delArm=0;ideaDraft=null;trialK=null;render()}
 // Grindlife character generator: returns pixel layers for given stat levels.
 // Golden retriever pet: three growth stages, drawn facing the character (left).
 // A fur, a shade, l light cream, x dark (eye/nose), T tongue, c collar, j tag
