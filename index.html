@@ -52,7 +52,7 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .boss .bspr{width:56px;height:56px;flex:none;background:var(--field);border:2px solid var(--fg)}
 .boss .bi{flex:1;display:flex;flex-direction:column;gap:4px;min-width:0}
 .boss .bi b{font-weight:normal;font-size:9px}
-.boss small{font-size:7px;color:var(--mid);line-height:1.5}
+.boss small{font-size:8px;color:var(--mid);line-height:1.5}
 .hpbar{display:block;height:10px;border:2px solid var(--fg);background:#5a2a22}
 .hpbar i{display:block;height:100%;background:#e05a47;box-shadow:inset 0 2px 0 #ff8a7a;transition:width .4s}
 .hpbar.big{width:100%;height:12px}
@@ -65,14 +65,14 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .shelf{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;width:100%;padding:6px;background:#8a5a32;border:3px solid var(--fg);box-shadow:inset 0 -4px 0 #6b4423}
 .tro{display:flex;flex-direction:column;align-items:center;gap:2px}
 .tro .tsp{width:36px;height:36px}
-.tro small{font-size:7px;color:#fff1c4}
+.tro small{font-size:8px;color:#fff1c4}
 .tro.none .tsp{filter:brightness(0) opacity(.35)}
 .card .bbig{width:128px;height:128px}
 .card .gone{filter:grayscale(1);opacity:.6}
 .noanim .boss.hurt .bspr{animation:none}
 @media (prefers-reduced-motion:reduce){.boss.hurt .bspr{animation:none}.dmg{animation:none}}
 .spr{position:relative;flex:none;line-height:0}
-.say{position:absolute;top:2px;left:58px;width:max-content;max-width:150px;background:#fffaf0;color:var(--fg);border:3px solid var(--fg);padding:6px 8px;font-size:8px;line-height:1.5;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:3;box-shadow:2px 2px 0 rgba(0,0,0,.3)}
+.say{position:absolute;top:2px;left:58px;width:max-content;max-width:150px;background:#fffaf0;color:var(--fg);border:3px solid var(--fg);padding:6px 8px;font-size:9px;line-height:1.5;opacity:0;transform:translateY(4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:3;box-shadow:2px 2px 0 rgba(0,0,0,.3)}
 .say.show{opacity:1;transform:none}
 .say::after{content:'';position:absolute;left:10px;bottom:-9px;width:6px;height:6px;background:#fffaf0;border:3px solid var(--fg);border-top:0;border-left:0;transform:skewY(45deg)}
 @media (prefers-reduced-motion:reduce){.say{transition:none}}
@@ -83,9 +83,9 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .card{width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .card .cpic{width:112px;height:112px;border:3px solid var(--fg);background:var(--field)}
 .card h3{margin:0;font-size:12px}
-.card small{font-size:8px;color:var(--mid)}
+.card small{font-size:9px;color:var(--mid)}
 .card p{margin:0}
-.card .lbl{margin-top:8px;font-size:8px;color:var(--mid)}
+.card .lbl{margin-top:8px;font-size:9px;color:var(--mid)}
 .card button{margin-top:12px;width:100%}
 .hb{transform-box:fill-box;transform-origin:50% 60%;animation:beat 4s steps(1) infinite}
 @keyframes beat{0%,100%{transform:none}84%{transform:scale(1.12)}88%{transform:none}92%{transform:scale(1.08)}96%{transform:none}}
@@ -106,7 +106,7 @@ h1{display:flex;justify-content:space-between;align-items:center}
 .tabs button{padding:8px 4px}
 .tile svg.thumb{width:72px;height:72px;border:2px solid var(--fg)}
 .tile svg{width:40px;height:40px}
-.tile small{font-size:7px;color:var(--mid)}
+.tile small{font-size:8px;color:var(--mid)}
 .tile.locked{background:var(--bg);box-shadow:none;color:var(--hd);opacity:.7}
 .tile.locked b{font-size:20px}
 :focus-visible{outline:3px dashed var(--fg);outline-offset:2px}
@@ -118,13 +118,13 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 .seg{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin:3px 0}
 .seg i{height:9px;border:2px solid var(--fg);background:var(--field)}
 .seg i.on{background:var(--c)}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:15px;padding:0 2px;margin-left:5px;border:2px solid var(--fg);font-size:7px;font-weight:normal;vertical-align:middle;background:var(--field)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:15px;padding:0 2px;margin-left:5px;border:2px solid var(--fg);font-size:8px;font-weight:normal;vertical-align:middle;background:var(--field)}
 .tier1 .badge{background:#d58b4a}.tier2 .badge{background:#c9d1da}.tier3 .badge,.tier4 .badge{background:#e8bf4f}
 .tier4 .badge{box-shadow:0 0 0 2px #fff1a8}
 .tier1 .seg i{border-color:#a0612a}.tier2 .seg i{border-color:#8f9aa6}.tier3 .seg i,.tier4 .seg i{border-color:#b8860b}
-.trial{font-size:7px;line-height:1.5;color:#8a6200;background:none;border:0;box-shadow:none;padding:2px 0;width:100%;text-align:left;display:flex;align-items:center;gap:0}
-.trial .ti{margin-left:auto;width:14px;height:14px;border:2px solid #8a6200;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:normal}
-.tbox{display:flex;gap:4px;justify-content:center;margin:4px 0}.tbox i{width:26px;height:26px;border:3px solid var(--fg);background:var(--field);display:flex;align-items:flex-end;justify-content:center}.tbox i.on{background:var(--c)}.tbox i.pre{opacity:.35}.tbox u{text-decoration:none;font-size:7px;margin-bottom:-18px;color:var(--mid)}.tbox:not(.cnt){margin-bottom:16px}
+.trial{font-size:8px;line-height:1.5;color:#8a6200;background:none;border:0;box-shadow:none;padding:2px 0;width:100%;text-align:left;display:flex;align-items:center;gap:0}
+.trial .ti{margin-left:auto;width:14px;height:14px;border:2px solid #8a6200;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:normal}
+.tbox{display:flex;gap:4px;justify-content:center;margin:4px 0}.tbox i{width:26px;height:26px;border:3px solid var(--fg);background:var(--field);display:flex;align-items:flex-end;justify-content:center}.tbox i.on{background:var(--c)}.tbox i.pre{opacity:.35}.tbox u{text-decoration:none;font-size:8px;margin-bottom:-18px;color:var(--mid)}.tbox:not(.cnt){margin-bottom:16px}
 .lock{display:inline-block;width:7px;height:7px;background:#8a6200;margin-right:4px;vertical-align:baseline}
 .prog{height:6px;background:var(--field);border:2px solid var(--fg)}
 .prog b{display:block;height:100%;background:var(--c)}
@@ -138,7 +138,7 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 @media (prefers-reduced-motion:reduce){.gain{animation:none;transform:translateY(-50%)}.task{transition:none}}
 .task:last-child{border:0}
 .task .n{flex:1;word-break:break-word}
-.task small{display:block;font-size:8px;color:var(--mid)}
+.task small{display:block;font-size:9px;color:var(--mid)}
 .trhead{width:100%;display:flex;align-items:center;gap:10px;text-align:left;color:var(--fg);background:#e8c98a;border:3px solid var(--fg);box-shadow:2px 2px 0 var(--fg);padding:8px 10px;margin:8px 0}
 .task.trhead,.task.trhead:last-child{border:3px solid var(--fg)}
 .trhead .arw{width:14px;height:18px;flex:none;fill:var(--fg);transition:transform .15s}
@@ -149,9 +149,21 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 .chk{width:34px;height:34px;padding:0;flex:none;background:#8fcf6a}
 .x{padding:4px 7px;flex:none;box-shadow:none}
 .qb{flex:none;width:36px;height:36px;padding:3px;box-shadow:1px 1px 0 var(--fg);border-width:2px;display:flex;align-items:center;justify-content:center}.qb svg{width:26px;height:26px}
-.edt{flex:none;border:2px solid var(--fg);padding:3px 5px;font-size:7px;color:var(--fg)}
+.edt{flex:none;border:2px solid var(--fg);padding:3px 5px;font-size:8px;color:var(--fg)}
 .card .danger{color:#a8263f}
-.help{padding:6px 12px}.help section{padding:10px 0;border-bottom:2px dashed var(--mid)}.help section:last-child{border:0}.help h3{margin:0 0 6px;font-size:10px}.help ul{margin:0;padding:0;list-style:none}.help li{position:relative;padding-left:14px;margin:5px 0;font-size:8px;line-height:1.9}.help li::before{content:'';position:absolute;left:0;top:5px;width:6px;height:6px;background:var(--mid)}.help b{font-weight:normal;color:var(--mid)}
+.ovl.warn{background:rgba(25,0,0,.85);flex-direction:column;cursor:pointer}
+.warnbar{width:100%;max-width:330px;background:#b3261e;color:#fff1e8;border:4px solid #3b0d0a;box-shadow:0 0 0 3px #ff6b5a;padding:16px 10px;text-align:center;font-size:13px;line-height:2;animation:wflash .5s steps(2) infinite,shake .35s steps(4) 4}
+.warn .tap{color:#ffd6cf;margin-top:18px;font-size:10px;animation:wflash2 1.2s steps(2) infinite}
+@keyframes wflash{50%{background:#6e120e;box-shadow:0 0 0 3px #b3261e}}
+@keyframes wflash2{50%{opacity:.35}}
+@keyframes shake{0%,100%{transform:none}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,-2px)}}
+.card.bossin{border-color:#3b0d0a;box-shadow:inset 0 0 0 3px #b3261e,0 0 0 3px #b3261e,3px 3px 0 rgba(0,0,0,.35);animation:bdrop .4s steps(5)}
+.card.bossin .bnew{color:#b3261e;font-size:10px}
+@keyframes bdrop{from{transform:translateY(-70px);opacity:0}to{transform:none;opacity:1}}
+.noanim .warnbar,.noanim .warn .tap,.noanim .bossin{animation:none}
+@media (prefers-reduced-motion:reduce){.warnbar,.warn .tap,.bossin{animation:none}}
+
+.help{padding:6px 12px}.help section{padding:10px 0;border-bottom:2px dashed var(--mid)}.help section:last-child{border:0}.help h3{margin:0 0 6px;font-size:10px}.help ul{margin:0;padding:0;list-style:none}.help li{position:relative;padding-left:14px;margin:5px 0;font-size:9px;line-height:1.9}.help li::before{content:'';position:absolute;left:0;top:5px;width:6px;height:6px;background:var(--mid)}.help b{font-weight:normal;color:var(--mid)}
 .sqt{display:flex;justify-content:space-between;align-items:center;background:var(--field);color:var(--fg);box-shadow:none}
 .sw{display:block;position:relative;width:40px;height:20px;border:3px solid var(--fg);background:#d9c9a3;flex:none}.sw b{position:absolute;top:2px;left:2px;width:10px;height:10px;background:var(--fg);transition:left .15s}.sqt.on .sw{background:#8fcf6a}.sqt.on .sw b{left:22px}
 @media (prefers-reduced-motion:reduce){.sw b{transition:none}}
@@ -160,7 +172,7 @@ nav button{flex:1;border:0;box-shadow:none;background:transparent;color:var(--hd
 nav button[aria-current="true"]{background:var(--panel);color:var(--fg)}
 .add{display:grid;gap:8px}
 .sug{display:flex;flex-wrap:wrap;gap:8px}
-.sug button{font-size:8px;text-align:left}
+.sug button{font-size:9px;text-align:left}
 .empty{color:var(--mid)}
 #toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--fg);color:var(--hd);padding:8px 12px;display:none;z-index:9;max-width:92%}
 </style>
@@ -177,8 +189,8 @@ const COG=`<button class="cog" onclick="go('settings')" aria-label="Settings"><s
 const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true},{id:1005,name:'Food prep',stat:'DIS',pts:5,weekly:true}];
 const TRAIN=[1,1001,1002,1003];
 const QUILL=`<svg viewBox="0 0 14 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="1" width="1" height="1" fill="#3b2416"/><rect x="11" y="0" width="1" height="1" fill="#3b2416"/><rect x="13" y="1" width="1" height="1" fill="#3b2416"/><rect x="12" y="0" width="1" height="1" fill="#3b2416"/><rect x="8" y="2" width="1" height="1" fill="#3b2416"/><rect x="9" y="1" width="1" height="1" fill="#3b2416"/><rect x="13" y="2" width="1" height="1" fill="#3b2416"/><rect x="7" y="3" width="1" height="1" fill="#3b2416"/><rect x="13" y="3" width="1" height="1" fill="#3b2416"/><rect x="12" y="4" width="1" height="1" fill="#3b2416"/><rect x="6" y="4" width="1" height="1" fill="#3b2416"/><rect x="11" y="5" width="1" height="1" fill="#3b2416"/><rect x="5" y="5" width="1" height="1" fill="#3b2416"/><rect x="10" y="6" width="1" height="1" fill="#3b2416"/><rect x="4" y="6" width="1" height="1" fill="#3b2416"/><rect x="8" y="7" width="1" height="1" fill="#3b2416"/><rect x="9" y="7" width="1" height="1" fill="#3b2416"/><rect x="3" y="7" width="1" height="1" fill="#3b2416"/><rect x="7" y="8" width="1" height="1" fill="#3b2416"/><rect x="3" y="8" width="1" height="1" fill="#3b2416"/><rect x="5" y="9" width="1" height="1" fill="#3b2416"/><rect x="6" y="9" width="1" height="1" fill="#3b2416"/><rect x="2" y="9" width="1" height="1" fill="#3b2416"/><rect x="4" y="10" width="1" height="1" fill="#3b2416"/><rect x="1" y="10" width="1" height="1" fill="#3b2416"/><rect x="3" y="11" width="1" height="1" fill="#3b2416"/><rect x="1" y="11" width="1" height="1" fill="#3b2416"/><rect x="2" y="12" width="1" height="1" fill="#3b2416"/><rect x="0" y="12" width="1" height="1" fill="#3b2416"/><rect x="1" y="13" width="1" height="1" fill="#3b2416"/><rect x="11" y="1" width="1" height="1" fill="#fffaf0"/><rect x="12" y="1" width="1" height="1" fill="#fffaf0"/><rect x="9" y="2" width="1" height="1" fill="#fffaf0"/><rect x="10" y="2" width="1" height="1" fill="#fffaf0"/><rect x="11" y="2" width="1" height="1" fill="#fffaf0"/><rect x="12" y="2" width="1" height="1" fill="#fffaf0"/><rect x="8" y="3" width="1" height="1" fill="#fffaf0"/><rect x="9" y="3" width="1" height="1" fill="#fffaf0"/><rect x="10" y="3" width="1" height="1" fill="#fffaf0"/><rect x="11" y="3" width="1" height="1" fill="#fffaf0"/><rect x="12" y="3" width="1" height="1" fill="#c9c2b0"/><rect x="7" y="4" width="1" height="1" fill="#fffaf0"/><rect x="8" y="4" width="1" height="1" fill="#fffaf0"/><rect x="9" y="4" width="1" height="1" fill="#fffaf0"/><rect x="10" y="4" width="1" height="1" fill="#fffaf0"/><rect x="11" y="4" width="1" height="1" fill="#c9c2b0"/><rect x="6" y="5" width="1" height="1" fill="#fffaf0"/><rect x="7" y="5" width="1" height="1" fill="#fffaf0"/><rect x="8" y="5" width="1" height="1" fill="#fffaf0"/><rect x="9" y="5" width="1" height="1" fill="#fffaf0"/><rect x="10" y="5" width="1" height="1" fill="#c9c2b0"/><rect x="5" y="6" width="1" height="1" fill="#fffaf0"/><rect x="6" y="6" width="1" height="1" fill="#fffaf0"/><rect x="7" y="6" width="1" height="1" fill="#fffaf0"/><rect x="8" y="6" width="1" height="1" fill="#fffaf0"/><rect x="9" y="6" width="1" height="1" fill="#c9c2b0"/><rect x="4" y="7" width="1" height="1" fill="#fffaf0"/><rect x="5" y="7" width="1" height="1" fill="#fffaf0"/><rect x="6" y="7" width="1" height="1" fill="#fffaf0"/><rect x="7" y="7" width="1" height="1" fill="#c9c2b0"/><rect x="4" y="8" width="1" height="1" fill="#fffaf0"/><rect x="5" y="8" width="1" height="1" fill="#fffaf0"/><rect x="6" y="8" width="1" height="1" fill="#c9c2b0"/><rect x="3" y="9" width="1" height="1" fill="#fffaf0"/><rect x="4" y="9" width="1" height="1" fill="#c9c2b0"/><rect x="2" y="10" width="1" height="1" fill="#c9c2b0"/><rect x="3" y="10" width="1" height="1" fill="#c9c2b0"/><rect x="2" y="11" width="1" height="1" fill="#3b2416"/><rect x="1" y="12" width="1" height="1" fill="#3b2416"/></svg>`;
-let view='home',rc=0,wtab='gear',openTr=false,openCore=false,editId=null,delArm=0,ideaDraft=null,openSide=false,trialK=null,S=load();
-function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
+let view='home',rc=0,wtab='gear',openTr=false,openCore=false,editId=null,delArm=0,ideaDraft=null,openSide=false,openSideT=false,trialK=null,S=load();
+function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));S.tasks.forEach(t=>{if(t.side){t.once=true;t.daily=false;t.weekly=false}});const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);if(S.bossSeen===undefined)S.bossSeen=wk();S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
 return{pts:{STR:0,INT:0,CHA:0,DIS:0},tasks:[],log:[],bonus:{},next:4}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
@@ -198,7 +210,7 @@ function trialFrom(k){const o=S.trialOpen&&S.trialOpen[k],d=new Date();d.setHour
 function trialProg(k){const from=trialFrom(k),L=S.log.filter(e=>e.t>from),days=f=>new Set(L.filter(f).map(e=>day(e.t))).size;
 if(k==='STR')return[L.filter(e=>TRAIN.includes(e.id)).length,4,'TRAININGS'];
 if(k==='INT')return[days(e=>e.id==2),5,'READING DAYS'];
-if(k==='CHA')return[days(e=>e.id==1004),5,'COMPLIMENT DAYS'];
+if(k==='CHA')return[days(e=>e.stat==='CHA'),5,'HEART DAYS'];
 return[days(()=>true),6,'ACTIVE DAYS']}
 function checkTrials(e){const up=[];S.tier=S.tier||{};S.trialOpen=S.trialOpen||{};
 Object.keys(NAMES).forEach(k=>{if(!atTrial(k)){delete S.trialOpen[k];return}
@@ -222,9 +234,13 @@ const ITEMS=[
 {id:'hoodie',slot:'torso',name:'Doom hoodie',how:'Dropped by The Doomscroller',cond:()=>beat('doom'),ic:'<rect x="4" y="3" width="8" height="10" fill="#3b3f5c"/><rect x="2" y="4" width="2" height="6" fill="#3b3f5c"/><rect x="12" y="4" width="2" height="6" fill="#3b3f5c"/><rect x="5" y="3" width="6" height="2" fill="#272a40"/><rect x="6" y="5" width="1" height="3" fill="#fffaf0"/><rect x="9" y="5" width="1" height="3" fill="#fffaf0"/><rect x="5" y="9" width="6" height="2" fill="#272a40"/>'},
 {id:'chef',slot:'head',name:'Chef hat',how:'Dropped by Takeaway Titan',cond:()=>beat('takeaway'),ic:'<rect x="2" y="3" width="12" height="5" fill="#fffaf0"/><rect x="3" y="2" width="10" height="1" fill="#fffaf0"/><rect x="4" y="8" width="8" height="5" fill="#fffaf0"/><rect x="4" y="11" width="8" height="2" fill="#e2d9c5"/><rect x="12" y="4" width="2" height="3" fill="#e2d9c5"/>'},
 {id:'captainhat',slot:'head',name:'Captain hat',how:'Dropped by Captain Tomorrow',cond:()=>beat('captain'),ic:'<rect x="2" y="4" width="12" height="4" fill="#fffaf0"/><rect x="3" y="3" width="10" height="1" fill="#fffaf0"/><rect x="1" y="8" width="14" height="2" fill="#23395b"/><rect x="3" y="10" width="10" height="2" fill="#1e1e24"/><rect x="7" y="5" width="2" height="2" fill="#e8bf4f"/>'},
-{id:'antenna',slot:'head',name:'Robot antenna',how:'Dropped by The Excuse Machine',cond:()=>beat('excuse'),ic:'<rect x="2" y="11" width="12" height="2" fill="#9aa5b1"/><rect x="7" y="4" width="2" height="7" fill="#9aa5b1"/><rect x="6" y="1" width="4" height="3" fill="#c23b2c"/><rect x="6" y="1" width="1" height="1" fill="#ec8a6c"/>'}
+{id:'antenna',slot:'head',name:'Robot antenna',how:'Dropped by The Excuse Machine',cond:()=>beat('excuse'),ic:'<rect x="2" y="11" width="12" height="2" fill="#9aa5b1"/><rect x="7" y="4" width="2" height="7" fill="#9aa5b1"/><rect x="6" y="1" width="4" height="3" fill="#c23b2c"/><rect x="6" y="1" width="1" height="1" fill="#ec8a6c"/>'},
+{id:'champ',slot:'head',name:'Champion headband',how:'Reached Strength level 13',cond:()=>tierOf('STR')>=1&&Lv('STR')>=13,ic:'<rect x="1" y="6" width="14" height="3" fill="#e8bf4f"/><rect x="1" y="8" width="14" height="1" fill="#b8860b"/><rect x="7" y="6" width="2" height="2" fill="#c23b2c"/><rect x="14" y="9" width="2" height="3" fill="#e8bf4f"/><rect x="3" y="6" width="2" height="1" fill="#fff1a8"/>'},
+{id:'cape',slot:'torso',name:"Scholar's cape",how:'Reached Intellect level 13',cond:()=>tierOf('INT')>=1&&Lv('INT')>=13,ic:'<rect x="2" y="3" width="12" height="2" fill="#3d6fb5"/><rect x="2" y="5" width="12" height="9" fill="#284f8a"/><rect x="5" y="5" width="6" height="9" fill="#f7f4ee"/><rect x="2" y="13" width="3" height="1" fill="#e8bf4f"/><rect x="11" y="13" width="3" height="1" fill="#e8bf4f"/><rect x="7" y="3" width="2" height="2" fill="#e8bf4f"/>'},
+{id:'sweater',slot:'torso',name:'Heart sweater',how:'Reached Heart level 13',cond:()=>tierOf('CHA')>=1&&Lv('CHA')>=13,ic:'<rect x="2" y="4" width="12" height="10" fill="#f08ca8"/><rect x="2" y="13" width="12" height="1" fill="#e5607e"/><rect x="6" y="4" width="4" height="1" fill="#d99b7e"/><rect x="5" y="7" width="2" height="1" fill="#c23b2c"/><rect x="9" y="7" width="2" height="1" fill="#c23b2c"/><rect x="5" y="8" width="6" height="1" fill="#c23b2c"/><rect x="6" y="9" width="4" height="1" fill="#c23b2c"/><rect x="7" y="10" width="2" height="1" fill="#c23b2c"/>'},
+{id:'gi',slot:'torso',name:'Black belt',how:'Reached Discipline level 13',cond:()=>tierOf('DIS')>=1&&Lv('DIS')>=13,ic:'<rect x="2" y="3" width="12" height="11" fill="#fffaf0"/><rect x="5" y="3" width="1" height="4" fill="#e2d9c5"/><rect x="10" y="3" width="1" height="4" fill="#e2d9c5"/><rect x="6" y="7" width="4" height="1" fill="#e2d9c5"/><rect x="2" y="9" width="12" height="2" fill="#1f1a27"/><rect x="7" y="11" width="1" height="3" fill="#1f1a27"/><rect x="9" y="11" width="1" height="2" fill="#1f1a27"/>'}
 ];
-const SLOTS=16;
+const SLOTS=20;
 function beat(id){return Object.values(S.bossWon||{}).includes(id)}
 const PLACES=[
 {id:'meadow',name:'Meadow',how:'Where your journey started',cond:()=>true},
@@ -232,7 +248,11 @@ const PLACES=[
 {id:'tower',name:'Astronomy Tower',how:'Reached Intellect level 8',cond:()=>Lv('INT')>=8},
 {id:'gym',name:'The Gym',how:'Hit the gym 20 times',cond:()=>S.log.filter(e=>e.id==1).length>=20},
 {id:'dojo',name:'Dojo',how:'Reached Discipline level 13',cond:()=>Lv('DIS')>=13},
-{id:'arena',name:'Boss Arena',how:'Beat all six weekly bosses',cond:()=>['restday','social','doom','takeaway','captain','excuse'].every(beat)}];
+{id:'arena',name:'Boss Arena',how:'Beat all six weekly bosses',cond:()=>['restday','social','doom','takeaway','captain','excuse'].every(beat)},
+{id:'beach',name:'Beach court',how:'Reached Strength level 16',cond:()=>tierOf('STR')>=1&&Lv('STR')>=16},
+{id:'library',name:'Library',how:'Reached Intellect level 16',cond:()=>tierOf('INT')>=1&&Lv('INT')>=16},
+{id:'square',name:'Town square',how:'Reached Heart level 16',cond:()=>tierOf('CHA')>=1&&Lv('CHA')>=16},
+{id:'peak',name:'Mountain peak',how:'Reached Discipline level 16',cond:()=>tierOf('DIS')>=1&&Lv('DIS')>=16}];
 function checkUnlocks(){const n=[];ITEMS.forEach(i=>{if(!S.owned[i.id]&&i.cond()){S.owned[i.id]=Date.now();S.equip[i.id]=0;S.fresh[i.id]=1;n.push(i.id)}});
 PLACES.forEach(p=>{if(!S.owned[p.id]&&p.cond()){S.owned[p.id]=Date.now();if(p.id!=='meadow'){S.fresh[p.id]=1;n.push(p.id)}}});return n.concat(checkQuirks())}
 const QUIRKS=[
@@ -271,7 +291,7 @@ var BOSS_SPR={"restday":{"p":["#2a1a14","#5a4a8c","#5d8fd5","#284f8a","#3d6fb5",
 const own=id=>!CORE.some(c=>c.id==id);
 const BOSSES=[
 {id:'restday',name:'Restday Everyday',hp:4,rw:{STR:15},hurt:'trainings',long:'Every training session hits it for 1.',dmg:e=>TRAIN.includes(e.id)?1:0},
-{id:'social',name:'The Wallflower',hp:5,rw:{CHA:15},hurt:'compliments',long:'Every compliment hits it for 1.',dmg:e=>e.id==1004?1:0},
+{id:'social',name:'The Wallflower',hp:5,rw:{CHA:15},hurt:'Heart quests',long:'Every Heart quest hits it for 1.',dmg:e=>e.stat==='CHA'?1:0},
 {id:'doom',name:'The Doomscroller',hp:8,rw:{INT:15},hurt:'reading and Duolingo',long:'Reading 10 pages or doing Duolingo hits it for 1.',dmg:e=>(e.id==2||e.id==1000)?1:0},
 {id:'takeaway',name:'Takeaway Titan',hp:6,rw:{DIS:15},hurt:'food prep and your own tasks',long:'Food prep hits it for 3. Every task you made yourself hits it for 1.',dmg:e=>e.id==1005?3:own(e.id)?1:0},
 {id:'captain',name:'Captain Tomorrow',hp:20,rw:{STR:10,INT:10,CHA:10,DIS:10},hurt:'every task, double before noon',long:'Every task hits him for 1. Tasks done before noon hit for 2.',dmg:e=>new Date(e.t).getHours()<12?2:1},
@@ -279,6 +299,27 @@ const BOSSES=[
 function weekNo(d){const x=new Date(d||Date.now());x.setHours(12,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return Math.round(x.getTime()/6048e5)}
 function boss(){const b=BOSSES[((weekNo()%BOSSES.length)+BOSSES.length)%BOSSES.length],w=wk();
 const dealt=S.log.filter(e=>wk(e.t)===w).reduce((a,e)=>a+b.dmg(e),0);return{b,w,dealt,left:Math.max(0,b.hp-dealt),won:!!(S.bossWon&&S.bossWon[w])}}
+// "A boss approaches!": first app open each week, warning first, then the boss card with an 8-bit theme
+let bossIntro=0,bossNotes=[];
+function bnote(f,d,t,type,vol){if(!S.settings.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),a=AC.currentTime+t;o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(vol||.04,a);g.gain.setValueAtTime(0,a+d);o.connect(g);g.connect(AC.destination);o.start(a);o.stop(a+d+.02);bossNotes.push(o)}catch(e){}}
+function bossTheme(){bossThemeStop();const st=.15,bar=st*8,BASS=[[82.41,82.41,164.81,82.41,82.41,164.81,82.41,87.31],[82.41,82.41,164.81,82.41,82.41,164.81,82.41,98],[87.31,87.31,174.61,87.31,98,98,196,98],[116.54,116.54,233.08,116.54,123.47,123.47,246.94,123.47]],
+LEAD=[[[329.63,.6],[392,.3],[369.99,.3]],[[349.23,.9],[329.63,.3]],[[392,.3],[466.16,.3],[493.88,.6]],[[659.26,.6],[622.25,.3],[587.33,.3]]];
+bnote(82.41,.5,0,'sawtooth',.06);bnote(41.2,.5,0,'square',.05);                       // opening hit
+for(let rep=0;rep<2;rep++){const o=.6+rep*bar*4;BASS.forEach((b,i)=>b.forEach((f,j)=>bnote(f,st*.8,o+i*bar+j*st,'triangle',.09)));
+LEAD.forEach((l,i)=>{let t=o+i*bar;l.forEach(([f,d])=>{bnote(f,d*.9,t,'square',.035);t+=d})})}
+bnote(82.41,.8,.6+bar*8,'sawtooth',.05)}
+function bossThemeStop(){bossNotes.forEach(o=>{try{o.stop()}catch(e){}});bossNotes=[]}
+function bossCheck(){if(view!=='home'||bossIntro||suggOpen||trialK||editId!=null||ideaDraft!=null||bossOpen||infoId)return;if(S.bossSeen===wk())return;
+S.bossSeen=wk();S.bossDay=day();save();bossIntro=1;render()}
+function bossReveal(){bossIntro=2;render();bossTheme()}
+function bossIntroClose(){bossIntro=0;bossThemeStop();render()}
+function bossIntroCard(){if(!bossIntro)return'';const {b}=boss();
+if(bossIntro===1)return`<div class="ovl warn" onclick="bossReveal()" role="dialog" aria-modal="true" aria-label="A boss approaches"><div class="warnbar">⚠ WARNING ⚠<br>A BOSS APPROACHES</div><p class="tap">TAP TO FACE IT</p></div>`;
+return`<div class="ovl" onclick="if(event.target===this)bossIntroClose()"><div class="box card bossin" role="dialog" aria-modal="true" aria-label="${b.name}">
+<small class="bnew">A NEW BOSS HAS ARRIVED!</small>${bossSvg(b.id,'cpic bbig')}<h3>${b.name}</h3>
+<span class="hpbar big"><i style="width:100%"></i></span><p>${b.hp} / ${b.hp} HP</p>
+<p class="lbl">WHAT HURTS IT</p><p>${b.long}</p>
+<button onclick="bossIntroClose()">BRING IT ON!</button></div></div>`}
 function bossSvg(id,cls){const d=BOSS_SPR[id];return`<svg class="${cls}" viewBox="0 0 32 32" shape-rendering="crispEdges" aria-hidden="true">${runs(d.r.map(r=>[...r].map(ch=>ch==='.'?null:d.p['abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.indexOf(ch)])))}</svg>`}
 const rwText=rw=>Object.keys(rw).length===4?'+'+rw.STR+' to all stats':Object.keys(rw).map(k=>'+'+rw[k]+' '+NAMES[k][0]+NAMES[k].slice(1).toLowerCase()).join(', ');
 function bossStrip(){const {b,left,won}=boss(),dl=7-((new Date().getDay()+6)%7);
@@ -411,11 +452,64 @@ function placeBg(id) {
     R(2, 38, 3, 1, '#b8955c'); R(36, 41, 4, 1, '#b8955c');
   }
 
+  if (id === 'beach') {                                   // Strength tier II
+    for (let y = 0; y < 16; y++) R(0, y, W, 1, y < 6 ? '#7fc6f2' : y < 11 ? '#9fd6f7' : '#bfe5fa');
+    for (let y = 1; y <= 10; y++) for (let x = 1; x <= 10; x++) { const d = Math.hypot(x - 5.5, y - 5.5); if (d <= 3.4) P(x, y, '#ffe27a'); else if (d <= 4.3) P(x, y, '#fff1b0'); }
+    R(28, 4, 7, 2, '#ffffff'); R(30, 3, 4, 1, '#ffffff'); R(16, 8, 5, 1, '#f2fbff');
+    R(0, 16, W, 6, '#3fa7d6'); R(0, 16, W, 1, '#2f8fc0'); for (let x = 1; x < W; x += 7) { R(x, 18, 3, 1, '#8fd3f0'); R(x + 3, 20, 2, 1, '#8fd3f0'); } R(0, 21, W, 1, '#e9f7fb');
+    R(0, 22, W, 22, '#f2d38b'); for (let i = 0; i < 60; i++) { const x = (i * 19 + 7) % W, y = 23 + (i * 11) % 21; P(x, y, i % 2 ? '#e0bd6c' : '#f8e3ae'); }
+    R(2, 11, 2, 19, '#7a5a3a'); R(40, 11, 2, 19, '#7a5a3a'); P(2, 11, '#9a7a52'); P(40, 11, '#9a7a52');      // net posts
+    R(4, 12, 36, 1, '#f6f1e4'); R(4, 19, 36, 1, '#f6f1e4');
+    for (let y = 13; y < 19; y++) for (let x = 4; x < 40; x++) if ((x + y) % 3 === 0) P(x, y, '#3b4a5a');
+    R(2, 37, 10, 5, '#e5607e'); R(2, 38, 10, 1, '#fffaf0'); R(2, 40, 10, 1, '#fffaf0');                    // towel
+    for (let y = 35; y <= 41; y++) for (let x = 33; x <= 39; x++) { const d = Math.hypot(x - 36, y - 38); if (d <= 3.2) P(x, y, x < 35 ? '#f0c030' : x > 37 ? '#2f6fd0' : '#fffaf0'); }  // volleyball
+    P(35, 36, '#ffffff');
+  }
+
+  if (id === 'library') {                                 // Intellect tier II
+    R(0, 0, W, 30, '#7a4f2e'); for (let x = 2; x < W; x += 5) R(x, 0, 1, 30, '#6a4226');
+    R(15, 2, 14, 15, '#4e3020'); R(16, 3, 12, 13, '#cfe8f5'); R(16, 3, 12, 4, '#e6f4fb'); R(21, 3, 2, 13, '#4e3020'); R(16, 9, 12, 1, '#4e3020');  // window
+    R(15, 1, 14, 1, '#4e3020'); R(17, 0, 10, 1, '#4e3020');
+    const shelf = (x0, x1) => { R(x0, 2, x1 - x0, 28, '#4a2e18');
+      const pal = ['#c23b2c', '#2f6fd0', '#3f9b3f', '#e8bf4f', '#8a5aa8', '#d96b3a', '#2a7a7a'];
+      for (let r = 0; r < 4; r++) { const yb = 8 + r * 7; R(x0, yb, x1 - x0, 1, '#8a5a32');
+        for (let x = x0 + 1, i = r * 3; x < x1 - 1; i++) { const w = 1 + (i * 7) % 2, h = 4 + (i * 5) % 2; R(x, yb - h, w, h, pal[i % pal.length]); P(x, yb - h, '#fffaf0'); x += w; } } };
+    shelf(0, 13); shelf(31, 44);
+    R(0, 30, W, 1, '#4e3020'); R(0, 31, W, 13, '#9a6a40'); for (let y = 33; y < H; y += 3) R(0, y, W, 1, '#875a34');
+    R(8, 37, 28, 7, '#7a2f3a'); R(9, 38, 26, 5, '#8f3a48'); R(9, 38, 26, 1, '#a8475a');                     // rug
+    [['#2f6fd0', 0], ['#e8bf4f', 1], ['#c23b2c', 2]].forEach(([c, i]) => { R(35 + (i % 2), 40 - i * 2, 7, 2, c); P(36 + (i % 2), 40 - i * 2, '#fffaf0'); });  // book stack
+    R(4, 33, 1, 8, '#3b3f4a'); R(2, 31, 5, 2, '#e8bf4f'); P(3, 33, '#fff1b0'); R(3, 41, 3, 1, '#3b3f4a');    // reading lamp
+  }
+
+  if (id === 'square') {                                  // Heart tier II
+    R(0, 0, W, 12, '#a9d8f5'); R(26, 3, 6, 2, '#ffffff'); R(27, 2, 3, 1, '#ffffff');
+    const houses = [[0, 11, '#e8a87c', '#c9845a'], [11, 11, '#f3d27a', '#d4a94a'], [22, 11, '#9fc5e8', '#7aa3c8'], [33, 11, '#e5869b', '#c4677c']];
+    houses.forEach(([x, w, c, d], i) => { const t = 5 + (i % 2) * 2; R(x, t, w, 30 - t, c); R(x, t, w, 1, d); R(x, t - 1, w, 1, '#8a5a3a');
+      for (let wy = t + 3; wy < 26; wy += 7) for (let wx = x + 2; wx < x + w - 2; wx += 5) { R(wx, wy, 3, 3, '#4a6a8a'); P(wx, wy, '#9fc5e8'); R(wx - 1, wy + 3, 5, 1, '#5c9e45'); P(wx, wy + 3, '#f08ca8'); P(wx + 2, wy + 3, '#ffd36b'); } });
+    for (let x = 0; x < W; x++) { const y = 9 + Math.round(2 * Math.sin((x / W) * Math.PI)); P(x, y, '#5a4030');
+      if (x % 4 === 1) { const c = ['#e5607e', '#f3d27a', '#7fc6f2', '#fffaf0'][(x / 4 | 0) % 4]; P(x, y + 1, c); P(x + 1, y + 1, c); P(x, y + 2, c); } }  // bunting
+    R(0, 30, W, 14, '#b9b2a6'); for (let y = 30; y < H; y += 3) { R(0, y, W, 1, '#9a9388'); for (let x = (y / 3) % 2 ? 1 : 4; x < W; x += 6) R(x, y, 1, 3, '#9a9388'); }
+    R(40, 14, 1, 26, '#3b3f4a'); R(38, 12, 5, 3, '#3b3f4a'); R(39, 13, 3, 1, '#ffd36b'); R(39, 40, 3, 1, '#3b3f4a');  // lamp post
+    R(1, 34, 9, 4, '#8a8478'); R(2, 33, 7, 1, '#a8a296'); R(2, 34, 7, 2, '#7fc6f2'); P(5, 31, '#bfe5fa'); P(5, 32, '#bfe5fa'); P(4, 30, '#e9f7fb'); P(6, 30, '#e9f7fb');  // fountain
+  }
+
+  if (id === 'peak') {                                    // Discipline tier II
+    for (let y = 0; y < 30; y++) R(0, y, W, 1, y < 8 ? '#5d9fe0' : y < 16 ? '#7fb6ea' : '#a6cdf2');
+    for (let y = 1; y <= 8; y++) for (let x = 1; x <= 8; x++) { const d = Math.hypot(x - 4.5, y - 4.5); if (d <= 2.8) P(x, y, '#fff1b0'); else if (d <= 3.5) P(x, y, '#ffffff'); }
+    const mtn = (cx, top, base, c, sn) => { for (let y = top; y < base; y++) { const hw = Math.round((y - top) * 1.1); R(cx - hw, y, hw * 2 + 1, 1, c); if (y < top + 4) R(cx - hw, y, hw * 2 + 1, 1, sn); } };
+    mtn(10, 12, 30, '#8aa0bf', '#f6f8fb'); mtn(33, 9, 30, '#7d93b3', '#ffffff'); mtn(22, 15, 30, '#9aaecb', '#f6f8fb');
+    for (let x = 0; x < W; x += 6) { R(x, 26, 5, 2, '#f2fbff'); R(x + 1, 25, 3, 1, '#ffffff'); }       // clouds below the peak
+    R(0, 29, W, 15, '#7d7a74'); R(0, 29, W, 1, '#9a978f');
+    for (let i = 0; i < 30; i++) { const x = (i * 13 + 5) % W, y = 31 + (i * 7) % 12; P(x, y, i % 3 ? '#6a675f' : '#8f8c84'); }
+    R(1, 30, 7, 2, '#f6f8fb'); R(33, 31, 9, 2, '#f6f8fb'); R(2, 41, 6, 1, '#f6f8fb');                         // snow patches
+    R(5, 17, 1, 17, '#5a3c22'); R(6, 17, 6, 4, '#c23b2c'); R(6, 17, 6, 1, '#e06a5a'); P(11, 20, '#8c2a1f');    // summit flag
+  }
+
   return G;
 }
 
 
-function gear(){const o={head:null,torso:null,pet:0};ITEMS.forEach(i=>{if(S.owned&&S.owned[i.id]&&S.equip&&S.equip[i.id])o[i.slot]=i.id});if(o.pet)o.pet=Math.min(3,tierOf('DIS')+1);return o}
+function gear(){const o={head:null,torso:null,pet:0};ITEMS.forEach(i=>{if(S.owned&&S.owned[i.id]&&S.equip&&S.equip[i.id])o[i.slot]=i.id});if(o.pet)o.pet=Math.min(3,tierOf('DIS')+1);o.tiers={STR:tierOf('STR'),INT:tierOf('INT'),CHA:tierOf('CHA'),DIS:tierOf('DIS')};return o}
 function wear(id){const it=ITEMS.find(i=>i.id==id);if(!it||!S.owned[id])return;let on;if(S.fresh[id]){delete S.fresh[id];on=1}else on=S.equip[id]?0:1;if(on)ITEMS.forEach(i=>{if(i.slot===it.slot)S.equip[i.id]=0});S.equip[id]=on;save();render();sfx('ok');pop()}
 let infoId=null;
 const ib=(k,n)=>`<button class="ib" onclick="infoId='${k}';render()" aria-label="How you got ${n}">i</button>`;
@@ -429,7 +523,7 @@ const kind=t==='g'?(it.slot==='pet'?'PET':'GEAR'):t==='p'?'PLACE':'QUIRK';
 return`<div class="ovl" onclick="if(event.target===this){infoId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="${it.name}">
 ${pic}<small>${kind}</small><h3>${it.name}</h3><p class="lbl">HOW YOU GOT IT</p><p>${it.how}</p>${date?`<p class="lbl">UNLOCKED</p><p>${date}</p>`:''}
 <button onclick="infoId=null;render()">CLOSE</button></div></div>`}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(editId!=null||ideaDraft!=null||trialK)){editId=null;ideaDraft=null;trialK=null;render();return}if(e.key==='Escape'&&suggOpen){suggAnswer(0);return}if(e.key==='Escape'&&(infoId||bossOpen)){infoId=null;bossOpen=0;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(editId!=null||ideaDraft!=null||trialK)){editId=null;ideaDraft=null;trialK=null;render();return}if(e.key==='Escape'&&bossIntro){bossIntroClose();return}if(e.key==='Escape'&&suggOpen){suggAnswer(0);return}if(e.key==='Escape'&&(infoId||bossOpen)){infoId=null;bossOpen=0;render()}});
 function wardrobe(){
 const tiles=Array.from({length:SLOTS},(_,k)=>{const i=ITEMS[k];
 if(i&&S.owned[i.id]){const on=S.equip[i.id],f=S.fresh[i.id];return`<div class="tw"><button class="tile" onclick="wear('${i.id}')" aria-pressed="${!!on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg viewBox="0 0 16 16" shape-rendering="crispEdges">${i.ic}</svg><span>${i.name}</span><small>${i.slot==='head'?'HEAD':i.slot==='pet'?'PET':'SHIRT'} · ${f?'NEW!':i.slot==='pet'?(on?'WITH YOU':'AT HOME'):(on?'WORN':'TAP TO WEAR')}</small></button>${ib('g:'+i.id,i.name)}</div>`}
@@ -456,7 +550,7 @@ try{localStorage.removeItem(KEY)}catch(e){}S=load();ensure();rc=0;view='home';re
 function help(){const sec=(h,l)=>`<section><h3>${h}</h3><ul>${l.map(x=>`<li>${x}</li>`).join('')}</ul></section>`;
 return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</button></h1><div class="box help">
 ${sec('QUESTS',['Tap ✔ to finish a quest and earn points.','Each quest builds one stat: Strength, Intellect, Heart or Discipline.','Made a mistake? UNDO LAST takes it back.'])}
-${sec('QUEST TYPES',['<b>Repeatable:</b> do it any time.','<b>Daily:</b> comes back every day.','<b>Weekly:</b> comes back every Monday.','<b>One-time:</b> gone once it\'s done.','<b>Side quest:</b> parked at the bottom for later.'])}
+${sec('QUEST TYPES',['<b>Repeatable:</b> do it any time.','<b>Daily:</b> comes back every day.','<b>Weekly:</b> comes back every Monday.','<b>One-time:</b> gone once it\'s done.','<b>Side quest:</b> a one-time quest for later, kept in its own list.'])}
 ${sec('LEVELS',[`Points fill up your level bar.`,`Level 1 takes ${lvl(0).need} points. Each level after needs 3 more than the last.`,'Stats never go down.'])}
 ${sec('DISCIPLINE',['+2 Discipline on any day you finish a quest.','Missing a day costs you nothing.'])}
 ${sec('WEEKLY BONUS',['Finish 4 quests for the same stat in one week (Mon–Sun).','You get +10 in that stat and +5 Discipline.'])}
@@ -470,14 +564,14 @@ return`<h1>SETTINGS<button onclick="go('home')">BACK</button></h1><div class="bo
 <button class="sqt${S.settings.anim?' on':''}" role="switch" aria-checked="${!!S.settings.anim}" onclick="tog('anim')"><span>ANIMATIONS</span><i class="sw"><b></b></i></button>
 <button onclick="go('help')">HOW TO PLAY</button>
 <button onclick="reset()" style="background:#e8a090">${rc?'TAP AGAIN TO ERASE ALL':'RESET ALL DATA'}</button></div>
-<p style="color:var(--hd);font-size:8px">Reset erases all points, tasks and history on this device.</p>`}
+<p style="color:var(--hd);font-size:9px">Reset erases all points, tasks and history on this device.</p>`}
 function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;const p0={...S.pts};
 const before=Lv(t.stat),wasTrial=atTrial(t.stat);
 const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:0};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);e.pts=gain(t.stat,t.pts);if(first){e.show=1;e.sh=gain('DIS',2)}if(t.once)t.done=true;
 const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;let m='';
 if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;e.bs=gain(t.stat,10);e.bd=gain('DIS',5);m='Weekly bonus! Discipline up'}
 else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPEN!':NAMES[t.stat]+' LEVEL UP!';
-const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
+const tu=checkTrials(e);if(tu.includes(t.stat)){if(!e.pts)e.pts=gain(t.stat,t.pts);if(e.bk&&!e.bs)e.bs=gain(t.stat,10)}if(tu.includes('DIS')){if(e.show&&!e.sh)e.sh=gain('DIS',2);if(e.bk&&!e.bd)e.bd=gain('DIS',5)}if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
 const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YOU!';else if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
 sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');const bs=boss(),hit=bs.won?0:bs.b.dmg(e);
@@ -503,10 +597,10 @@ if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.bs!=null?e.bs:10));S.pts.DIS=
 if(e.bossWin){const b=BOSSES.find(x=>x.id===S.bossWon[e.bossWin]);if(b)Object.keys(b.rw).forEach(k=>S.pts[k]=Math.max(0,S.pts[k]-(e.brw?e.brw[k]||0:b.rw[k])));delete S.bossWon[e.bossWin]}
 if(e.tr)e.tr.forEach(k=>{S.tier[k]=Math.max(0,tierOf(k)-1);if(e.trOpen&&e.trOpen[k])S.trialOpen[k]=e.trOpen[k]});
 if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
-function addTask(name,stat,pts,once,side){name=(name||'').trim();if(!name)return toast('Give the task a name');
+function addTask(name,stat,pts,once,side){name=(name||'').trim();if(!name)return toast('Give the task a name');if(once==4){side=true;once=1}
 const t={id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2,weekly:once==3};if(side)t.side=true;S.tasks.push(t);save();render()}
 function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
-function go(v){view=v;infoId=null;bossOpen=0;editId=null;delArm=0;ideaDraft=null;trialK=null;render()}
+function go(v){if(bossIntro){bossIntro=0;bossThemeStop()}view=v;infoId=null;bossOpen=0;editId=null;delArm=0;ideaDraft=null;trialK=null;render()}
 // Grindlife character generator: returns pixel layers for given stat levels.
 // Golden retriever pet: three growth stages, drawn facing the character (left).
 // A fur, a shade, l light cream, x dark (eye/nose), T tongue, c collar, j tag
@@ -556,9 +650,10 @@ var PET_COLORS = { A: '#e0a64e', a: '#b0742c', l: '#f7dca0', x: '#2a1a12', T: '#
 
 function charLayers(str, int, cha, gear, pose) {
   pose = pose || '';
-  const W = 44, H = 44, FB = 40, CX = (gear && gear.pet) ? 19 : 22; // FB = feet bottom row, CX = centre (between CX-1 and CX)
+  const W = 44, H = 44, FB = 40, CX = (gear && gear.pet) ? ((gear.tiers && gear.tiers.STR) ? 17 : 19) : 22; // FB = feet bottom row, CX = centre (between CX-1 and CX)
   const tier = l => l >= 6 ? 2 : l >= 3 ? 1 : 0;
-  const sT = tier(str), iT = tier(int), cT = tier(cha);
+  const sT = tier(str), iT = tier(int), cT = tier(cha), TT = (gear && gear.tiers) || {}, stT = TT.STR || 0, inT = TT.INT || 0, chT = TT.CHA || 0;
+  const aura = ['STR', 'INT', 'CHA', 'DIS'].every(k => (TT[k] || 0) >= 1);
   const C = {
     o: '#3b2416',                                      // outline (dark warm brown)
     s: '#f3c4a2', S: '#d99b7e', K: '#ffe0c9', b: '#ef9b8f', // skin
@@ -587,12 +682,13 @@ function charLayers(str, int, cha, gear, pose) {
 
   const head = gear && gear.head, torso = gear && gear.torso, naked = torso === 'shirtless', shirt = torso === 'shirt';
   const hood = torso === 'hoodie';
-  const sb = shirt ? 'R' : hood ? 'X' : 'w', ss = shirt ? 'Q' : hood ? 'U' : 'W';
+  const sweater = torso === 'sweater', gi = torso === 'gi', cape = torso === 'cape';
+  const sb = shirt ? 'R' : hood ? 'X' : sweater ? 'P' : gi ? 'n' : 'w', ss = shirt ? 'Q' : hood ? 'U' : sweater ? 'k' : gi ? 'N' : 'W';
 
   // ---- dimensions by tier
-  const TW = [10, 12, 14][sT];      // torso width
-  const AW = [2, 3, 4][sT];         // arm width
-  const LW = [4, 5, 6][sT];         // leg block half-width
+  const TW = stT >= 1 ? 16 : [10, 12, 14][sT];      // torso width (broader from strength tier II)
+  const AW = stT >= 1 ? 5 : [2, 3, 4][sT];         // arm width
+  const LW = stT >= 1 ? 6 : [4, 5, 6][sT];         // leg block half-width (wider stance at tier III)
   const HW = [14, 16, 18][iT];      // head width
   const HH = [12, 13, 14][iT];      // head height
   const tL = CX - TW / 2, tR = CX + TW / 2 - 1;
@@ -627,6 +723,13 @@ function charLayers(str, int, cha, gear, pose) {
   if (hood) { rect(body, CX - 4, shirtTop, 8, 1, 'U'); put(body, CX - 2, shirtTop + 1, 'n'); put(body, CX - 2, shirtTop + 2, 'n'); put(body, CX + 1, shirtTop + 1, 'n'); put(body, CX + 1, shirtTop + 2, 'n'); rect(body, CX - 3, shirtTop + 4, 6, 1, 'U'); }
   // neckline
   rect(body, CX - 2, shirtTop, 4, 1, 'S'); rect(body, CX - 1, shirtTop + 1, 2, 1, 'S');
+  if (sweater) { put(body, CX - 2, shirtTop + 2, 'R'); put(body, CX, shirtTop + 2, 'R'); rect(body, CX - 2, shirtTop + 3, 3, 1, 'R'); put(body, CX - 1, shirtTop + 4, 'R'); put(body, CX - 2, shirtTop + 2, 'r'); }
+  if (gi) {
+    for (let i = 0; i < 4; i++) { put(body, CX - 3 + i, shirtTop + i, 'N'); put(body, CX + 2 - i, shirtTop + i, 'N'); }
+    rect(body, tL, shirtTop + 4, TW, 1, 'E'); put(body, CX - 1, shirtTop + 5, 'E'); put(body, CX, shirtTop + 5, 'E');
+    for (let y = pantsTop; y < pantsTop + 6; y++) for (let x = 0; x < W; x++) { if (body[y][x] === 'p') body[y][x] = 'n'; else if (body[y][x] === 'q') body[y][x] = 'N'; }
+    put(body, CX - 2, pantsTop, 'E'); put(body, CX - 2, pantsTop + 1, 'E'); put(body, CX + 1, pantsTop, 'E');
+  }
   }
 
   // ---- arms: sleeves hug torso, skin part leaves a 1px gap that becomes outline
@@ -672,6 +775,16 @@ function charLayers(str, int, cha, gear, pose) {
   };
   const armPose = { wave1: [null, 'wave1'], wave2: [null, 'wave2'], stretch: ['up', 'up'], flex: ['flex', 'flex'], thumb: [null, 'thumb'], shuffleL: ['up', null], shuffleR: [null, 'up'] }[pose] || [null, null];
   [-1, 1].forEach((side, i) => { const k = armPose[i]; if (k) raised(side, k); else (naked ? nArm : arm)(side); });
+  if (cape) {                                     // scholar's cape: mantle over the shoulders, sides hanging behind the arms
+    for (let x = tL - AW - 2; x <= tR + AW + 2; x++) if (!body[shirtTop - 1][x]) put(body, x, shirtTop - 1, x >= tL - 1 && x <= tR + 1 ? 'I' : 'A');
+    rect(body, CX - 2, shirtTop, 4, 1, 'I'); put(body, CX - 1, shirtTop, 'y'); put(body, CX, shirtTop, 'y');
+    [[tL - AW - 2, -1], [tR + AW + 2, 1]].forEach(([x, d]) => { for (let y = shirtTop - 1; y < pantsTop + 5; y++) { if (!body[y][x]) put(body, x, y, 'A'); if (y > shirtTop && !body[y][x + d]) put(body, x + d, y, y > pantsTop ? 'A' : 'I'); } put(body, x, pantsTop + 5, 'y'); put(body, x + d, pantsTop + 5, 'y'); });
+    for (let x = tL - AW - 1; x <= tR + AW + 1; x++) if (!body[shirtTop - 2][x] && x > tL - 2 && x < tR + 2 && (x < CX - 3 || x > CX + 2)) put(body, x, shirtTop - 2, 'I');
+  }
+  if (stT >= 1) [-1, 1].forEach((side, i) => { if (armPose[i]) return; const x0 = side < 0 ? tL - AW - 1 : tR - 1; rect(body, x0, shirtTop - 1, AW + 2, 1, naked ? 's' : sb); put(body, side < 0 ? x0 : x0 + AW + 1, shirtTop - 1, null); });
+  if (stT >= 1 && !naked) { rect(body, tL + 2, shirtTop + 2, TW / 2 - 3, 1, ss); rect(body, CX + 1, shirtTop + 2, TW / 2 - 3, 1, ss); }
+  if (stT >= 2) [-1, 1].forEach((side, i) => { if (armPose[i]) return; const sx = side < 0 ? tL - AW - 1 : tR + 2; put(body, sx + 1, shirtTop + 2, 'K'); put(body, sx + 2, shirtTop + 2, 'K'); put(body, sx + 1, shirtTop + 3, 'K'); put(body, sx + AW - 2, shirtTop + 4, 'S'); });
+  if (stT >= 2 && !naked) { rect(body, CX - 1, shirtTop + 3, 2, 2, ss); rect(body, tL + 1, shirtTop + 4, 2, 1, ss); rect(body, tR - 2, shirtTop + 4, 2, 1, ss); }
 
   // ---- head
   for (let r = 0; r < HH; r++) {
@@ -751,6 +864,12 @@ function charLayers(str, int, cha, gear, pose) {
     }
     put(body, hL + Math.round(HW * 0.45), brimY - 4, 'Y');
   }
+  if (head === 'champ') {
+    const y = top + hairRows - 1;
+    rect(body, hL, y, HW, 2, 'y'); rect(body, hL, y + 1, HW, 1, 'u'); put(body, hL + 2, y, 'Y'); put(body, hL + 3, y, 'Y');
+    put(body, CX - 1, y, 'R'); put(body, CX, y, 'R'); put(body, CX - 1, y + 1, 'Q'); put(body, CX, y + 1, 'Q');
+    put(body, hR + 1, y, 'y'); put(body, hR + 2, y + 1, 'y'); put(body, hR + 2, y + 2, 'u');
+  }
   if (head === 'sweat') {
     const y = top + hairRows - 1;
     rect(body, hL, y, HW, 2, 'R'); rect(body, hL, y + 1, HW, 1, 'Q');
@@ -827,17 +946,31 @@ function charLayers(str, int, cha, gear, pose) {
     const m = PET_MAPS[petStage], pw = m[0].length, px = 43 - pw, py = FB - m.length + 1;
     m.forEach((row, j) => [...row].forEach((ch, i) => { if (ch !== '.' && !body[py + j][px + i]) body[py + j][px + i] = '#p' + ch; }));
   }
+  if (inT >= 1 && pose !== 'bulb') {            // floats in the sky to the upper left, clear of the head
+    const rn = ['..B..', '.BLB.', 'BLYBB', '.BBB.', '..B..'], ry = inT >= 2 ? 9 : 6;
+    rn.forEach((row, j) => [...row].forEach((c, i) => { if (c !== '.') put(body, 2 + i, ry + j, c === 'L' ? 'n' : c); }));
+    if (inT >= 2) ['.nn.nn.', 'nNnInNn', 'nnnInnn', 'IIIAIII'].forEach((row, j) => [...row].forEach((c, i) => { if (c !== '.') put(body, 2 + i, 2 + j, c); }));
+  }
   outline(body);
+  if (aura) {                                     // all four stats past their first trial: soft golden glow
+    const near = (x, y) => [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]].some(([dx, dy]) => { const r = body[y + dy]; return r && r[x + dx] === 'o'; });
+    const ring = [];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (!body[y][x] && near(x, y) && y < FB) ring.push([x, y]);
+    ring.forEach(([x, y]) => body[y][x] = (x + y) % 2 ? 'au' : 'aU');
+    C.au = '#ffe68a'; C.aU = '#fff6c9';
+  }
 
   // ---- growing heart (heart stat): small pale -> big deep pink -> big with sparkles
   C.hk='#e5607e';C.hl='#ffc2cf';C.hd='#a8263f';C.hp='#f4a3b7';C.hq='#d97a92';
   const HM=[['.pp.pp.','ppppppp','pqpppqp','.ppppq.','..ppq..','...q...'],
    ['.kkk.kkk.','kllkkkkkk','klkkkkkkk','kkkkkkkkd','.kkkkkkd.','..kkkkd..','...kkd...','....d....'],
    ['.kkkk.kkkk.','kllkkkkkkkk','kllkkkkkkkk','klkkkkkkkkk','kkkkkkkkkkd','.kkkkkkkkd.','..kkkkkkd..','...kkkkd...','....kkd....','.....d.....']][cT];
-  const hw=HM[0].length,hx=W-2-hw-(cT===2?2:0),hy=3,hmp={p:'hp',q:'hq',k:'hk',l:'hl',d:'hd'};
+  const hw=HM[0].length,hx=W-2-hw-(chT>=2?5:cT===2?2:0),hy=chT>=2?2:3,hmp={p:'hp',q:'hq',k:'hk',l:'hl',d:'hd'};
   HM.forEach((row,j)=>[...row].forEach((c,i)=>{if(c!=='.')put(bub,hx+i,hy+j,hmp[c])}));
   outline(bub);
-  if(cT===2)[[hx-2,hy+1],[hx+hw+1,hy+6],[hx+hw-1,hy-2]].forEach(([x,y])=>{put(bub,x,y,'Y');[[-1,0],[1,0],[0,-1],[0,1]].forEach(([u,v])=>put(bub,x+u,y+v,'y'))});
+  if(chT>=1){C.hg='#ffd0dc';const nb=(x,y)=>[[1,0],[-1,0],[0,1],[0,-1]].some(([u,v])=>{const r=bub[y+v];return r&&r[x+u]==='o'});const rg=[];for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(!bub[y][x]&&nb(x,y)&&(x+y)%2)rg.push([x,y]);rg.forEach(([x,y])=>bub[y][x]='hg')}
+  if(chT>=2){const wl=['..ww','.wwW','wwWW','.wW.'];wl.forEach((row,j)=>[...row].forEach((c,i)=>{if(c!=='.'){put(bub,hx-5+i,hy+1+j,c==='W'?'N':'n');put(bub,hx+hw+4-i,hy+1+j,c==='W'?'N':'n')}}))}
+  else if(cT===2)[[hx-2,hy+1],[hx+hw+1,hy+6],[hx+hw-1,hy-2]].forEach(([x,y])=>{put(bub,x,y,'Y');[[-1,0],[1,0],[0,-1],[0,1]].forEach(([u,v])=>put(bub,x+u,y+v,'y'))});
 
   // ---- background (sky, hills, grass) and ground shadow
   const bg = grid();
@@ -876,7 +1009,7 @@ STR:{say:'Your muscles are getting restless.',l:[['Go for a long walk',2],['Stre
 INT:{say:'Your brain is hungry for something new.',l:[['Learn something new',4],['Watch a documentary',3],['Listen to a podcast',2],['Write in a journal',2],['Visit a museum',4],['Try a new recipe',3],['Do a puzzle',2]]},
 DIS:{say:'Your discipline could use a boost.',l:[['Plan the week',3],['Clean your room',3],['Go to bed on time',3],['Clear your inbox',3],['Wake up early',3],['No phone for an hour',3],["Do a chore you've put off",4]]}};
 let suggOpen=null;
-function suggCheck(){if(suggOpen||view!=='home'||bossOpen||infoId)return;const sg=S.sugg=S.sugg||{at:0,seen:{}};
+function suggCheck(){if(suggOpen||bossIntro||S.bossDay===day()||view!=='home'||bossOpen||infoId||trialK||editId!=null||ideaDraft!=null)return;const sg=S.sugg=S.sugg||{at:0,seen:{}};
 const d0=new Date();d0.setHours(0,0,0,0);const last=new Date(sg.at||0);last.setHours(0,0,0,0);if(d0-last<2*864e5-36e5)return;
 const from=Date.now()-7*864e5,g={};Object.keys(NAMES).forEach(k=>g[k]=0);S.log.forEach(e=>{if(e.t>from&&g[e.stat]!=null)g[e.stat]+=e.pts});
 const order=Object.keys(NAMES).sort((a,b)=>g[a]-g[b]||lvl(S.pts[a]).l-lvl(S.pts[b]).l);
@@ -889,12 +1022,12 @@ return`<div class="ovl" onclick="if(event.target===this)suggAnswer(0)"><div clas
 <svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges"><g transform="translate(${d.dx} ${d.dy})">${runs(d.layers.body)}</g></svg>
 <small>QUEST IDEA</small><p>${IDEAS[o.k].say}</p><p class="lbl">HOW ABOUT</p><h3>${esc(o.n)}</h3><small class="sgpts">+${o.p} ${NAMES[o.k]} · ONE-TIME</small>
 <button onclick="suggAnswer(1)">ADD TASK</button><button class="ghost" onclick="suggAnswer(0)">NOT NOW</button></div></div>`}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)suggCheck()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){bossCheck();suggCheck()}else bossThemeStop()});
 function home(){
 const stats=Object.keys(NAMES).map(k=>{const raw=lvl(S.pts[k]),T=tierOf(k),L=Lv(k),f=L-10*T,tr=atTrial(k),pr=trialProg(k);
 return`<div class="stat s-${k} tier${Math.min(T,4)}"><div class="row"><span>${SHORT[k]}</span><span>LV${L}</span></div>
 <div class="seg">${Array.from({length:10},(_,i)=>`<i class="${i<f?'on':''}"></i>`).join('')}</div>
-${tr?`<button class="trial" onclick="trialK='${k}';render()" aria-label="${NAMES[k]} trial details"><span class="lock"></span>TRIAL ${Math.min(pr[0],pr[1])}/${pr[1]} ${pr[2]}<b class="ti">i</b></button>`:`<div class="prog"><b style="width:${Math.round(raw.cur/raw.need*100)}%"></b></div>`}</div>`}).join('');
+${tr?`<button class="trial" onclick="trialK='${k}';render()" aria-label="${NAMES[k]} trial details"><span class="lock"></span>TRIAL ${Math.min(pr[0],pr[1])}/${pr[1]}<b class="ti">i</b></button>`:`<div class="prog"><b style="width:${Math.round(raw.cur/raw.need*100)}%"></b></div>`}</div>`}).join('');
 const w=wk(),tn=S.log.filter(e=>TRAIN.includes(e.id)&&wk(e.t)===w).length,q=tn>=4?3:tn>=3?2:tn>=1?1:0;
 const readToday=S.log.some(e=>e.id==2&&day(e.t)===day()),fin=t=>doneToday(t)||(t.id==2&&readToday);
 const row=t=>{const n=S.log.filter(e=>e.id==t.id&&wk(e.t)===w).length,dn=doneToday(t),f=fin(t),tr=TRAIN.includes(t.id);
@@ -907,15 +1040,15 @@ const bottom=open.filter(t=>(t.daily||t.weekly||t.id==2)&&fin(t));
 const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;render()" aria-expanded="${openTr}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">TRAINING<small${q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>${tn}x this week</small></div><span class="chk trsum" style="background:${['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]}">${tn}</span></button>${openTr?trs.map(row).join(''):''}`:'';
 const sn=sides.filter(t=>!fin(t)).length;
 const sdHead=sides.length?`<button class="task trhead" onclick="openSide=!openSide;render()" aria-expanded="${openSide}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">SIDE QUESTS<small>for later</small></div><span class="chk trsum" style="background:#d9c9a3">${sn}</span></button>${openSide?sides.map(t=>row(t).replace('class="task','class="task sub')).join(''):''}`:'';
-const tl=(top.map(row).join('')+trHead+own.map(row).join('')+bottom.map(row).join('')+sdHead)||'<p class="empty">No open quests. Add one in TASKS.</p>';
+const tl=(top.map(row).join('')+trHead+own.map(row).join('')+sdHead+bottom.map(row).join(''))||'<p class="empty">No open quests. Add one in TASKS.</p>';
 return`<h1>GRINDLIFE${COG}</h1><div class="box hero"><div class="spr">${sprite()}<div id="say" class="say" aria-live="polite"></div></div><div class="stats">${stats}</div></div>
 <p>${Object.keys(S.fresh).length?'<button id="wbtn" class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button id="wbtn" onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
 <h2>WEEKLY BOSS</h2>${bossStrip()}
-<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>${bossCard()}${suggCard()}${trialCard()}`}
-const TRIAL_TXT={STR:'Do 4 trainings within 7 days.',INT:'Read 10 pages on 5 different days within 7 days.',CHA:'Compliment someone on 5 different days within 7 days.',DIS:'Finish at least one quest on 6 different days within 7 days.'};
+<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>${bossCard()}${suggCard()}${trialCard()}${bossIntroCard()}`}
+const TRIAL_TXT={STR:'Do 4 trainings within 7 days.',INT:'Read 10 pages on 5 different days within 7 days.',CHA:'Finish a Heart quest on 5 different days within 7 days.',DIS:'Finish at least one quest on 6 different days within 7 days.'};
 function trialCard(){const k=trialK;if(!k||!atTrial(k))return'';const [a,b]=trialProg(k),from=trialFrom(k);let boxes;
 if(k==='STR')boxes=Array.from({length:b},(_,i)=>`<i class="${i<a?'on':''}"></i>`).join('');
-else{const f=k==='INT'?e=>e.id==2:k==='CHA'?e=>e.id==1004:()=>true;
+else{const f=k==='INT'?e=>e.id==2:k==='CHA'?e=>e.stat==='CHA':()=>true;
 boxes=Array.from({length:7},(_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-6+i);const end=d.getTime()+864e5,pre=end<=from;
 const on=S.log.some(e=>e.t>from&&e.t>=d.getTime()&&e.t<end&&f(e));return`<i class="${on?'on':''}${pre?' pre':''}"><u>${'SMTWTFS'[d.getDay()]}</u></i>`}).join('')}
 return`<div class="ovl" onclick="if(event.target===this){trialK=null;render()}"><div class="box card s-${k}" role="dialog" aria-modal="true" aria-label="${NAMES[k]} trial">
@@ -924,17 +1057,18 @@ return`<div class="ovl" onclick="if(event.target===this){trialK=null;render()}">
 <p class="lbl">REWARD</p><p>Pass to unlock the next tier. Your stat starts growing again.</p>
 <button onclick="trialK=null;render()">CLOSE</button></div></div>`}
 function tasks(){
-const trow=t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}${t.side?' · side quest':''}</small></div>${t.perm?'<small>CORE</small>':`<button class="qb" onclick="editId=${t.id};delArm=0;render()" aria-label="Edit ${esc(t.name)}">${QUILL}</button>`}</div>`;
-const mine=S.tasks.filter(t=>!t.perm&&!t.done),core=S.tasks.filter(t=>t.perm);
+const trow=t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.side?'side quest':t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':`<button class="qb" onclick="editId=${t.id};delArm=0;render()" aria-label="Edit ${esc(t.name)}">${QUILL}</button>`}</div>`;
+const mine=S.tasks.filter(t=>!t.perm&&!t.done&&!t.side),sideT=S.tasks.filter(t=>!t.perm&&!t.done&&t.side),core=S.tasks.filter(t=>t.perm);
+const arw='<svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg>';
+const sideHead=sideT.length?`<button class="task trhead" onclick="openSideT=!openSideT;render()" aria-expanded="${openSideT}">${arw}<div class="n">SIDE QUESTS<small>for later</small></div><span class="chk trsum" style="background:#d9c9a3">${sideT.length}</span></button>${openSideT?sideT.map(t=>trow(t).replace('class="task"','class="task sub"')).join(''):''}`:'';
 const coreHead=`<button class="task trhead" onclick="openCore=!openCore;render()" aria-expanded="${openCore}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">CORE TASKS<small>always there</small></div><span class="chk trsum" style="background:#d9c9a3">${core.length}</span></button>${openCore?core.map(t=>trow(t).replace('class="task"','class="task sub"')).join(''):''}`;
-const list=(mine.map(trow).join('')||'<p class="empty">No tasks of your own yet.</p>')+coreHead;
+const list=(mine.map(trow).join('')||(sideT.length?'':'<p class="empty">No tasks of your own yet.</p>'))+sideHead+coreHead;
 return`<h1>TASKS${COG}</h1><div class="box add">
 <input id="nm" placeholder="New task" maxlength="40" aria-label="Task name">
 <select id="st" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}"${k==='DIS'?' selected':''}>${NAMES[k]}</option>`).join('')}</select>
-<select id="rp" aria-label="Task type"><option value="0">REPEATABLE</option><option value="1" selected>ONE-TIME</option><option value="2">DAILY</option><option value="3">WEEKLY</option></select>
+<select id="rp" aria-label="Task type"><option value="0">REPEATABLE</option><option value="1" selected>ONE-TIME</option><option value="2">DAILY</option><option value="3">WEEKLY</option><option value="4">SIDE QUEST</option></select>
 <input id="pt" type="number" min="1" max="20" value="1" aria-label="Points">
-<button type="button" id="sq" role="switch" aria-checked="${false}" class="sqt${false?' on':''}" onclick="this.setAttribute('aria-checked',this.classList.toggle('on'))"><span>SIDE QUEST</span><i class="sw"><b></b></i></button>
-<button onclick="addTask(nm.value,st.value,pt.value,+rp.value,sq.classList.contains('on'))">ADD TASK</button></div>
+<button onclick="addTask(nm.value,st.value,pt.value,+rp.value)">ADD TASK</button></div>
 <h2>YOUR TASKS</h2><div class="box">${list}</div>
 <h2>IDEAS</h2><div class="sug">${SUGG.map((s,i)=>`<button onclick="ideaDraft=${i};render()">${s[0]}</button>`).join('')}</div>${editCard()}${ideaCard()}`}
 function ideaCard(){const d=ideaDraft!=null&&SUGG[ideaDraft];if(!d)return'';const ty=d[3]||0;
@@ -942,26 +1076,24 @@ return`<div class="ovl" onclick="if(event.target===this){ideaDraft=null;render()
 <small>NEW TASK FROM IDEA</small><div class="add" style="width:100%;text-align:left">
 <input id="in" value="${esc(d[0]).replace(/"/g,'&quot;')}" maxlength="40" aria-label="Task name">
 <select id="is" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}"${k===d[1]?' selected':''}>${NAMES[k]}</option>`).join('')}</select>
-<select id="ir" aria-label="Task type">${['REPEATABLE','ONE-TIME','DAILY','WEEKLY'].map((n,i)=>`<option value="${i}"${i===ty?' selected':''}>${n}</option>`).join('')}</select>
-<input id="ip" type="number" min="1" max="20" value="${d[2]}" aria-label="Points">
-<button type="button" id="isq" role="switch" aria-checked="${false}" class="sqt${false?' on':''}" onclick="this.setAttribute('aria-checked',this.classList.toggle('on'))"><span>SIDE QUEST</span><i class="sw"><b></b></i></button></div>
+<select id="ir" aria-label="Task type">${['REPEATABLE','ONE-TIME','DAILY','WEEKLY','SIDE QUEST'].map((n,i)=>`<option value="${i}"${i===ty?' selected':''}>${n}</option>`).join('')}</select>
+<input id="ip" type="number" min="1" max="20" value="${d[2]}" aria-label="Points"></div>
 <button onclick="addIdea()">ADD TASK</button><button class="ghost" onclick="ideaDraft=null;render()">CANCEL</button></div></div>`}
 function addIdea(){const g=id=>document.getElementById(id).value,name=g('in').trim();if(!name)return toast('Give the task a name');
-ideaDraft=null;addTask(name,g('is'),g('ip'),+g('ir'),document.getElementById('isq').classList.contains('on'));toast('Added: '+name)}
-function editCard(){const t=editId!=null&&S.tasks.find(t=>t.id==editId&&!t.perm);if(!t)return'';const ty=t.once?1:t.daily?2:t.weekly?3:0;
+ideaDraft=null;addTask(name,g('is'),g('ip'),+g('ir'));toast('Added: '+name)}
+function editCard(){const t=editId!=null&&S.tasks.find(t=>t.id==editId&&!t.perm);if(!t)return'';const ty=t.side?4:t.once?1:t.daily?2:t.weekly?3:0;
 return`<div class="ovl" onclick="if(event.target===this){editId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="Edit task">
 <small>EDIT TASK</small><div class="add" style="width:100%;text-align:left">
 <input id="en" value="${esc(t.name).replace(/"/g,'&quot;')}" maxlength="40" aria-label="Task name">
 <select id="es" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}"${k===t.stat?' selected':''}>${NAMES[k]}</option>`).join('')}</select>
-<select id="er" aria-label="Task type">${['REPEATABLE','ONE-TIME','DAILY','WEEKLY'].map((n,i)=>`<option value="${i}"${i===ty?' selected':''}>${n}</option>`).join('')}</select>
-<input id="ep" type="number" min="1" max="20" value="${t.pts}" aria-label="Points">
-<button type="button" id="esq" role="switch" aria-checked="${!!t.side}" class="sqt${!!t.side?' on':''}" onclick="this.setAttribute('aria-checked',this.classList.toggle('on'))"><span>SIDE QUEST</span><i class="sw"><b></b></i></button></div>
+<select id="er" aria-label="Task type">${['REPEATABLE','ONE-TIME','DAILY','WEEKLY','SIDE QUEST'].map((n,i)=>`<option value="${i}"${i===ty?' selected':''}>${n}</option>`).join('')}</select>
+<input id="ep" type="number" min="1" max="20" value="${t.pts}" aria-label="Points"></div>
 <button onclick="saveEdit(${t.id})">SAVE</button>
 <button class="ghost danger" onclick="delEdit(${t.id})">${delArm?'TAP AGAIN TO DELETE':'DELETE'}</button>
 <button class="ghost" onclick="editId=null;render()">CANCEL</button></div></div>`}
 function saveEdit(id){const t=S.tasks.find(t=>t.id==id);if(!t)return;const name=document.getElementById('en').value.trim();if(!name)return toast('Give the task a name');
 const ty=+document.getElementById('er').value;t.name=name;t.stat=document.getElementById('es').value;t.pts=Math.max(1,Math.min(20,+document.getElementById('ep').value||t.pts));
-t.once=ty===1;t.daily=ty===2;t.weekly=ty===3;if(document.getElementById('esq').classList.contains('on'))t.side=true;else delete t.side;editId=null;save();render();toast('Task saved')}
+t.once=ty===1||ty===4;t.daily=ty===2;t.weekly=ty===3;if(ty===4)t.side=true;else delete t.side;editId=null;save();render();toast('Task saved')}
 function delEdit(id){if(!delArm){delArm=1;render();clearTimeout(delEdit.h);delEdit.h=setTimeout(()=>{if(delArm){delArm=0;if(editId!=null)render()}},4000);return}
 delArm=0;editId=null;del(id);toast('Task deleted')}
 function render(){
@@ -971,7 +1103,7 @@ document.body.classList.toggle('noanim',!S.settings.anim);
 ensure();render();
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
-setTimeout(suggCheck,1200);
+setTimeout(()=>{bossCheck();suggCheck()},1200);
 </script>
 </body>
 </html>
