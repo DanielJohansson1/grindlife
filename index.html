@@ -122,7 +122,9 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 .tier1 .badge{background:#d58b4a}.tier2 .badge{background:#c9d1da}.tier3 .badge,.tier4 .badge{background:#e8bf4f}
 .tier4 .badge{box-shadow:0 0 0 2px #fff1a8}
 .tier1 .seg i{border-color:#a0612a}.tier2 .seg i{border-color:#8f9aa6}.tier3 .seg i,.tier4 .seg i{border-color:#b8860b}
-.trial{font-size:7px;line-height:1.5;color:#8a6200}
+.trial{font-size:7px;line-height:1.5;color:#8a6200;background:none;border:0;box-shadow:none;padding:2px 0;width:100%;text-align:left;display:flex;align-items:center;gap:0}
+.trial .ti{margin-left:auto;width:14px;height:14px;border:2px solid #8a6200;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:normal}
+.tbox{display:flex;gap:4px;justify-content:center;margin:4px 0}.tbox i{width:26px;height:26px;border:3px solid var(--fg);background:var(--field);display:flex;align-items:flex-end;justify-content:center}.tbox i.on{background:var(--c)}.tbox i.pre{opacity:.35}.tbox u{text-decoration:none;font-size:7px;margin-bottom:-18px;color:var(--mid)}.tbox:not(.cnt){margin-bottom:16px}
 .lock{display:inline-block;width:7px;height:7px;background:#8a6200;margin-right:4px;vertical-align:baseline}
 .prog{height:6px;background:var(--field);border:2px solid var(--fg)}
 .prog b{display:block;height:100%;background:var(--c)}
@@ -146,9 +148,13 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 .task.sub{padding-left:12px;border-left:4px solid var(--mid)}
 .chk{width:34px;height:34px;padding:0;flex:none;background:#8fcf6a}
 .x{padding:4px 7px;flex:none;box-shadow:none}
-.task.tap{cursor:pointer}.task.tap:active{background:#e8c98a}
+.qb{flex:none;width:36px;height:36px;padding:3px;box-shadow:1px 1px 0 var(--fg);border-width:2px;display:flex;align-items:center;justify-content:center}.qb svg{width:26px;height:26px}
 .edt{flex:none;border:2px solid var(--fg);padding:3px 5px;font-size:7px;color:var(--fg)}
 .card .danger{color:#a8263f}
+.help{padding:6px 12px}.help section{padding:10px 0;border-bottom:2px dashed var(--mid)}.help section:last-child{border:0}.help h3{margin:0 0 6px;font-size:10px}.help ul{margin:0;padding:0;list-style:none}.help li{position:relative;padding-left:14px;margin:5px 0;font-size:8px;line-height:1.9}.help li::before{content:'';position:absolute;left:0;top:5px;width:6px;height:6px;background:var(--mid)}.help b{font-weight:normal;color:var(--mid)}
+.sqt{display:flex;justify-content:space-between;align-items:center;background:var(--field);color:var(--fg);box-shadow:none}
+.sw{display:block;position:relative;width:40px;height:20px;border:3px solid var(--fg);background:#d9c9a3;flex:none}.sw b{position:absolute;top:2px;left:2px;width:10px;height:10px;background:var(--fg);transition:left .15s}.sqt.on .sw{background:#8fcf6a}.sqt.on .sw b{left:22px}
+@media (prefers-reduced-motion:reduce){.sw b{transition:none}}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--bg);border-top:4px solid var(--fg);box-shadow:inset 0 3px 0 #e4b86a;padding-bottom:env(safe-area-inset-bottom,0px)}
 nav button{flex:1;border:0;box-shadow:none;background:transparent;color:var(--hd);padding:14px 0}
 nav button[aria-current="true"]{background:var(--panel);color:var(--fg)}
@@ -170,7 +176,8 @@ const SUGG=[['Stretch 15 min','STR',2],['Walk 30 min','STR',3],['Read 20 pages',
 const COG=`<button class="cog" onclick="go('settings')" aria-label="Settings"><svg viewBox="0 0 9 9" shape-rendering="crispEdges"><rect x="2" y="2" width="5" height="5"/><rect x="4" y="0" width="1" height="2"/><rect x="4" y="7" width="1" height="2"/><rect x="0" y="4" width="2" height="1"/><rect x="7" y="4" width="2" height="1"/><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/><rect x="3" y="3" width="3" height="3" style="fill:var(--bg)"/></svg></button>`;
 const CORE=[{id:1,name:'Hit the gym',stat:'STR',pts:4},{id:1001,name:'CrossFit',stat:'STR',pts:5},{id:1002,name:'Beach Volleyball',stat:'STR',pts:5},{id:1003,name:'Running',stat:'STR',pts:7},{id:2,name:'Read 10 pages',stat:'INT',pts:3,daily:false},{id:1000,name:'Do Duolingo',stat:'INT',pts:1,daily:true},{id:1004,name:'Compliment someone',stat:'CHA',pts:2,daily:true},{id:1005,name:'Food prep',stat:'DIS',pts:5,weekly:true}];
 const TRAIN=[1,1001,1002,1003];
-let view='home',rc=0,wtab='gear',openTr=false,openCore=false,editId=null,delArm=0,ideaDraft=null,S=load();
+const QUILL=`<svg viewBox="0 0 14 14" shape-rendering="crispEdges" aria-hidden="true"><rect x="10" y="1" width="1" height="1" fill="#3b2416"/><rect x="11" y="0" width="1" height="1" fill="#3b2416"/><rect x="13" y="1" width="1" height="1" fill="#3b2416"/><rect x="12" y="0" width="1" height="1" fill="#3b2416"/><rect x="8" y="2" width="1" height="1" fill="#3b2416"/><rect x="9" y="1" width="1" height="1" fill="#3b2416"/><rect x="13" y="2" width="1" height="1" fill="#3b2416"/><rect x="7" y="3" width="1" height="1" fill="#3b2416"/><rect x="13" y="3" width="1" height="1" fill="#3b2416"/><rect x="12" y="4" width="1" height="1" fill="#3b2416"/><rect x="6" y="4" width="1" height="1" fill="#3b2416"/><rect x="11" y="5" width="1" height="1" fill="#3b2416"/><rect x="5" y="5" width="1" height="1" fill="#3b2416"/><rect x="10" y="6" width="1" height="1" fill="#3b2416"/><rect x="4" y="6" width="1" height="1" fill="#3b2416"/><rect x="8" y="7" width="1" height="1" fill="#3b2416"/><rect x="9" y="7" width="1" height="1" fill="#3b2416"/><rect x="3" y="7" width="1" height="1" fill="#3b2416"/><rect x="7" y="8" width="1" height="1" fill="#3b2416"/><rect x="3" y="8" width="1" height="1" fill="#3b2416"/><rect x="5" y="9" width="1" height="1" fill="#3b2416"/><rect x="6" y="9" width="1" height="1" fill="#3b2416"/><rect x="2" y="9" width="1" height="1" fill="#3b2416"/><rect x="4" y="10" width="1" height="1" fill="#3b2416"/><rect x="1" y="10" width="1" height="1" fill="#3b2416"/><rect x="3" y="11" width="1" height="1" fill="#3b2416"/><rect x="1" y="11" width="1" height="1" fill="#3b2416"/><rect x="2" y="12" width="1" height="1" fill="#3b2416"/><rect x="0" y="12" width="1" height="1" fill="#3b2416"/><rect x="1" y="13" width="1" height="1" fill="#3b2416"/><rect x="11" y="1" width="1" height="1" fill="#fffaf0"/><rect x="12" y="1" width="1" height="1" fill="#fffaf0"/><rect x="9" y="2" width="1" height="1" fill="#fffaf0"/><rect x="10" y="2" width="1" height="1" fill="#fffaf0"/><rect x="11" y="2" width="1" height="1" fill="#fffaf0"/><rect x="12" y="2" width="1" height="1" fill="#fffaf0"/><rect x="8" y="3" width="1" height="1" fill="#fffaf0"/><rect x="9" y="3" width="1" height="1" fill="#fffaf0"/><rect x="10" y="3" width="1" height="1" fill="#fffaf0"/><rect x="11" y="3" width="1" height="1" fill="#fffaf0"/><rect x="12" y="3" width="1" height="1" fill="#c9c2b0"/><rect x="7" y="4" width="1" height="1" fill="#fffaf0"/><rect x="8" y="4" width="1" height="1" fill="#fffaf0"/><rect x="9" y="4" width="1" height="1" fill="#fffaf0"/><rect x="10" y="4" width="1" height="1" fill="#fffaf0"/><rect x="11" y="4" width="1" height="1" fill="#c9c2b0"/><rect x="6" y="5" width="1" height="1" fill="#fffaf0"/><rect x="7" y="5" width="1" height="1" fill="#fffaf0"/><rect x="8" y="5" width="1" height="1" fill="#fffaf0"/><rect x="9" y="5" width="1" height="1" fill="#fffaf0"/><rect x="10" y="5" width="1" height="1" fill="#c9c2b0"/><rect x="5" y="6" width="1" height="1" fill="#fffaf0"/><rect x="6" y="6" width="1" height="1" fill="#fffaf0"/><rect x="7" y="6" width="1" height="1" fill="#fffaf0"/><rect x="8" y="6" width="1" height="1" fill="#fffaf0"/><rect x="9" y="6" width="1" height="1" fill="#c9c2b0"/><rect x="4" y="7" width="1" height="1" fill="#fffaf0"/><rect x="5" y="7" width="1" height="1" fill="#fffaf0"/><rect x="6" y="7" width="1" height="1" fill="#fffaf0"/><rect x="7" y="7" width="1" height="1" fill="#c9c2b0"/><rect x="4" y="8" width="1" height="1" fill="#fffaf0"/><rect x="5" y="8" width="1" height="1" fill="#fffaf0"/><rect x="6" y="8" width="1" height="1" fill="#c9c2b0"/><rect x="3" y="9" width="1" height="1" fill="#fffaf0"/><rect x="4" y="9" width="1" height="1" fill="#c9c2b0"/><rect x="2" y="10" width="1" height="1" fill="#c9c2b0"/><rect x="3" y="10" width="1" height="1" fill="#c9c2b0"/><rect x="2" y="11" width="1" height="1" fill="#3b2416"/><rect x="1" y="12" width="1" height="1" fill="#3b2416"/></svg>`;
+let view='home',rc=0,wtab='gear',openTr=false,openCore=false,editId=null,delArm=0,ideaDraft=null,openSide=false,trialK=null,S=load();
 function ensure(){S.tasks=S.tasks.filter(t=>!(t.perm&&!CORE.some(c=>c.id==t.id)));const core=CORE.map(c=>{const t=S.tasks.find(t=>t.id==c.id);return t?Object.assign(t,c,{perm:true}):{...c,perm:true}});S.tasks=[...core,...S.tasks.filter(t=>!CORE.some(c=>c.id==t.id))];S.settings=Object.assign({sound:true,anim:true},S.settings);S.owned=S.owned||{};S.equip=S.equip||{};S.fresh=S.fresh||{};S.qon=S.qon||{};S.tier=S.tier||{};S.trialWk=S.trialWk||{};checkTrials();checkUnlocks();S.next=Math.max(S.next||4,4);save()}
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}
 return{pts:{STR:0,INT:0,CHA:0,DIS:0},tasks:[],log:[],bonus:{},next:4}}
@@ -182,9 +189,13 @@ function wk(d){const x=new Date(d||Date.now());x.setHours(0,0,0,0);x.setDate(x.g
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2600)}
 const TIERN=['NOVICE','ADEPT','EXPERT','MASTER','LEGEND'],ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
 function tierOf(k){return (S.tier&&S.tier[k])||0}
+function ptsFor(L){let p=0;for(let l=0;l<L;l++)p+=5+3*l;return p}
+// adds points but never past the current trial cap: an open trial is a natural stop
+function gain(k,n){const a=Math.max(0,Math.min(n,ptsFor(10*(tierOf(k)+1))-S.pts[k]));S.pts[k]+=a;return a}
 function Lv(k){return Math.min(lvl(S.pts[k]).l,10*(tierOf(k)+1))}
 function atTrial(k){return lvl(S.pts[k]).l>=10*(tierOf(k)+1)}
-function trialProg(k){const o=S.trialOpen&&S.trialOpen[k],from=Math.max(o?o.at:Date.now(),Date.now()-7*864e5),L=S.log.filter(e=>e.t>from),days=f=>new Set(L.filter(f).map(e=>day(e.t))).size;
+function trialFrom(k){const o=S.trialOpen&&S.trialOpen[k],d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-6);return Math.max(o?o.at:Date.now(),d.getTime())}
+function trialProg(k){const from=trialFrom(k),L=S.log.filter(e=>e.t>from),days=f=>new Set(L.filter(f).map(e=>day(e.t))).size;
 if(k==='STR')return[L.filter(e=>TRAIN.includes(e.id)).length,4,'TRAININGS'];
 if(k==='INT')return[days(e=>e.id==2),5,'READING DAYS'];
 if(k==='CHA')return[days(e=>e.id==1004),5,'COMPLIMENT DAYS'];
@@ -418,7 +429,7 @@ const kind=t==='g'?(it.slot==='pet'?'PET':'GEAR'):t==='p'?'PLACE':'QUIRK';
 return`<div class="ovl" onclick="if(event.target===this){infoId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="${it.name}">
 ${pic}<small>${kind}</small><h3>${it.name}</h3><p class="lbl">HOW YOU GOT IT</p><p>${it.how}</p>${date?`<p class="lbl">UNLOCKED</p><p>${date}</p>`:''}
 <button onclick="infoId=null;render()">CLOSE</button></div></div>`}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(editId!=null||ideaDraft!=null)){editId=null;ideaDraft=null;render();return}if(e.key==='Escape'&&suggOpen){suggAnswer(0);return}if(e.key==='Escape'&&(infoId||bossOpen)){infoId=null;bossOpen=0;render()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&(editId!=null||ideaDraft!=null||trialK)){editId=null;ideaDraft=null;trialK=null;render();return}if(e.key==='Escape'&&suggOpen){suggAnswer(0);return}if(e.key==='Escape'&&(infoId||bossOpen)){infoId=null;bossOpen=0;render()}});
 function wardrobe(){
 const tiles=Array.from({length:SLOTS},(_,k)=>{const i=ITEMS[k];
 if(i&&S.owned[i.id]){const on=S.equip[i.id],f=S.fresh[i.id];return`<div class="tw"><button class="tile" onclick="wear('${i.id}')" aria-pressed="${!!on}">${f?'<i class="spk" style="position:absolute;top:8px;right:10px"></i>':''}<svg viewBox="0 0 16 16" shape-rendering="crispEdges">${i.ic}</svg><span>${i.name}</span><small>${i.slot==='head'?'HEAD':i.slot==='pet'?'PET':'SHIRT'} · ${f?'NEW!':i.slot==='pet'?(on?'WITH YOU':'AT HOME'):(on?'WORN':'TAP TO WEAR')}</small></button>${ib('g:'+i.id,i.name)}</div>`}
@@ -442,42 +453,43 @@ function pop(){if(!S.settings.anim)return;const e=document.querySelector('.sprit
 function tog(k){S.settings[k]=!S.settings[k];save();render();if(k==='sound')sfx('ok')}
 function reset(){if(!rc){rc=1;render();setTimeout(()=>{rc=0;if(view==='settings')render()},4000);return}
 try{localStorage.removeItem(KEY)}catch(e){}S=load();ensure();rc=0;view='home';render();toast('Fresh start')}
-function help(){return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</button></h1><div class="box">
-<p>QUESTS: Tap the check on a quest to finish it. Each quest gives points to one stat: Strength, Intellect, Heart or Discipline.</p>
-<p>Repeatable quests can be done any time. Daily quests come back every day. Weekly quests come back every Monday. One-time quests only give points once. Made a mistake? UNDO LAST takes back your latest check.</p>
-<p>LEVELS: Points fill up a level. Reaching level 1 takes ${lvl(0).need} points, and each level after that needs 3 more than the one before, so it gets harder as you go. Stats never go down.</p>
-<p>WEEKLY BOSS: A new boss shows up every Monday under your quests. Tasks that match it deal damage. Beat it before Sunday night for a reward. If you don't, it just leaves.</p>
-<p>WEEKLY BONUS: Finish 4 quests for the same stat in one week (Monday to Sunday) to get +10 points in that stat and +5 Discipline.</p>
-<p>DISCIPLINE: Any day you finish at least one quest gives +2 Discipline. Missing a day never costs you anything.</p>
-<p>TIERS AND TRIALS: Every 10 levels a stat reaches a trial, shown under its bar. Only what you do after the trial opens counts. Complete the challenge within 7 days to reach the next tier: I Novice, II Adept, III Expert, IV Master, V Legend. You can't fail: if 7 days pass, the oldest days just drop off the count. While a trial is open, your level pauses but your points keep adding up. Pass the trial and they all count at once, so you may jump several levels.</p>
-<p>SECRETS: Keep growing your character and you will unlock new gear, places and quirks.</p>
+function help(){const sec=(h,l)=>`<section><h3>${h}</h3><ul>${l.map(x=>`<li>${x}</li>`).join('')}</ul></section>`;
+return`<h1>HOW TO PLAY<button onclick="go('settings')">BACK</button></h1><div class="box help">
+${sec('QUESTS',['Tap ✔ to finish a quest and earn points.','Each quest builds one stat: Strength, Intellect, Heart or Discipline.','Made a mistake? UNDO LAST takes it back.'])}
+${sec('QUEST TYPES',['<b>Repeatable:</b> do it any time.','<b>Daily:</b> comes back every day.','<b>Weekly:</b> comes back every Monday.','<b>One-time:</b> gone once it\'s done.','<b>Side quest:</b> parked at the bottom for later.'])}
+${sec('LEVELS',[`Points fill up your level bar.`,`Level 1 takes ${lvl(0).need} points. Each level after needs 3 more than the last.`,'Stats never go down.'])}
+${sec('DISCIPLINE',['+2 Discipline on any day you finish a quest.','Missing a day costs you nothing.'])}
+${sec('WEEKLY BONUS',['Finish 4 quests for the same stat in one week (Mon–Sun).','You get +10 in that stat and +5 Discipline.'])}
+${sec('WEEKLY BOSS',['A new boss shows up every Monday below your quests.','Matching quests deal damage. Tap the boss to see what hurts it.','Beat it by Sunday night for a reward.'])}
+${sec('TRIALS',['Every 10 levels a stat reaches a trial and stops gaining points.','Tap the trial under the bar to see what it asks.','Pass it within 7 days to reach the next tier. You can\'t fail.'])}
+${sec('SECRETS',['Keep growing to unlock new gear, places and quirks.'])}
 </div>`}
 function settings(){const o=k=>S.settings[k]?'ON':'OFF';
 return`<h1>SETTINGS<button onclick="go('home')">BACK</button></h1><div class="box add">
-<button onclick="tog('sound')">SOUND: ${o('sound')}</button>
-<button onclick="tog('anim')">ANIMATIONS: ${o('anim')}</button>
+<button class="sqt${S.settings.sound?' on':''}" role="switch" aria-checked="${!!S.settings.sound}" onclick="tog('sound')"><span>SOUND</span><i class="sw"><b></b></i></button>
+<button class="sqt${S.settings.anim?' on':''}" role="switch" aria-checked="${!!S.settings.anim}" onclick="tog('anim')"><span>ANIMATIONS</span><i class="sw"><b></b></i></button>
 <button onclick="go('help')">HOW TO PLAY</button>
 <button onclick="reset()" style="background:#e8a090">${rc?'TAP AGAIN TO ERASE ALL':'RESET ALL DATA'}</button></div>
 <p style="color:var(--hd);font-size:8px">Reset erases all points, tasks and history on this device.</p>`}
 function done(id){const t=S.tasks.find(t=>t.id==id);if(!t||t.done||doneToday(t))return;const p0={...S.pts};
 const before=Lv(t.stat),wasTrial=atTrial(t.stat);
-const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:0};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);S.pts[t.stat]+=t.pts;if(first){S.pts.DIS+=2;e.show=1}if(t.once)t.done=true;
+const e={t:Date.now(),id,stat:t.stat,pts:t.pts,dis:0};const first=!S.log.some(x=>day(x.t)===day(e.t));S.log.push(e);e.pts=gain(t.stat,t.pts);if(first){e.show=1;e.sh=gain('DIS',2)}if(t.once)t.done=true;
 const w=wk(),n=S.log.filter(x=>x.stat===t.stat&&wk(x.t)===w).length,k=w+t.stat;let m='';
-if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;S.pts[t.stat]+=10;S.pts.DIS+=5;e.bd=5;m='Weekly bonus! Discipline up'}
+if(n>=4&&!S.bonus[k]){S.bonus[k]=1;e.bk=k;e.bs=gain(t.stat,10);e.bd=gain('DIS',5);m='Weekly bonus! Discipline up'}
 else if(Lv(t.stat)>before)m=atTrial(t.stat)&&!wasTrial?NAMES[t.stat]+' TRIAL OPEN!':NAMES[t.stat]+' LEVEL UP!';
 const tu=checkTrials(e);if(tu.length){e.tr=tu;m=tu.map(k=>NAMES[k]+' → '+TIERN[Math.min(tierOf(k),4)]+'!').join(' ')}
 const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YOU!';else if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
 sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');const bs=boss(),hit=bs.won?0:bs.b.dmg(e);
-if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;Object.keys(bs.b.rw).forEach(k=>S.pts[k]+=bs.b.rw[k]);m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';const loot=checkUnlocks();if(loot.length)m+=' LOOT DROPPED!';sfx('tier')}
+if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;e.brw={};Object.keys(bs.b.rw).forEach(k=>e.brw[k]=gain(k,bs.b.rw[k]));m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';const loot=checkUnlocks();if(loot.length)m+=' LOOT DROPPED!';sfx('tier')}
 if(m)toast(m);save();
-const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});flashDone(id,gains,hit);pop()}
+const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});if(!gains[t.stat]&&atTrial(t.stat))gains[t.stat]='T';flashDone(id,gains,hit);pop()}
 let pend=null;
 function flashDone(id,gains,hit){const b=document.querySelector(`button.chk[onclick="done(${id})"]`),row=b&&b.closest('.task');
 if(!row){render();return}
 if(pend){clearTimeout(pend.t);pend=null}
 row.classList.add('won');b.disabled=true;
-const g=document.createElement('span');g.className='gain';g.textContent=Object.keys(gains).map(k=>'+'+gains[k]+' '+SHORT[k]).join('  ')+(hit?'  HIT -'+hit:'');row.appendChild(g);
+const g=document.createElement('span');g.className='gain';g.textContent=Object.keys(gains).map(k=>gains[k]==='T'?'+0 '+SHORT[k]+' (TRIAL)':'+'+gains[k]+' '+SHORT[k]).join('  ')+(hit?'  HIT -'+hit:'');row.appendChild(g);
 const tmp=document.createElement('div');tmp.innerHTML=home();const nh=tmp.querySelector('.hero'),oh=document.querySelector('.hero');if(nh&&oh)oh.replaceWith(nh);
 const nw=tmp.querySelector('#wbtn'),ow=document.querySelector('#wbtn');if(nw&&ow)ow.replaceWith(nw);
 const nb=tmp.querySelector('.boss'),ob=document.querySelector('.boss');if(nb&&ob){ob.replaceWith(nb);if(hit){nb.classList.add('hurt');const d=document.createElement('span');d.className='dmg';d.textContent='-'+hit;nb.appendChild(d)}}
@@ -486,15 +498,15 @@ const ft=setTimeout(()=>row.classList.add('leaving'),slow?1300:700);
 pend={t:setTimeout(()=>{clearTimeout(ft);pend=null;render()},slow?1700:1000)}}
 function undo(){const e=S.log.pop();if(!e)return;const t=S.tasks.find(t=>t.id==e.id);
 S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.pts!=null?e.pts:(t?t.pts:0)));
-S.pts.DIS=Math.max(0,S.pts.DIS-(e.dis||0)-(e.show?2:0));
-if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-10);S.pts.DIS=Math.max(0,S.pts.DIS-(e.bd!=null?e.bd:15));delete S.bonus[e.bk]}
-if(e.bossWin){const b=BOSSES.find(x=>x.id===S.bossWon[e.bossWin]);if(b)Object.keys(b.rw).forEach(k=>S.pts[k]=Math.max(0,S.pts[k]-b.rw[k]));delete S.bossWon[e.bossWin]}
+S.pts.DIS=Math.max(0,S.pts.DIS-(e.dis||0)-(e.sh!=null?e.sh:e.show?2:0));
+if(e.bk){S.pts[e.stat]=Math.max(0,S.pts[e.stat]-(e.bs!=null?e.bs:10));S.pts.DIS=Math.max(0,S.pts.DIS-(e.bd!=null?e.bd:15));delete S.bonus[e.bk]}
+if(e.bossWin){const b=BOSSES.find(x=>x.id===S.bossWon[e.bossWin]);if(b)Object.keys(b.rw).forEach(k=>S.pts[k]=Math.max(0,S.pts[k]-(e.brw?e.brw[k]||0:b.rw[k])));delete S.bossWon[e.bossWin]}
 if(e.tr)e.tr.forEach(k=>{S.tier[k]=Math.max(0,tierOf(k)-1);if(e.trOpen&&e.trOpen[k])S.trialOpen[k]=e.trOpen[k]});
 if(t&&t.once)t.done=false;save();render();toast('Undone');sfx('undo')}
-function addTask(name,stat,pts,once){name=(name||'').trim();if(!name)return toast('Give the task a name');
-S.tasks.push({id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2,weekly:once==3});save();render()}
+function addTask(name,stat,pts,once,side){name=(name||'').trim();if(!name)return toast('Give the task a name');
+const t={id:S.next++,name,stat,pts:Math.max(1,Math.min(20,+pts||3)),once:once==1,daily:once==2,weekly:once==3};if(side)t.side=true;S.tasks.push(t);save();render()}
 function del(id){S.tasks=S.tasks.filter(t=>t.id!=id||t.perm);save();render()}
-function go(v){view=v;infoId=null;bossOpen=0;editId=null;delArm=0;ideaDraft=null;render()}
+function go(v){view=v;infoId=null;bossOpen=0;editId=null;delArm=0;ideaDraft=null;trialK=null;render()}
 // Grindlife character generator: returns pixel layers for given stat levels.
 // Golden retriever pet: three growth stages, drawn facing the character (left).
 // A fur, a shade, l light cream, x dark (eye/nose), T tongue, c collar, j tag
@@ -880,35 +892,49 @@ return`<div class="ovl" onclick="if(event.target===this)suggAnswer(0)"><div clas
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)suggCheck()});
 function home(){
 const stats=Object.keys(NAMES).map(k=>{const raw=lvl(S.pts[k]),T=tierOf(k),L=Lv(k),f=L-10*T,tr=atTrial(k),pr=trialProg(k);
-return`<div class="stat s-${k} tier${Math.min(T,4)}"><div class="row"><span>${SHORT[k]}<b class="badge">${ROMAN[Math.min(T,9)]}</b></span><span>LV${L}</span></div>
+return`<div class="stat s-${k} tier${Math.min(T,4)}"><div class="row"><span>${SHORT[k]}</span><span>LV${L}</span></div>
 <div class="seg">${Array.from({length:10},(_,i)=>`<i class="${i<f?'on':''}"></i>`).join('')}</div>
-${tr?`<div class="trial"><span class="lock"></span>TRIAL ${Math.min(pr[0],pr[1])}/${pr[1]} ${pr[2]}</div>`:`<div class="prog"><b style="width:${Math.round(raw.cur/raw.need*100)}%"></b></div>`}</div>`}).join('');
+${tr?`<button class="trial" onclick="trialK='${k}';render()" aria-label="${NAMES[k]} trial details"><span class="lock"></span>TRIAL ${Math.min(pr[0],pr[1])}/${pr[1]} ${pr[2]}<b class="ti">i</b></button>`:`<div class="prog"><b style="width:${Math.round(raw.cur/raw.need*100)}%"></b></div>`}</div>`}).join('');
 const w=wk(),tn=S.log.filter(e=>TRAIN.includes(e.id)&&wk(e.t)===w).length,q=tn>=4?3:tn>=3?2:tn>=1?1:0;
 const readToday=S.log.some(e=>e.id==2&&day(e.t)===day()),fin=t=>doneToday(t)||(t.id==2&&readToday);
 const row=t=>{const n=S.log.filter(e=>e.id==t.id&&wk(e.t)===w).length,dn=doneToday(t),f=fin(t),tr=TRAIN.includes(t.id);
 return`<div class="task${tr?' sub':''}" style="${f?'opacity:.55':''}"><div class="n">${esc(t.name)}<small${tr&&q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>+${t.pts} ${SHORT[t.stat]} · ${t.once?'one-time':t.weekly?(dn?'weekly · done this week':'weekly'):t.daily?(dn?'daily · done today':'daily'):(t.id==2&&f?'goal done · extra counts':n+'x this week')}</small></div><button class="chk" ${tr?'style="background:'+['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]+'"':''} ${dn?'disabled':''} onclick="done(${t.id})" aria-label="Complete ${esc(t.name)}">✔</button></div>`};
-const open=S.tasks.filter(t=>!t.done),isTr=t=>TRAIN.includes(t.id);
+const all=S.tasks.filter(t=>!t.done),open=all.filter(t=>!t.side),sides=all.filter(t=>t.side),isTr=t=>TRAIN.includes(t.id);
 const top=open.filter(t=>t.perm&&(t.daily||t.weekly||t.id==2)&&!fin(t));const rk=t=>t.id==2?2:t.weekly?1:0;top.sort((a,b)=>rk(a)-rk(b));
 const own=open.filter(t=>!t.perm&&!((t.daily||t.weekly)&&fin(t)));
 const trs=open.filter(isTr);
 const bottom=open.filter(t=>(t.daily||t.weekly||t.id==2)&&fin(t));
-const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;render()" aria-expanded="${openTr}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">TRAINING<small${q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>${tn}x this week · tap to ${openTr?'close':'open'}</small></div><span class="chk trsum" style="background:${['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]}">${tn}</span></button>${openTr?trs.map(row).join(''):''}`:'';
-const tl=(top.map(row).join('')+trHead+own.map(row).join('')+bottom.map(row).join(''))||'<p class="empty">No open quests. Add one in TASKS.</p>';
+const trHead=trs.length?`<button class="task trhead" onclick="openTr=!openTr;render()" aria-expanded="${openTr}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">TRAINING<small${q?' style="color:'+['','#2f7a1f','#1f5fa8','#8a6200'][q]+'"':''}>${tn}x this week</small></div><span class="chk trsum" style="background:${['#d9c9a3','#8fcf6a','#4fb0e0','#f0c030'][q]}">${tn}</span></button>${openTr?trs.map(row).join(''):''}`:'';
+const sn=sides.filter(t=>!fin(t)).length;
+const sdHead=sides.length?`<button class="task trhead" onclick="openSide=!openSide;render()" aria-expanded="${openSide}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">SIDE QUESTS<small>for later</small></div><span class="chk trsum" style="background:#d9c9a3">${sn}</span></button>${openSide?sides.map(t=>row(t).replace('class="task','class="task sub')).join(''):''}`:'';
+const tl=(top.map(row).join('')+trHead+own.map(row).join('')+bottom.map(row).join('')+sdHead)||'<p class="empty">No open quests. Add one in TASKS.</p>';
 return`<h1>GRINDLIFE${COG}</h1><div class="box hero"><div class="spr">${sprite()}<div id="say" class="say" aria-live="polite"></div></div><div class="stats">${stats}</div></div>
 <p>${Object.keys(S.fresh).length?'<button id="wbtn" class="glow" onclick="go(\'wardrobe\')"><i class="spk"></i>WARDROBE<i class="spk"></i></button>':'<button id="wbtn" onclick="go(\'wardrobe\')">WARDROBE</button>'}</p><h2>QUESTS</h2><div class="box">${tl}</div>
 <h2>WEEKLY BOSS</h2>${bossStrip()}
-<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>${bossCard()}${suggCard()}`}
+<p><button onclick="undo()" ${S.log.length?'':'disabled'}>UNDO LAST</button></p>${bossCard()}${suggCard()}${trialCard()}`}
+const TRIAL_TXT={STR:'Do 4 trainings within 7 days.',INT:'Read 10 pages on 5 different days within 7 days.',CHA:'Compliment someone on 5 different days within 7 days.',DIS:'Finish at least one quest on 6 different days within 7 days.'};
+function trialCard(){const k=trialK;if(!k||!atTrial(k))return'';const [a,b]=trialProg(k),from=trialFrom(k);let boxes;
+if(k==='STR')boxes=Array.from({length:b},(_,i)=>`<i class="${i<a?'on':''}"></i>`).join('');
+else{const f=k==='INT'?e=>e.id==2:k==='CHA'?e=>e.id==1004:()=>true;
+boxes=Array.from({length:7},(_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-6+i);const end=d.getTime()+864e5,pre=end<=from;
+const on=S.log.some(e=>e.t>from&&e.t>=d.getTime()&&e.t<end&&f(e));return`<i class="${on?'on':''}${pre?' pre':''}"><u>${'SMTWTFS'[d.getDay()]}</u></i>`}).join('')}
+return`<div class="ovl" onclick="if(event.target===this){trialK=null;render()}"><div class="box card s-${k}" role="dialog" aria-modal="true" aria-label="${NAMES[k]} trial">
+<h3>${NAMES[k]} TRIAL</h3><p class="lbl">WHAT TO DO</p><p>${TRIAL_TXT[k]}</p>
+<p class="lbl">PROGRESS</p><div class="tbox${k==='STR'?' cnt':''}">${boxes}</div><p>${Math.min(a,b)} / ${b}</p>
+<p class="lbl">REWARD</p><p>Pass to unlock the next tier. Your stat starts growing again.</p>
+<button onclick="trialK=null;render()">CLOSE</button></div></div>`}
 function tasks(){
-const trow=t=>`<div class="task${t.perm?'':' tap'}" style="${t.done?'opacity:.6':''}"${t.perm?'':` role="button" tabindex="0" onclick="editId=${t.id};delArm=0;render()" onkeydown="if(event.key==='Enter')this.click()" aria-label="Edit ${esc(t.name)}"`}><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}</small></div>${t.perm?'<small>CORE</small>':'<small class="edt">EDIT</small>'}</div>`;
+const trow=t=>`<div class="task" style="${t.done?'opacity:.6':''}"><div class="n">${esc(t.name)}<small>+${t.pts} ${NAMES[t.stat]} · ${t.once?(t.done?'done':'one-time'):t.weekly?'weekly':t.daily?'daily':'repeatable'}${t.side?' · side quest':''}</small></div>${t.perm?'<small>CORE</small>':`<button class="qb" onclick="editId=${t.id};delArm=0;render()" aria-label="Edit ${esc(t.name)}">${QUILL}</button>`}</div>`;
 const mine=S.tasks.filter(t=>!t.perm&&!t.done),core=S.tasks.filter(t=>t.perm);
-const coreHead=`<button class="task trhead" onclick="openCore=!openCore;render()" aria-expanded="${openCore}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">CORE TASKS<small>always there · tap to ${openCore?'close':'open'}</small></div><span class="chk trsum" style="background:#d9c9a3">${core.length}</span></button>${openCore?core.map(t=>trow(t).replace('class="task"','class="task sub"')).join(''):''}`;
+const coreHead=`<button class="task trhead" onclick="openCore=!openCore;render()" aria-expanded="${openCore}"><svg class="arw" viewBox="0 0 6 8" shape-rendering="crispEdges" aria-hidden="true"><rect x="0" y="0" width="2" height="8"/><rect x="2" y="1" width="2" height="6"/><rect x="4" y="3" width="2" height="2"/></svg><div class="n">CORE TASKS<small>always there</small></div><span class="chk trsum" style="background:#d9c9a3">${core.length}</span></button>${openCore?core.map(t=>trow(t).replace('class="task"','class="task sub"')).join(''):''}`;
 const list=(mine.map(trow).join('')||'<p class="empty">No tasks of your own yet.</p>')+coreHead;
 return`<h1>TASKS${COG}</h1><div class="box add">
 <input id="nm" placeholder="New task" maxlength="40" aria-label="Task name">
 <select id="st" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}"${k==='DIS'?' selected':''}>${NAMES[k]}</option>`).join('')}</select>
 <select id="rp" aria-label="Task type"><option value="0">REPEATABLE</option><option value="1" selected>ONE-TIME</option><option value="2">DAILY</option><option value="3">WEEKLY</option></select>
 <input id="pt" type="number" min="1" max="20" value="1" aria-label="Points">
-<button onclick="addTask(nm.value,st.value,pt.value,+rp.value)">ADD TASK</button></div>
+<button type="button" id="sq" role="switch" aria-checked="${false}" class="sqt${false?' on':''}" onclick="this.setAttribute('aria-checked',this.classList.toggle('on'))"><span>SIDE QUEST</span><i class="sw"><b></b></i></button>
+<button onclick="addTask(nm.value,st.value,pt.value,+rp.value,sq.classList.contains('on'))">ADD TASK</button></div>
 <h2>YOUR TASKS</h2><div class="box">${list}</div>
 <h2>IDEAS</h2><div class="sug">${SUGG.map((s,i)=>`<button onclick="ideaDraft=${i};render()">${s[0]}</button>`).join('')}</div>${editCard()}${ideaCard()}`}
 function ideaCard(){const d=ideaDraft!=null&&SUGG[ideaDraft];if(!d)return'';const ty=d[3]||0;
@@ -917,24 +943,25 @@ return`<div class="ovl" onclick="if(event.target===this){ideaDraft=null;render()
 <input id="in" value="${esc(d[0]).replace(/"/g,'&quot;')}" maxlength="40" aria-label="Task name">
 <select id="is" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}"${k===d[1]?' selected':''}>${NAMES[k]}</option>`).join('')}</select>
 <select id="ir" aria-label="Task type">${['REPEATABLE','ONE-TIME','DAILY','WEEKLY'].map((n,i)=>`<option value="${i}"${i===ty?' selected':''}>${n}</option>`).join('')}</select>
-<input id="ip" type="number" min="1" max="20" value="${d[2]}" aria-label="Points"></div>
+<input id="ip" type="number" min="1" max="20" value="${d[2]}" aria-label="Points">
+<button type="button" id="isq" role="switch" aria-checked="${false}" class="sqt${false?' on':''}" onclick="this.setAttribute('aria-checked',this.classList.toggle('on'))"><span>SIDE QUEST</span><i class="sw"><b></b></i></button></div>
 <button onclick="addIdea()">ADD TASK</button><button class="ghost" onclick="ideaDraft=null;render()">CANCEL</button></div></div>`}
 function addIdea(){const g=id=>document.getElementById(id).value,name=g('in').trim();if(!name)return toast('Give the task a name');
-ideaDraft=null;addTask(name,g('is'),g('ip'),+g('ir'));toast('Added: '+name)}
+ideaDraft=null;addTask(name,g('is'),g('ip'),+g('ir'),document.getElementById('isq').classList.contains('on'));toast('Added: '+name)}
 function editCard(){const t=editId!=null&&S.tasks.find(t=>t.id==editId&&!t.perm);if(!t)return'';const ty=t.once?1:t.daily?2:t.weekly?3:0;
 return`<div class="ovl" onclick="if(event.target===this){editId=null;render()}"><div class="box card" role="dialog" aria-modal="true" aria-label="Edit task">
 <small>EDIT TASK</small><div class="add" style="width:100%;text-align:left">
 <input id="en" value="${esc(t.name).replace(/"/g,'&quot;')}" maxlength="40" aria-label="Task name">
 <select id="es" aria-label="Stat">${Object.keys(NAMES).map(k=>`<option value="${k}"${k===t.stat?' selected':''}>${NAMES[k]}</option>`).join('')}</select>
 <select id="er" aria-label="Task type">${['REPEATABLE','ONE-TIME','DAILY','WEEKLY'].map((n,i)=>`<option value="${i}"${i===ty?' selected':''}>${n}</option>`).join('')}</select>
-<input id="ep" type="number" min="1" max="20" value="${t.pts}" aria-label="Points"></div>
-<small>Changes count from now on. Points you already earned stay.</small>
+<input id="ep" type="number" min="1" max="20" value="${t.pts}" aria-label="Points">
+<button type="button" id="esq" role="switch" aria-checked="${!!t.side}" class="sqt${!!t.side?' on':''}" onclick="this.setAttribute('aria-checked',this.classList.toggle('on'))"><span>SIDE QUEST</span><i class="sw"><b></b></i></button></div>
 <button onclick="saveEdit(${t.id})">SAVE</button>
 <button class="ghost danger" onclick="delEdit(${t.id})">${delArm?'TAP AGAIN TO DELETE':'DELETE'}</button>
 <button class="ghost" onclick="editId=null;render()">CANCEL</button></div></div>`}
 function saveEdit(id){const t=S.tasks.find(t=>t.id==id);if(!t)return;const name=document.getElementById('en').value.trim();if(!name)return toast('Give the task a name');
 const ty=+document.getElementById('er').value;t.name=name;t.stat=document.getElementById('es').value;t.pts=Math.max(1,Math.min(20,+document.getElementById('ep').value||t.pts));
-t.once=ty===1;t.daily=ty===2;t.weekly=ty===3;editId=null;save();render();toast('Task saved')}
+t.once=ty===1;t.daily=ty===2;t.weekly=ty===3;if(document.getElementById('esq').classList.contains('on'))t.side=true;else delete t.side;editId=null;save();render();toast('Task saved')}
 function delEdit(id){if(!delArm){delArm=1;render();clearTimeout(delEdit.h);delEdit.h=setTimeout(()=>{if(delArm){delArm=0;if(editId!=null)render()}},4000);return}
 delArm=0;editId=null;del(id);toast('Task deleted')}
 function render(){
