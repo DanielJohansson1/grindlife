@@ -164,6 +164,9 @@ svg.sprite{width:150px;height:150px;flex:none;border:3px solid var(--fg)}
 @keyframes fxpulse{50%{filter:brightness(1.6)}}
 .fxtier{z-index:50}.fxtier .card{border-color:#b8860b;box-shadow:inset 0 0 0 3px #f0c030,0 0 0 3px #f0c030,3px 3px 0 rgba(0,0,0,.35);animation:bdrop .4s steps(5)}
 .fxtier .tpk{font-size:14px;color:#b8860b}.fxtier h3{line-height:1.8}
+.tpdog{display:flex;align-items:center;gap:10px;border-top:2px dashed var(--mid);padding-top:8px;width:100%;justify-content:center}.tpdog .cpic{width:64px;height:64px}.tpdog b{color:#b0742c}
+.fxboss .card{border-color:#3b0d0a;box-shadow:inset 0 0 0 3px #b3261e,0 0 0 3px #b3261e,3px 3px 0 rgba(0,0,0,.35)}.fxboss .tpk{color:#b3261e}
+.fxspirit .card{border-color:#8a5a2a;box-shadow:inset 0 0 0 3px #e0a64e,0 0 0 3px #e0a64e,3px 3px 0 rgba(0,0,0,.35)}.fxspirit .tpk{color:#b0742c}.fxspirit .cpic{background:#cfe8a8}
 
 .bkconf{border:3px dashed var(--fg);padding:10px;display:grid;gap:6px;text-align:center}.bkconf p{margin:0}.bkconf .ghost{background:transparent;box-shadow:none}.bklast{font-size:9px;color:var(--mid);text-align:center}
 .bkst{display:grid;grid-template-columns:1fr 1fr;gap:6px}.bkst span{display:flex;align-items:center;gap:6px;border:2px solid var(--fg);background:var(--field);padding:5px 6px}.bkst b{width:9px;height:9px;flex:none;background:var(--c);border:2px solid var(--fg)}.bkst i{font-style:normal;margin-left:auto}
@@ -558,7 +561,7 @@ return`${infoCard()}<h1>WARDROBE<button onclick="go('home')">BACK</button></h1><
 
 let AC;
 function beep(f,d,t){if(!S.settings.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),a=AC.currentTime+(t||0);o.type='square';o.frequency.value=f;g.gain.value=.04;o.connect(g);g.connect(AC.destination);o.start(a);o.stop(a+d)}catch(e){}}
-function sfx(k){({ok:[[660,.07,0],[880,.09,.07]],lvl:[[523,.09,0],[659,.09,.09],[784,.14,.18]],gear:[[523,.09,0],[659,.09,.09],[784,.09,.18],[1047,.2,.27]],undo:[[330,.12,0]],tier:[[392,.1,0],[523,.1,.1],[659,.1,.2],[784,.1,.3],[1047,.12,.4],[784,.08,.52],[1047,.3,.6]]}[k]||[]).forEach(n=>beep(...n))}
+function sfx(k){({ok:[[660,.07,0],[880,.09,.07]],lvl:[[523,.09,0],[659,.09,.09],[784,.14,.18]],gear:[[523,.09,0],[659,.09,.09],[784,.09,.18],[1047,.2,.27]],undo:[[330,.12,0]],bark:[[620,.05,0],[430,.09,.05],[620,.05,.28],[430,.11,.33]],tier:[[392,.1,0],[523,.1,.1],[659,.1,.2],[784,.1,.3],[1047,.12,.4],[784,.08,.52],[1047,.3,.6]]}[k]||[]).forEach(n=>beep(...n))}
 function pop(){if(!S.settings.anim)return;const e=document.querySelector('.sprite');if(e)e.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}],{duration:250})}
 function tog(k){S.settings[k]=!S.settings[k];save();render();if(k==='sound')sfx('ok')}
 function reset(){if(!rc){rc=1;render();setTimeout(()=>{rc=0;if(view==='settings')render()},4000);return}
@@ -609,10 +612,10 @@ const tu=checkTrials(e);if(tu.includes(t.stat)){if(!e.pts)e.pts=gain(t.stat,t.pt
 const nu=checkUnlocks();if(nu.includes('spirit')&&!tu.length)m='SPIRIT JOINED YOU!';else if(nu.length&&!tu.length)m=nu.some(id=>PLACES.some(p=>p.id===id))?'NEW PLACE UNLOCKED!':nu.some(id=>id.startsWith('q_'))&&!nu.some(id=>ITEMS.some(i=>i.id===id))?'NEW QUIRK UNLOCKED!':'NEW GEAR UNLOCKED!';
 if(atTrial(t.stat)&&!wasTrial&&!tu.includes(t.stat)&&!m.includes('TRIAL OPEN'))m=(m?m+' · ':'')+NAMES[t.stat]+' TRIAL OPEN!';
 sfx(tu.length?'tier':nu.length?'gear':m?'lvl':'ok');const bs=boss(),hit=bs.won?0:bs.b.dmg(e);
-if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;e.brw={};Object.keys(bs.b.rw).forEach(k=>e.brw[k]=gain(k,bs.b.rw[k]));m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';const loot=checkUnlocks();if(loot.length)m+=' LOOT DROPPED!';sfx('tier')}
-const ups=Object.keys(NAMES).filter(k=>Lv(k)>lv0[k]&&!tu.includes(k)),quiet=fxOn()&&(tu.length?m.includes('→'):ups.length&&/^[A-Z]+ LEVEL UP!$/.test(m));
-if(m&&!quiet)toast(m);save();
-const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});if(!gains[t.stat]&&atTrial(t.stat))gains[t.stat]='T';flashDone(id,gains,hit);pop();celebrate(ups,tu)}
+if(hit&&!bs.won&&bs.dealt>=bs.b.hp){S.bossWon=S.bossWon||{};S.bossWon[bs.w]=bs.b.id;e.bossWin=bs.w;e.brw={};Object.keys(bs.b.rw).forEach(k=>e.brw[k]=gain(k,bs.b.rw[k]));m='BOSS DEFEATED: '+bs.b.name.toUpperCase()+'!';var loot=checkUnlocks();if(loot.length)m+=' LOOT DROPPED!';sfx('tier')}
+const ups=Object.keys(NAMES).filter(k=>Lv(k)>lv0[k]&&!tu.includes(k)),joined=nu.includes('spirit'),bw=e.bossWin?{id:bs.b.id,loot:loot||[]}:null;
+const big=fxOn()&&(tu.length||ups.length||joined||bw);if(m&&!big)toast(m);save();
+const gains={};Object.keys(NAMES).forEach(k=>{const d=S.pts[k]-p0[k];if(d>0)gains[k]=d});if(!gains[t.stat]&&atTrial(t.stat))gains[t.stat]='T';flashDone(id,gains,hit);pop();if(big)celebrate(ups,tu,bw,joined)}
 // ---- celebrations: confetti + banner on level up, a big tap-to-close card when a trial is passed
 function fxOn(){return S.settings.anim&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)}
 const STATC={STR:['#c0392b','#e8735e'],INT:['#2f6fd0','#7fb3ff'],CHA:['#d9658f','#ffb3c9'],DIS:['#3f9b3f','#8fcf6a']},GOLD=['#f0c030','#fff1a8','#e8bf4f','#ffffff'];
@@ -620,19 +623,31 @@ function confetti(colors,n,ox,oy,spread){const c=document.createElement('canvas'
 const P=Array.from({length:n},()=>({x:ox,y:oy,vx:(Math.random()-.5)*spread,vy:-Math.random()*spread*.9-2,s:3+Math.floor(Math.random()*3)*2,c:colors[Math.floor(Math.random()*colors.length)],r:Math.random()<.5}));
 let f=0;(function tick(){g.clearRect(0,0,W,H);P.forEach(p=>{p.vy+=.35;p.vx*=.98;p.x+=p.vx;p.y+=p.vy;g.fillStyle=p.c;const w=p.r&&f%8<4?p.s/2:p.s;g.fillRect(Math.round(p.x),Math.round(p.y),w,p.s)});
 if(++f<95)requestAnimationFrame(tick);else c.remove()})()}
-function celebrate(ups,tiers){if(!fxOn()||(!ups.length&&!tiers.length))return;const sp=document.querySelector('.spr'),r=sp?sp.getBoundingClientRect():{left:innerWidth/2,top:150,width:0,height:0},cx=r.left+r.width/2,cy=r.top+r.height/2;
-if(tiers.length){const fl=document.createElement('div');fl.className='fxgold';document.body.appendChild(fl);setTimeout(()=>fl.remove(),700);
-confetti(GOLD,140,innerWidth/2,innerHeight*.45,16);setTimeout(()=>confetti(GOLD,80,innerWidth/2,innerHeight*.35,12),450);tierCard(tiers);return}
+// one thing on screen at a time: trial card -> boss card -> Spirit card -> level-up banner (last, closes by itself)
+function celebrate(ups,tiers,boss,joined){if(!fxOn())return;const q=[];
+if(tiers.length)q.push(nx=>tierCard(tiers,nx));if(boss)q.push((nx,first)=>bossWinCard(boss,nx,first));if(joined)q.push((nx,first)=>spiritCard(nx,first));if(ups.length)q.push(()=>levelBanner(ups));
+q.first=true;const run=()=>{const f=q.shift();if(!f)return;const first=q.first;q.first=false;f(run,first)};run()}
+function levelBanner(ups){const sp=document.querySelector('.spr'),r=sp?sp.getBoundingClientRect():{left:innerWidth/2,top:150,width:0,height:0},cx=r.left+r.width/2,cy=r.top+r.height/2;
 const fl=document.createElement('div');fl.className='fxflash';Object.assign(fl.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});document.body.appendChild(fl);setTimeout(()=>fl.remove(),500);
 confetti(ups.flatMap(k=>STATC[k]).concat('#fff1a8'),70,cx,cy,11);
 const bn=document.createElement('div');bn.className='fxban';bn.innerHTML='LEVEL UP!<small>'+ups.map(k=>SHORT[k]+' LV '+Lv(k)).join(' · ')+'</small>';document.body.appendChild(bn);
 const hb=document.querySelector('.hero');if(hb){const hr=hb.getBoundingClientRect();bn.style.top=Math.max(8,hr.top+hr.height/2-30)+'px'}setTimeout(()=>bn.classList.add('out'),1300);setTimeout(()=>bn.remove(),1700);
 ups.forEach(k=>{const el=document.querySelector('.stat.s-'+k);if(el){el.classList.remove('pulse');void el.offsetWidth;el.classList.add('pulse')}})}
-function tierCard(tiers){const k=tiers[0],d=charLayers(Lv('STR'),Lv('INT'),Lv('CHA'),gear(),''),o=document.createElement('div');o.className='ovl fxtier';
-o.innerHTML=`<div class="box card s-${k}" role="dialog" aria-modal="true" aria-label="Trial passed"><small class="tpk">TRIAL PASSED!</small><h3>${tiers.map(x=>NAMES[x]+' → TIER '+ROMAN[Math.min(tierOf(x),9)]).join('<br>')}</h3>
+function fxCard(cls,html,btn,next,sound){const o=document.createElement('div');o.className='ovl fxtier '+cls;o.innerHTML=`<div class="box card" role="dialog" aria-modal="true">${html}<button>${btn}</button></div>`;
+const close=()=>{o.remove();if(next)setTimeout(next,250)};o.querySelector('button').onclick=close;o.onclick=e=>{if(e.target===o)close()};document.body.appendChild(o);o.querySelector('button').focus();if(sound)sfx(sound)}
+function petSvg(st,size){const pm=PET_MAPS[st]||[],pw=(pm[0]||'').length,ph=pm.length;return`<svg class="cpic" ${size?`style="width:${size}px;height:${size}px"`:''} viewBox="-2 -2 ${pw+4} ${ph+4}" shape-rendering="crispEdges">${pm.map((row,j)=>[...row].map((c,i)=>c!=='.'?`<rect x="${i}" y="${j}" width="1.02" height="1.02" fill="${PET_COLORS[c]}"/>`:'').join('')).join('')}</svg>`}
+function tierCard(tiers,next){const d=charLayers(Lv('STR'),Lv('INT'),Lv('CHA'),gear(),''),grew=tiers.includes('DIS')&&S.owned.spirit&&tierOf('DIS')<=2;
+const fl=document.createElement('div');fl.className='fxgold';document.body.appendChild(fl);setTimeout(()=>fl.remove(),700);
+confetti(GOLD,140,innerWidth/2,innerHeight*.45,16);setTimeout(()=>confetti(GOLD,80,innerWidth/2,innerHeight*.35,12),450);
+fxCard('',`<small class="tpk">TRIAL PASSED!</small><h3>${tiers.map(x=>NAMES[x]+' → TIER '+ROMAN[Math.min(tierOf(x),9)]).join('<br>')}</h3>
 <svg class="cpic" viewBox="0 0 44 44" shape-rendering="crispEdges">${runs(d.layers.bg)}${runs(d.layers.shadow)}<g transform="translate(${d.dx} ${d.dy})">${runs(d.layers.body)}</g>${runs(d.layers.bubble)}</svg>
-<p>Your ${tiers.length>1?'stats start':'stat starts'} growing again.</p><button>AWESOME!</button></div>`;
-const close=()=>o.remove();o.querySelector('button').onclick=close;o.onclick=e=>{if(e.target===o)close()};document.body.appendChild(o);o.querySelector('button').focus()}
+<p>Your ${tiers.length>1?'stats start':'stat starts'} growing again.</p>${grew?`<div class="tpdog">${petSvg(Math.min(3,tierOf('DIS')+1),64)}<p><b>SPIRIT GREW UP!</b></p></div>`:''}`,'AWESOME!',next);
+if(grew)setTimeout(()=>sfx('bark'),600)}
+function bossWinCard(w,next,first){const b=BOSSES.find(x=>x.id===w.id);if(!b)return next&&next();
+const loot=ITEMS.find(i=>(w.loot||[]).includes(i.id));
+fxCard('fxboss',`<small class="tpk">BOSS DEFEATED!</small>${bossSvg(b.id,'cpic bbig gone')}<h3>${b.name}</h3><p class="lbl">REWARD</p><p>${rwText(b.rw)}</p>
+${loot?`<div class="tpdog"><svg class="cpic" style="width:48px;height:48px" viewBox="0 0 16 16" shape-rendering="crispEdges">${loot.ic}</svg><p>LOOT: <b>${loot.name}</b></p></div>`:''}`,'VICTORY!',next,first?null:'tier')}
+function spiritCard(next,first){fxCard('fxspirit',`<small class="tpk">SPIRIT JOINED YOU!</small>${petSvg(1,128)}<p>A loyal friend for your journey.</p>`,'HI, SPIRIT!',next);setTimeout(()=>sfx('bark'),first?400:200)}
 let pend=null;
 function flashDone(id,gains,hit){const b=document.querySelector(`button.chk[onclick="done(${id})"]`),row=b&&b.closest('.task');
 if(!row){render();return}
